@@ -17,8 +17,7 @@
             --primary-blue: #1d4ed8;
             --secondary-blue: #3b82f6;
             --emergency-red: #e11d48;
-            --grocery-green: #059669;
-            --food-orange: #ea580c;
+            --rider-yellow: #facc15;
         }
 
         body { 
@@ -52,11 +51,11 @@
             100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
         }
 
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .modal-overlay { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); }
+        .rider-gradient { background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); }
         .bg-blue-grade { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
         
-        input::placeholder { color: #94a3b8; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .modal-overlay { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body>
@@ -75,7 +74,7 @@
                 </div>
             </div>
 
-            <!-- Language Switcher -->
+            <!-- Language -->
             <div class="flex items-center bg-blue-50/80 p-1.5 rounded-2xl border border-blue-100">
                 <button onclick="setLanguage('en')" id="btn-en" class="px-4 py-2 rounded-xl text-xs font-900 transition-all lang-active">EN</button>
                 <button onclick="setLanguage('bn')" id="btn-bn" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">বাংলা</button>
@@ -84,8 +83,7 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <button onclick="toggleAdminView()" id="hub-link" class="hidden lg:block text-[10px] font-900 text-slate-400 uppercase tracking-widest hover:text-blue-600">Partner Hub</button>
-                <div onclick="openAuthModal('login')" id="userProfile" class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200 shadow-inner cursor-pointer relative group">
+                <div onclick="openAuthModal('login', 'user')" id="userProfile" class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200 shadow-inner cursor-pointer relative">
                     <i class="fas fa-user"></i>
                     <div id="user-status-dot" class="absolute bottom-0 right-0 w-3 h-3 bg-slate-300 border-2 border-white rounded-full"></div>
                 </div>
@@ -99,138 +97,152 @@
 
     <main class="max-w-7xl mx-auto p-4 md:p-8">
         
-        <!-- HOME PAGE -->
+        <!-- HOME PAGE (CUSTOMER) -->
         <section id="homePage" class="space-y-12 pb-24">
             <!-- Services Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div onclick="filterCategory('Grocery')" class="super-card bg-emerald-600 p-10 rounded-[3rem] text-white shadow-2xl">
                     <div class="relative z-10">
                         <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner"><i class="fas fa-leaf text-3xl"></i></div>
-                        <h2 id="cat-grocery" class="text-4xl font-800 leading-tight uppercase">Grocery<br>Store</h2>
+                        <h2 id="cat-grocery" class="text-4xl font-800 leading-tight uppercase">Grocery Store</h2>
                         <p id="sub-grocery" class="text-emerald-100 text-sm mt-4 font-700 opacity-80 uppercase tracking-widest">Fresh Harvest</p>
                     </div>
-                    <i class="fas fa-shopping-basket absolute -right-8 -bottom-8 text-[12rem] opacity-10 rotate-12"></i>
                 </div>
 
                 <div onclick="filterCategory('Food')" class="super-card bg-orange-500 p-10 rounded-[3rem] text-white shadow-2xl">
                     <div class="relative z-10">
                         <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner"><i class="fas fa-utensils text-3xl"></i></div>
-                        <h2 id="cat-food" class="text-4xl font-800 leading-tight uppercase">Hot<br>Meals</h2>
+                        <h2 id="cat-food" class="text-4xl font-800 leading-tight uppercase">Hot Meals</h2>
                         <p id="sub-food" class="text-orange-100 text-sm mt-4 font-700 opacity-80 uppercase tracking-widest">Village Kitchens</p>
                     </div>
-                    <i class="fas fa-hamburger absolute -right-8 -bottom-8 text-[12rem] opacity-10 rotate-12"></i>
                 </div>
 
                 <div onclick="scrollToSection('booking-section')" class="super-card bg-blue-600 p-10 rounded-[3rem] text-white shadow-2xl">
                     <div class="relative z-10">
                         <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner"><i class="fas fa-taxi text-3xl"></i></div>
-                        <h2 id="cat-booking" class="text-4xl font-800 leading-tight uppercase">Book<br>Rides</h2>
+                        <h2 id="cat-booking" class="text-4xl font-800 leading-tight uppercase">Book Rides</h2>
                         <p id="sub-booking" class="text-blue-100 text-sm mt-4 font-700 opacity-80 uppercase tracking-widest">Toto & Cars</p>
                     </div>
-                    <i class="fas fa-map-marker-alt absolute -right-8 -bottom-8 text-[12rem] opacity-10 rotate-12"></i>
                 </div>
 
                 <div onclick="initiateConsult()" class="super-card bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl">
                     <div class="relative z-10">
                         <div class="w-16 h-16 bg-blue-500 rounded-3xl flex items-center justify-center mb-8 shadow-lg"><i class="fas fa-user-md text-3xl"></i></div>
-                        <h2 id="cat-doctor" class="text-4xl font-800 leading-tight uppercase">Doctor<br>Consult</h2>
+                        <h2 id="cat-doctor" class="text-4xl font-800 leading-tight uppercase">Doctor Consult</h2>
                         <p id="sub-doctor" class="text-slate-400 text-sm mt-4 font-700 uppercase tracking-widest">Live Help</p>
                     </div>
-                    <i class="fas fa-heartbeat absolute -right-8 -bottom-8 text-[12rem] opacity-10 rotate-12"></i>
                 </div>
             </div>
 
-            <!-- Rapid Rides & SOS -->
+            <!-- Rapid Rides -->
             <div id="booking-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-8 border-t border-slate-200">
                 <div onclick="emergencyBooking('Ambulance')" class="bg-white p-8 rounded-[3.5rem] border-4 border-red-100 flex items-center justify-between group emergency-pulse cursor-pointer">
                     <div class="flex items-center gap-6">
-                        <div class="w-20 h-20 bg-red-600 text-white rounded-full flex items-center justify-center text-3xl shadow-xl"><i class="fas fa-ambulance"></i></div>
-                        <div><h3 id="txt-sos-title" class="text-2xl font-900 text-red-600">AMBULANCE</h3><p id="txt-sos-sub" class="text-slate-500 font-800 text-sm">Tap for SOS Emergency</p></div>
+                        <div class="w-20 h-20 bg-red-600 text-white rounded-full flex items-center justify-center text-3xl"><i class="fas fa-ambulance"></i></div>
+                        <div><h3 id="txt-sos-title" class="text-2xl font-900 text-red-600">AMBULANCE</h3><p id="txt-sos-sub" class="text-slate-500 font-800 text-sm">Emergency SOS</p></div>
                     </div>
-                    <i class="fas fa-chevron-right text-red-100 text-xl group-hover:translate-x-2 transition-transform"></i>
                 </div>
-
-                <div onclick="emergencyBooking('Toto Ride')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-300 transition-all">
+                <div onclick="emergencyBooking('Toto Ride')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-300">
                     <div class="flex items-center gap-6"><div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-motorcycle"></i></div><div><h3 id="txt-toto-title" class="text-2xl font-900 text-slate-900">TOTO RIDE</h3><p id="txt-toto-sub" class="text-slate-500 font-800 text-sm">Local E-Rickshaw</p></div></div>
-                    <i class="fas fa-chevron-right text-slate-200 text-xl group-hover:translate-x-2 transition-transform"></i>
                 </div>
-
-                <div onclick="emergencyBooking('Private Car')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-300 transition-all">
+                <div onclick="emergencyBooking('Private Car')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-300">
                     <div class="flex items-center gap-6"><div class="w-20 h-20 bg-slate-50 text-slate-800 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-car"></i></div><div><h3 id="txt-car-title" class="text-2xl font-900 text-slate-900">PRIVATE CAR</h3><p id="txt-car-sub" class="text-slate-500 font-800 text-sm">Fast Car Booking</p></div></div>
-                    <i class="fas fa-chevron-right text-slate-200 text-xl group-hover:translate-x-2 transition-transform"></i>
                 </div>
             </div>
 
             <!-- Feed -->
-            <div class="space-y-10 pt-10">
+            <div id="feed-container" class="space-y-10 pt-10">
                 <div class="flex items-center justify-between border-b border-slate-200 pb-8">
-                    <h3 id="txt-feed-title" class="text-3xl font-900 text-slate-900 tracking-tight">Recommended for You</h3>
-                    <div class="flex items-center gap-3"><span class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></span><span id="txt-live" class="text-[10px] font-900 text-blue-600 uppercase tracking-[0.2em]">Live from Village</span></div>
+                    <h3 id="txt-feed-title" class="text-3xl font-900 text-slate-900">Recommended for You</h3>
+                    <div class="flex items-center gap-3"><span class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></span><span id="txt-live" class="text-[10px] font-900 text-blue-600 uppercase tracking-widest">Live from Village</span></div>
                 </div>
                 <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-10"></div>
             </div>
         </section>
 
-        <!-- PARTNER HUB -->
-        <section id="adminPage" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div class="flex flex-col lg:flex-row gap-12">
-                <div class="w-full lg:w-96 space-y-8">
-                    <div class="bg-white p-10 rounded-[4rem] border border-slate-100 text-center shadow-2xl">
-                        <div class="w-28 h-28 bg-blue-grade rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-white text-5xl font-800 shadow-xl">
-                            <span id="shopInitial">P</span>
+        <!-- PARTNER HUB (Sellers/Admins/Riders) -->
+        <section id="adminPage" class="hidden animate-in fade-in duration-500">
+            <!-- RIDER INTERFACE (Conditional) -->
+            <div id="riderInterface" class="hidden space-y-6">
+                <div class="rider-gradient p-8 rounded-[3rem] text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-2xl">
+                    <div class="flex items-center gap-6">
+                        <div class="w-20 h-20 bg-yellow-400 rounded-full flex items-center justify-center text-slate-900 text-3xl shadow-xl"><i class="fas fa-motorcycle"></i></div>
+                        <div>
+                            <h2 class="text-3xl font-800 leading-tight" id="riderNameDisplay">Rider Dashboard</h2>
+                            <p class="text-yellow-400 font-800 uppercase text-xs tracking-widest mt-1">Village Partner - Ride Provider</p>
                         </div>
-                        <h4 id="shopNameDisplay" class="font-800 text-2xl text-slate-900 tracking-tight">Partner Hub</h4>
-                        <div id="partnerTypeLabel" class="mt-4 px-6 py-2 bg-blue-50 text-blue-600 text-[10px] font-900 uppercase rounded-full inline-block">Service Provider</div>
                     </div>
-                    
-                    <div class="bg-white rounded-[3rem] border border-slate-200 p-3 shadow-2xl">
-                        <button onclick="toggleAdminTab('inventory')" class="w-full text-left p-6 rounded-[2.5rem] bg-blue-50 text-blue-600 font-800 flex items-center gap-5" id="tab-inventory">
-                            <i class="fas fa-boxes"></i> Dashboard
-                        </button>
-                        <button onclick="toggleAdminTab('add')" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-slate-50 font-800 flex items-center gap-5 text-slate-400" id="tab-add">
-                            <i class="fas fa-plus-circle"></i> New Listing
-                        </button>
-                        <hr class="my-6 mx-6 border-slate-100">
-                        <button onclick="logout()" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-red-50 text-red-500 font-800 flex items-center gap-5">
-                            <i class="fas fa-power-off"></i> Logout
+                    <div class="flex items-center gap-4 bg-slate-800/50 p-4 rounded-3xl border border-white/10">
+                        <span id="dutyLabel" class="text-xs font-900 uppercase">Off Duty</span>
+                        <button onclick="toggleRiderDuty()" id="dutyBtn" class="w-16 h-8 bg-slate-600 rounded-full relative transition-all">
+                            <div id="dutySlider" class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition-all"></div>
                         </button>
                     </div>
                 </div>
 
-                <div class="flex-1 bg-white p-10 md:p-14 rounded-[5rem] border border-slate-200 shadow-2xl min-h-[700px]">
-                    <div id="inventorySection">
-                        <h3 class="text-4xl font-900 text-slate-900 mb-12">Manage Your Listings</h3>
-                        <div class="overflow-x-auto hide-scrollbar">
-                            <table class="w-full text-left">
-                                <thead class="text-slate-400 text-[10px] font-900 uppercase border-b border-slate-100">
-                                    <tr><th class="pb-8">Name</th><th class="pb-8">Category</th><th class="pb-8">Unit Price</th><th class="pb-8 text-right">Delete</th></tr>
-                                </thead>
-                                <tbody id="adminProductTable" class="divide-y divide-slate-100"></tbody>
-                            </table>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Live Map (Simulated) -->
+                    <div class="lg:col-span-2 bg-white rounded-[3rem] border p-4 shadow-xl overflow-hidden min-h-[400px] relative">
+                        <div class="absolute inset-0 bg-slate-100 flex items-center justify-center opacity-50">
+                            <i class="fas fa-map-marked-alt text-9xl text-slate-300"></i>
+                        </div>
+                        <div class="relative z-10 p-6">
+                            <div class="bg-white/80 backdrop-blur p-4 rounded-2xl inline-flex items-center gap-3 border shadow-sm">
+                                <i class="fas fa-location-crosshairs text-blue-600"></i>
+                                <span id="riderCoords" class="text-xs font-800 text-slate-600 tracking-tighter uppercase">GPS: Tracking disabled</span>
+                            </div>
                         </div>
                     </div>
+                    <!-- Earnings & Stats -->
+                    <div class="space-y-6">
+                        <div class="bg-white p-8 rounded-[3rem] border shadow-xl">
+                            <h4 class="text-xs font-900 text-slate-400 uppercase tracking-widest mb-6">Today's Earnings</h4>
+                            <div class="text-5xl font-900 text-slate-900">$0.00</div>
+                            <div class="mt-4 text-emerald-500 text-xs font-800 flex items-center gap-2"><i class="fas fa-chart-line"></i> +0% from yesterday</div>
+                        </div>
+                        <div class="bg-white p-8 rounded-[3.5rem] border shadow-xl flex-1">
+                            <h4 class="text-xs font-900 text-slate-400 uppercase tracking-widest mb-6">Nearby Requests</h4>
+                            <div id="nearbyRequests" class="space-y-4">
+                                <div class="text-center py-10 text-slate-300 italic text-sm">Go Online to see requests</div>
+                            </div>
+                        </div>
+                        <button onclick="logout()" class="w-full bg-red-50 text-red-500 p-6 rounded-3xl font-800 flex items-center justify-center gap-4 transition-all hover:bg-red-500 hover:text-white">
+                            <i class="fas fa-power-off"></i> LOG OUT
+                        </button>
+                    </div>
+                </div>
+            </div>
 
+            <!-- MERCHANT/ADMIN INTERFACE (Standard) -->
+            <div id="merchantInterface" class="hidden flex flex-col lg:flex-row gap-12">
+                <div class="w-full lg:w-96 space-y-8">
+                    <div class="bg-white p-10 rounded-[4rem] border text-center shadow-2xl">
+                        <div class="w-24 h-24 bg-blue-600 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-white text-5xl font-800 shadow-xl"><span id="shopInitial">P</span></div>
+                        <h4 id="shopNameDisplay" class="font-800 text-2xl text-slate-900">Partner Hub</h4>
+                        <div id="partnerTypeLabel" class="mt-4 px-6 py-2 bg-blue-50 text-blue-600 text-[10px] font-900 uppercase rounded-full inline-block">Partner</div>
+                    </div>
+                    <div class="bg-white rounded-[3rem] border p-3 shadow-2xl">
+                        <button onclick="toggleAdminTab('inventory')" class="w-full text-left p-6 rounded-[2.5rem] bg-blue-50 text-blue-600 font-800 flex items-center gap-5" id="tab-inventory"><i class="fas fa-boxes"></i> Dashboard</button>
+                        <button onclick="toggleAdminTab('add')" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-slate-50 font-800 flex items-center gap-5 text-slate-400" id="tab-add"><i class="fas fa-plus-circle"></i> New Listing</button>
+                        <hr class="my-6 mx-6 border-slate-100">
+                        <button onclick="logout()" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-red-50 text-red-500 font-800 flex items-center gap-5"><i class="fas fa-power-off"></i> Logout</button>
+                    </div>
+                </div>
+                <div class="flex-1 bg-white p-10 md:p-14 rounded-[5rem] border shadow-2xl min-h-[700px]">
+                    <div id="inventorySection">
+                        <h3 class="text-4xl font-900 text-slate-900 mb-12">Active Listings</h3>
+                        <div class="overflow-x-auto hide-scrollbar"><table class="w-full text-left"><thead class="text-slate-400 text-[10px] font-900 uppercase border-b"><tr><th class="pb-8">Name</th><th class="pb-8">Category</th><th class="pb-8">Price</th><th class="pb-8 text-right">Delete</th></tr></thead><tbody id="adminProductTable" class="divide-y divide-slate-100"></tbody></table></div>
+                    </div>
                     <div id="addProductSection" class="hidden">
-                        <h3 class="text-4xl font-900 text-slate-900 mb-12">Create New Entry</h3>
+                        <h3 class="text-4xl font-900 text-slate-900 mb-12">New Entry</h3>
                         <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                            <div class="space-y-8">
-                                <input type="text" id="pTitle" required placeholder="Item or Service Name" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 text-slate-900 text-lg outline-none focus:ring-4 focus:ring-blue-500/10">
-                                <select id="pCategory" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 text-slate-900 outline-none">
-                                    <option>Grocery</option>
-                                    <option>Food</option>
-                                    <option>Transport</option>
-                                    <option>Healthcare</option>
-                                </select>
-                                <div class="grid grid-cols-2 gap-6">
-                                    <input type="number" id="pPrice" required placeholder="Price" class="bg-slate-50 border p-5 rounded-[1.5rem] font-800">
-                                    <input type="number" id="pStock" required value="100" class="bg-slate-50 border p-5 rounded-[1.5rem] font-800">
-                                </div>
-                            </div>
-                            <div class="space-y-8">
-                                <textarea id="pDesc" rows="4" placeholder="Brief description..." class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-500 resize-none"></textarea>
-                                <input type="text" id="pImageKeyword" placeholder="Image Keyword (e.g. Potato, Biryani)" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800">
-                                <button type="submit" class="w-full bg-blue-grade text-white py-6 rounded-[1.5rem] font-900 shadow-2xl shadow-blue-500/30 uppercase tracking-widest">Publish Live</button>
-                            </div>
+                            <input type="text" id="pTitle" required placeholder="Name" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800">
+                            <select id="pCategory" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 outline-none"><option>Grocery</option><option>Food</option><option>Transport</option></select>
+                            <input type="number" id="pPrice" required placeholder="Price" class="bg-slate-50 border p-5 rounded-[1.5rem] font-800">
+                            <input type="number" id="pStock" required value="100" class="bg-slate-50 border p-5 rounded-[1.5rem] font-800">
+                            <textarea id="pDesc" rows="3" placeholder="Brief description..." class="w-full bg-slate-50 border p-5 rounded-[1.5rem] md:col-span-2"></textarea>
+                            <input type="text" id="pImageKeyword" placeholder="Visual Key" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] md:col-span-2">
+                            <button type="submit" class="w-full bg-blue-grade text-white py-6 rounded-[1.5rem] font-900 shadow-2xl md:col-span-2">Publish</button>
                         </form>
                     </div>
                 </div>
@@ -238,55 +250,61 @@
         </section>
     </main>
 
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-20 px-4 mt-20 rounded-t-[5rem]">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+            <div class="space-y-6">
+                <h1 class="text-3xl font-normal logo-font text-blue-400">VillageKart</h1>
+                <p class="text-slate-400 text-sm leading-relaxed tracking-tight">Direct Delivery & Essential Village Services.</p>
+            </div>
+            <div class="space-y-6">
+                <h4 class="font-900 uppercase text-xs text-blue-400">Services</h4>
+                <ul class="space-y-4 text-slate-400 text-sm"><li>Groceries</li><li>Hot Meals</li><li>Doctor Consult</li></ul>
+            </div>
+            <div class="space-y-6">
+                <h4 class="font-900 uppercase text-xs text-blue-400">Business</h4>
+                <button onclick="openAuthModal('register', 'partner')" class="w-full bg-blue-600 p-4 rounded-2xl font-800">Become a Partner</button>
+            </div>
+            <div class="space-y-6">
+                <h4 class="font-900 uppercase text-xs text-blue-400">Platform</h4>
+                <button onclick="openAuthModal('login', 'admin')" class="w-full bg-slate-800 p-4 rounded-2xl font-800">Admin Login</button>
+            </div>
+        </div>
+    </footer>
+
     <!-- AUTH MODAL -->
     <div id="authModal" class="fixed inset-0 modal-overlay z-[100] flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-[4rem] shadow-2xl flex flex-col md:flex-row max-w-4xl w-full overflow-hidden animate-in zoom-in duration-300">
-            <!-- Left Pane -->
+            <button onclick="closeAuthModal()" class="absolute right-10 top-10 text-slate-300 hover:text-slate-600 z-[110] bg-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center"><i class="fas fa-times"></i></button>
             <div class="bg-blue-grade text-white p-14 md:w-5/12 flex flex-col justify-between">
-                <div>
-                    <h2 id="authModalTitle" class="text-4xl font-800 logo-font leading-tight">LOGIN</h2>
-                    <p id="authModalSubtitle" class="text-lg opacity-80 mt-4 font-500">Get access to your orders, rewards and village services.</p>
-                </div>
+                <div><h2 id="authModalTitle" class="text-4xl font-800 logo-font leading-tight uppercase">Login</h2><p id="authModalSubtitle" class="text-lg opacity-80 mt-4 font-500">Access orders and village services.</p></div>
                 <div class="pt-20 opacity-20"><i class="fas fa-shipping-fast text-[160px]"></i></div>
             </div>
-            
-            <!-- Right Pane -->
-            <div class="p-14 md:w-7/12 bg-white flex flex-col justify-center relative">
-                <button onclick="closeAuthModal()" class="absolute right-10 top-10 text-slate-300 hover:text-slate-600 transition-colors">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
-                
-                <!-- Role Switcher -->
+            <div class="p-14 md:w-7/12 bg-white flex flex-col justify-center relative pt-20">
                 <div class="flex bg-slate-100 p-1 rounded-2xl mb-8 self-start">
                     <button onclick="setAuthRole('user')" id="role-user" class="px-6 py-2 rounded-xl text-xs font-900 transition-all lang-active">USER</button>
                     <button onclick="setAuthRole('partner')" id="role-partner" class="px-6 py-2 rounded-xl text-xs font-900 transition-all">PARTNER</button>
+                    <button onclick="setAuthRole('admin')" id="role-admin" class="px-6 py-2 rounded-xl text-xs font-900 transition-all">ADMIN</button>
                 </div>
-
                 <div id="authContent" class="space-y-6">
                     <div id="field-business-name" class="hidden">
                         <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Business/Partner Name</label>
-                        <input type="text" id="authName" placeholder="e.g., Green Village Mart" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none focus:ring-4 focus:ring-blue-500/10">
+                        <input type="text" id="authName" placeholder="e.g., Green Village Mart" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
                     </div>
-                    <div>
-                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Email Address</label>
-                        <input type="email" id="authEmail" placeholder="name@example.com" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
+                    <div id="field-partner-type" class="hidden">
+                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">I am a...</label>
+                        <select id="authPartnerType" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
+                            <option value="seller">Merchant (Grocery/Food)</option>
+                            <option value="rider">Rider (Toto/Car/Ambulance)</option>
+                            <option value="doctor">Doctor / Specialist</option>
+                        </select>
                     </div>
-                    <div>
-                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Password</label>
-                        <input type="password" id="authPass" placeholder="••••••••" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
-                    </div>
-                    
-                    <button id="authSubmitBtn" onclick="handleAuthSubmit()" class="w-full bg-blue-grade text-white py-5 rounded-2xl font-900 shadow-xl uppercase tracking-widest transition-transform active:scale-95">LOG IN</button>
-                    
-                    <div class="text-center">
-                        <button onclick="toggleAuthMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase tracking-widest">New to VillageKart? Create account</button>
-                    </div>
+                    <input type="email" id="authEmail" placeholder="Email Address" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
+                    <input type="password" id="authPass" placeholder="Password" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
+                    <button id="authSubmitBtn" onclick="handleAuthSubmit()" class="w-full bg-blue-grade text-white py-5 rounded-2xl font-900 shadow-xl uppercase tracking-widest transition-transform active:scale-95">Log In</button>
+                    <div class="text-center" id="authToggleContainer"><button onclick="toggleAuthMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase tracking-widest">New here? Create account</button></div>
                 </div>
-                
-                <div id="authLoading" class="hidden text-center py-10">
-                    <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p class="text-sm font-800 text-slate-400 uppercase tracking-widest">Please Wait...</p>
-                </div>
+                <div id="authLoading" class="hidden text-center py-10"><div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div></div>
             </div>
         </div>
     </div>
@@ -299,9 +317,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, query, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, query, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyALzu7TNODHkSnb0P-AEaqWWkY83xlKRqs",
             authDomain: "villagekart-live.firebaseapp.com",
@@ -317,51 +334,39 @@
         const db = getFirestore(app);
         const appId = 'villagekart-live';
 
-        let currentUser = null, isPartner = false, userData = null, unsubscribeProducts = null, cartCount = 0;
-        let currentAuthMode = 'login'; // login, register
-        let currentAuthRole = 'user'; // user, partner
+        let currentUser = null, isPartner = false, isAdmin = false, userData = null, unsubscribeProducts = null, cartCount = 0;
+        let currentAuthMode = 'login', currentAuthRole = 'user';
+        let isRiderOnDuty = false, riderWatchId = null;
 
-        // --- AUTH UI HANDLERS ---
-        window.openAuthModal = (mode) => {
-            currentAuthMode = mode;
+        // --- AUTH ---
+        window.openAuthModal = (mode = 'login', role = 'user') => {
+            currentAuthMode = mode; currentAuthRole = role;
             document.getElementById('authModal').classList.remove('hidden');
-            updateAuthUI();
+            setAuthRole(role); updateAuthUI();
         };
         window.closeAuthModal = () => document.getElementById('authModal').classList.add('hidden');
-        window.toggleAuthMode = () => {
-            currentAuthMode = currentAuthMode === 'login' ? 'register' : 'login';
-            updateAuthUI();
-        };
+        window.toggleAuthMode = () => { currentAuthMode = currentAuthMode === 'login' ? 'register' : 'login'; updateAuthUI(); };
         window.setAuthRole = (role) => {
             currentAuthRole = role;
-            ['user', 'partner'].forEach(r => document.getElementById(`role-${r}`).classList.toggle('lang-active', r === role));
+            ['user', 'partner', 'admin'].forEach(r => document.getElementById(`role-${r}`).classList.toggle('lang-active', r === role));
             updateAuthUI();
         };
 
         const updateAuthUI = () => {
-            const title = document.getElementById('authModalTitle');
-            const sub = document.getElementById('authModalSubtitle');
-            const submitBtn = document.getElementById('authSubmitBtn');
-            const toggleBtn = document.getElementById('authToggleBtn');
-            const nameField = document.getElementById('field-business-name');
-
-            title.innerText = currentAuthMode === 'login' ? 'LOG IN' : 'JOIN US';
-            sub.innerText = currentAuthRole === 'user' 
-                ? 'Get access to your orders, rewards and village services.' 
-                : 'Join our network of partners and grow your village business.';
-            submitBtn.innerText = currentAuthMode === 'login' ? 'LOG IN' : 'CREATE ACCOUNT';
-            toggleBtn.innerText = currentAuthMode === 'login' ? 'New here? Create account' : 'Already have account? Log in';
+            const title = document.getElementById('authModalTitle'), sub = document.getElementById('authModalSubtitle');
+            const toggleContainer = document.getElementById('authToggleContainer'), nameField = document.getElementById('field-business-name'), typeField = document.getElementById('field-partner-type');
             
-            // Show business name field only for partner registration
+            title.innerText = currentAuthMode === 'login' ? 'LOG IN' : 'JOIN US';
+            sub.innerText = currentAuthRole === 'user' ? 'Get access to village services.' : 'Join our network of partners.';
+            toggleContainer.classList.toggle('hidden', currentAuthRole === 'admin');
             nameField.classList.toggle('hidden', !(currentAuthMode === 'register' && currentAuthRole === 'partner'));
+            typeField.classList.toggle('hidden', !(currentAuthMode === 'register' && currentAuthRole === 'partner'));
         };
 
         window.handleAuthSubmit = async () => {
-            const email = document.getElementById('authEmail').value;
-            const pass = document.getElementById('authPass').value;
-            const name = document.getElementById('authName').value;
-
-            if(!email || !pass) return showToast("Enter all credentials");
+            const email = document.getElementById('authEmail').value, pass = document.getElementById('authPass').value;
+            const name = document.getElementById('authName').value, partnerType = document.getElementById('authPartnerType').value;
+            if(!email || !pass) return showToast("Enter credentials");
             
             document.getElementById('authContent').classList.add('hidden');
             document.getElementById('authLoading').classList.remove('hidden');
@@ -369,107 +374,121 @@
             try {
                 if(currentAuthMode === 'login') {
                     await signInWithEmailAndPassword(auth, email, pass);
-                    showToast("Welcome back!");
                 } else {
                     const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                    // Save profile info
-                    const profileData = {
-                        uid: cred.user.uid,
-                        email: email,
-                        role: currentAuthRole,
-                        shopName: name || 'Unnamed Account',
-                        joinedAt: new Date().toISOString()
-                    };
+                    const profileData = { uid: cred.user.uid, email, role: currentAuthRole, shopName: name || 'User', partnerType: currentAuthRole === 'partner' ? partnerType : 'none', joinedAt: new Date().toISOString() };
                     await setDoc(doc(db, 'artifacts', appId, 'users', cred.user.uid, 'profile', 'data'), profileData);
-                    
-                    // If partner, also save to global sellers for discovery
-                    if(currentAuthRole === 'partner') {
-                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', cred.user.uid), profileData);
-                    }
-                    showToast("Account Created Successfully!");
+                    if(currentAuthRole === 'partner') await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', cred.user.uid), profileData);
                 }
                 closeAuthModal();
-            } catch (e) {
-                console.error(e);
-                showToast(e.message.split('/')[1]?.replace(')', '') || "Auth Failed");
-            } finally {
-                document.getElementById('authContent').classList.remove('hidden');
-                document.getElementById('authLoading').classList.add('hidden');
-            }
+            } catch (e) { showToast("Auth Error"); }
+            finally { document.getElementById('authContent').classList.remove('hidden'); document.getElementById('authLoading').classList.add('hidden'); }
         };
 
-        window.logout = async () => {
-            await signOut(auth);
-            showPage('home');
-            showToast("Signed Out");
-        };
+        window.logout = async () => { await signOut(auth); showPage('home'); showToast("Signed Out"); };
 
-        // --- AUTH LISTENER ---
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             if (user) {
                 document.getElementById('user-status-dot').className = "absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full";
-                
-                // Fetch Profile
                 const profileDoc = await getDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data'));
                 if (profileDoc.exists()) {
                     userData = profileDoc.data();
-                    isPartner = userData.role === 'partner';
-                    updateAdminUI();
+                    isPartner = userData.role === 'partner'; isAdmin = userData.role === 'admin';
                 }
                 syncData();
             } else {
                 document.getElementById('user-status-dot').className = "absolute bottom-0 right-0 w-3 h-3 bg-slate-300 border-2 border-white rounded-full";
-                userData = null;
-                isPartner = false;
-                syncData(); // Public data sync
+                userData = null; isPartner = false; isAdmin = false; syncData();
             }
         });
 
-        // --- DATA SYNC ---
-        const syncData = () => {
-            if (unsubscribeProducts) unsubscribeProducts();
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), (snapshot) => {
-                const list = []; snapshot.forEach(d => list.push({ id: d.id, ...d.data() }));
-                renderFeed(list);
-                if (isPartner && currentUser) {
-                    renderAdminList(list.filter(p => p.sellerId === currentUser.uid));
-                }
-            });
+        // --- RIDER LOGIC ---
+        window.toggleRiderDuty = () => {
+            isRiderOnDuty = !isRiderOnDuty;
+            const slider = document.getElementById('dutySlider'), label = document.getElementById('dutyLabel'), btn = document.getElementById('dutyBtn');
+            const coordsTxt = document.getElementById('riderCoords'), requests = document.getElementById('nearbyRequests');
+
+            if(isRiderOnDuty) {
+                slider.style.transform = 'translateX(32px)'; btn.classList.replace('bg-slate-600', 'bg-emerald-500'); label.innerText = 'On Duty'; label.classList.add('text-emerald-400');
+                showToast("You are now online!");
+                startGpsTracking();
+                requests.innerHTML = `
+                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 animate-pulse">
+                        <div class="flex justify-between font-900 text-xs"><span>NEW REQUEST</span> <span>$12.50</span></div>
+                        <div class="text-[10px] text-slate-500 mt-1">Village Crossing → Market Sector 2</div>
+                        <button class="w-full bg-slate-900 text-white py-2 rounded-xl mt-3 text-[10px] font-900">ACCEPT RIDE</button>
+                    </div>`;
+            } else {
+                slider.style.transform = 'translateX(0)'; btn.classList.replace('bg-emerald-500', 'bg-slate-600'); label.innerText = 'Off Duty'; label.classList.remove('text-emerald-400');
+                stopGpsTracking();
+                coordsTxt.innerText = 'GPS: Tracking disabled';
+                requests.innerHTML = `<div class="text-center py-10 text-slate-300 italic text-sm">Go Online to see requests</div>`;
+            }
+        };
+
+        const startGpsTracking = () => {
+            if ("geolocation" in navigator) {
+                riderWatchId = navigator.geolocation.watchPosition((pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    document.getElementById('riderCoords').innerText = `GPS: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+                    // Update live location in Firestore for users to see
+                    if(currentUser) updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', currentUser.uid), { lat: latitude, lng: longitude, status: 'online' });
+                }, (err) => showToast("GPS Permission Denied"), { enableHighAccuracy: true });
+            }
+        };
+
+        const stopGpsTracking = () => {
+            if(riderWatchId) navigator.geolocation.clearWatch(riderWatchId);
+            if(currentUser) updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', currentUser.uid), { status: 'offline' });
         };
 
         // --- NAVIGATION ---
         window.showPage = (p) => {
             document.getElementById('homePage').classList.toggle('hidden', p !== 'home');
             document.getElementById('adminPage').classList.toggle('hidden', p !== 'admin');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.toggleAdminView = () => {
-            if (!isPartner) {
-                openAuthModal('register');
-                setAuthRole('partner');
-                showToast("Please register as a partner to access the hub.");
+            if (!isPartner && !isAdmin) {
+                openAuthModal('register', 'partner');
             } else { 
-                showPage(document.getElementById('adminPage').classList.contains('hidden') ? 'admin' : 'home'); 
+                showPage('admin');
+                const isRider = userData?.partnerType === 'rider';
+                document.getElementById('riderInterface').classList.toggle('hidden', !isRider);
+                document.getElementById('merchantInterface').classList.toggle('hidden', isRider);
+                if(isRider) document.getElementById('riderNameDisplay').innerText = userData.shopName;
+                else if (userData) {
+                    document.getElementById('shopNameDisplay').innerText = userData.shopName;
+                    document.getElementById('partnerTypeLabel').innerText = userData.role.toUpperCase();
+                }
             }
+        };
+
+        const syncData = () => {
+            if (unsubscribeProducts) unsubscribeProducts();
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), (sn) => {
+                const list = []; sn.forEach(d => list.push({ id: d.id, ...d.data() }));
+                renderFeed(list);
+                if(currentUser && (isPartner || isAdmin)) renderAdminList(isAdmin ? list : list.filter(p => p.sellerId === currentUser.uid));
+            });
         };
 
         // --- RENDERERS ---
         const renderFeed = (products) => {
             const grid = document.getElementById('productGrid');
-            if (products.length === 0) { grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-300 font-800 italic text-2xl">Scanning village market...</div>`; return; }
+            if (products.length === 0) { grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-300">Market empty</div>`; return; }
             grid.innerHTML = products.map(p => `
                 <div class="bg-white p-6 rounded-[3rem] border border-slate-200 transition-all hover:shadow-2xl group">
-                    <div class="aspect-square rounded-[2.5rem] bg-slate-50 mb-6 overflow-hidden flex items-center justify-center p-6 border border-slate-100">
-                        <img src="https://source.unsplash.com/featured/?${p.keyword}" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/400?text=Item'">
+                    <div class="aspect-square rounded-[2.5rem] bg-slate-50 mb-6 overflow-hidden flex items-center justify-center border border-slate-100 p-6">
+                        <img src="https://source.unsplash.com/featured/?${p.keyword}" class="w-full h-full object-contain">
                     </div>
                     <div class="space-y-2">
-                        <p class="text-[10px] font-900 text-blue-600 uppercase tracking-widest">${p.category}</p>
+                        <p class="text-[10px] font-900 text-blue-600 uppercase">${p.category}</p>
                         <h4 class="text-base font-900 text-slate-900 line-clamp-1">${p.title}</h4>
                         <div class="flex items-center justify-between pt-6 border-t border-slate-50 mt-4">
-                            <div class="text-2xl font-900 text-slate-900">$${p.price}</div>
-                            <button onclick="addToBasket()" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-xl active:scale-90 hover:bg-blue-600"><i class="fas fa-plus text-sm"></i></button>
+                            <div class="text-2xl font-900">$${p.price}</div>
+                            <button onclick="addToBasket()" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-xl active:scale-90 hover:bg-blue-600"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -481,52 +500,42 @@
                 <tr class="hover:bg-blue-50 transition-all">
                     <td class="py-8 font-800 text-base text-slate-900">${p.title}</td>
                     <td class="py-8 font-800 text-[10px] text-slate-400 uppercase">${p.category}</td>
-                    <td class="py-8 font-900 text-base text-slate-900">$${p.price}</td>
-                    <td class="py-8 text-right"><button onclick="deleteItem('${p.id}')" class="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white flex items-center justify-center ml-auto"><i class="fas fa-trash-alt"></i></button></td>
+                    <td class="py-8 font-900 text-base">$${p.price}</td>
+                    <td class="py-8 text-right"><button onclick="deleteItem('${p.id}')" class="w-10 h-10 rounded-xl bg-red-50 text-red-500 ml-auto"><i class="fas fa-trash-alt"></i></button></td>
                 </tr>
             `).join('');
         };
 
-        // --- PARTNER ACTIONS ---
         document.getElementById('addProductForm').onsubmit = async (e) => {
             e.preventDefault();
-            const payload = {
-                title: document.getElementById('pTitle').value,
-                category: document.getElementById('pCategory').value,
-                price: parseFloat(document.getElementById('pPrice').value),
-                stock: parseInt(document.getElementById('pStock').value),
-                desc: document.getElementById('pDesc').value,
-                keyword: document.getElementById('pImageKeyword').value || 'item',
-                sellerId: currentUser.uid,
-                sellerName: userData.shopName,
-                createdAt: new Date().toISOString()
-            };
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), payload);
-                showToast("Listing Published Live!"); e.target.reset(); toggleAdminTab('inventory');
-            } catch (err) { showToast("Error publishing entry"); }
+            const payload = { title: document.getElementById('pTitle').value, category: document.getElementById('pCategory').value, price: parseFloat(document.getElementById('pPrice').value), stock: parseInt(document.getElementById('pStock').value), desc: document.getElementById('pDesc').value, keyword: document.getElementById('pImageKeyword').value || 'item', sellerId: currentUser.uid, sellerName: userData.shopName, createdAt: new Date().toISOString() };
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), payload);
+            showToast("Published!"); e.target.reset(); toggleAdminTab('inventory');
         };
 
-        // --- UTILS ---
         window.deleteItem = async (id) => { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id)); showToast("Deleted"); };
         window.addToBasket = () => { cartCount++; document.getElementById('cartCount').innerText = cartCount; showToast("Added to Cart"); };
-        window.emergencyBooking = (t) => { showToast(`Requesting ${t}... Searching nearest partner.`); setTimeout(() => showToast(`${t} confirmed! Arriving shortly.`), 3000); };
+        window.emergencyBooking = (t) => { 
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    showToast(`Booking ${t}... Location: ${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`);
+                    setTimeout(() => showToast(`${t} confirmed! Arriving shortly.`), 3000);
+                });
+            } else {
+                showToast(`Requesting ${t}... Searching partners.`);
+            }
+        };
         window.initiateConsult = () => { showToast("Connecting to Doctor..."); setTimeout(() => showToast("Doctor available! Connecting video..."), 2500); };
         window.scrollToSection = (id) => { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); };
         window.toggleAdminTab = (tab) => {
             document.getElementById('inventorySection').classList.toggle('hidden', tab !== 'inventory');
             document.getElementById('addProductSection').classList.toggle('hidden', tab !== 'add');
-            document.getElementById('tab-inventory').className = tab === 'inventory' ? "w-full text-left p-6 rounded-[2.5rem] bg-blue-50 text-blue-600 font-800 flex items-center gap-5" : "w-full text-left p-6 rounded-[2.5rem] hover:bg-slate-50 text-slate-400 font-800 flex items-center gap-5";
-            document.getElementById('tab-add').className = tab === 'add' ? "w-full text-left p-6 rounded-[2.5rem] bg-blue-50 text-blue-600 font-800 flex items-center gap-5" : "w-full text-left p-6 rounded-[2.5rem] hover:bg-slate-50 text-slate-400 font-800 flex items-center gap-5";
         };
-        const updateAdminUI = () => { if (userData) document.getElementById('shopNameDisplay').innerText = userData.shopName; };
         const showToast = (msg) => {
             const t = document.getElementById('toast'); t.querySelector('span').innerText = msg;
             t.style.opacity = '1'; t.style.transform = 'translate(-50%, -20px)';
             setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, 0)'; }, 3000);
         };
-
-        // --- I18N ---
         const i18n = {
             en: { tagline: "Delivery Direct to your doorstep", grocery: "Grocery Store", subGrocery: "Fresh Harvest", food: "Hot Meals", subFood: "Village Kitchens", booking: "Book Rides", subBooking: "Toto & Cars", doctor: "Doctor Consult", subDoctor: "Live Help", sosTitle: "AMBULANCE", sosSub: "Tap for SOS Emergency", totoTitle: "TOTO RIDE", totoSub: "Local E-Rickshaw", carTitle: "PRIVATE CAR", carSub: "Fast Car Booking", feedTitle: "Recommended for You", live: "Live from Village" },
             bn: { tagline: "সরাসরি আপনার দরজায় ডেলিভারি", grocery: "মুদি বাজার", subGrocery: "টাটকা ফসল", food: "গরম খাবার", subFood: "গ্রামের রান্নাঘর", booking: "গাড়ি বুকিং", subBooking: "টোটো এবং কার", doctor: "ডাক্তার দেখান", subDoctor: "সরাসরি সাহায্য", sosTitle: "অ্যাম্বুলেন্স", sosSub: "জরুরী ব্যবস্থা", totoTitle: "টোটো রাইড", totoSub: "লোকাল ই-রিকশা", carTitle: "প্রাইভেট কার", carSub: "দ্রুত গাড়ি বুকিং", feedTitle: "আপনার জন্য সেরা", live: "সরাসরি গ্রাম থেকে" },
@@ -536,13 +545,13 @@
         window.setLanguage = (lang) => {
             const t = i18n[lang];
             document.getElementById('nav-tagline').innerText = t.tagline;
-            document.getElementById('cat-grocery').innerHTML = t.grocery.replace(' ', '<br>');
+            document.getElementById('cat-grocery').innerHTML = t.grocery;
             document.getElementById('sub-grocery').innerText = t.subGrocery;
-            document.getElementById('cat-food').innerHTML = t.food.replace(' ', '<br>');
+            document.getElementById('cat-food').innerHTML = t.food;
             document.getElementById('sub-food').innerText = t.subFood;
-            document.getElementById('cat-booking').innerHTML = t.booking.replace(' ', '<br>');
+            document.getElementById('cat-booking').innerHTML = t.booking;
             document.getElementById('sub-booking').innerText = t.subBooking;
-            document.getElementById('cat-doctor').innerHTML = t.doctor.replace(' ', '<br>');
+            document.getElementById('cat-doctor').innerHTML = t.doctor;
             document.getElementById('sub-doctor').innerText = t.subDoctor;
             document.getElementById('txt-sos-title').innerText = t.sosTitle;
             document.getElementById('txt-sos-sub').innerText = t.sosSub;
@@ -552,10 +561,10 @@
             document.getElementById('txt-car-sub').innerText = t.carSub;
             document.getElementById('txt-feed-title').innerText = t.feedTitle;
             document.getElementById('txt-live').innerText = t.live;
-            ['en', 'bn', 'hi', 'st'].forEach(l => document.getElementById(`btn-${l}`).classList.toggle('lang-active', l === lang));
+            ['en', 'bn', 'hi', 'st'].forEach(l => document.getElementById(`btn-${l}`)?.classList.toggle('lang-active', l === lang));
         };
 
-        window.onload = () => setLanguage('en');
+        window.onload = () => { setLanguage('en'); };
     </script>
 </body>
 </html>
