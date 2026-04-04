@@ -56,6 +56,20 @@
         
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .modal-overlay { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); }
+
+        /* Attractive Header Button */
+        .header-login-btn {
+            background: white;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            transition: all 0.3s ease;
+        }
+        .header-login-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(29, 78, 216, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -74,7 +88,7 @@
                 </div>
             </div>
 
-            <!-- Language -->
+            <!-- Language Switcher -->
             <div class="flex items-center bg-blue-50/80 p-1.5 rounded-2xl border border-blue-100">
                 <button onclick="setLanguage('en')" id="btn-en" class="px-4 py-2 rounded-xl text-xs font-900 transition-all lang-active">EN</button>
                 <button onclick="setLanguage('bn')" id="btn-bn" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">বাংলা</button>
@@ -83,11 +97,14 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <div onclick="openAuthModal('login', 'user')" id="userProfile" class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200 shadow-inner cursor-pointer relative">
-                    <i class="fas fa-user"></i>
-                    <div id="user-status-dot" class="absolute bottom-0 right-0 w-3 h-3 bg-slate-300 border-2 border-white rounded-full"></div>
-                </div>
-                <button class="relative bg-slate-900 text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl">
+                <!-- Redesigned Attractive Login Button -->
+                <button id="mainLoginBtn" onclick="openAuthModal('login', 'user')" class="header-login-btn px-6 py-2.5 rounded-full text-sm font-800 flex items-center gap-2 shadow-sm">
+                    <i class="fas fa-user-circle text-lg"></i>
+                    <span id="userDisplayName">Sign In</span>
+                    <div id="user-status-dot" class="w-2.5 h-2.5 bg-slate-300 border-2 border-white rounded-full"></div>
+                </button>
+
+                <button class="relative bg-slate-900 text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl hover:scale-105 transition-transform">
                     <i class="fas fa-shopping-basket"></i>
                     <span id="cartCount" class="absolute -top-2 -right-2 bg-blue-600 text-[10px] rounded-full w-6 h-6 flex items-center justify-center border-2 border-white font-900">0</span>
                 </button>
@@ -160,9 +177,8 @@
             </div>
         </section>
 
-        <!-- PARTNER HUB (Sellers/Admins/Riders) -->
+        <!-- PARTNER HUB -->
         <section id="adminPage" class="hidden animate-in fade-in duration-500">
-            <!-- RIDER INTERFACE (Conditional) -->
             <div id="riderInterface" class="hidden space-y-6">
                 <div class="rider-gradient p-8 rounded-[3rem] text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-2xl">
                     <div class="flex items-center gap-6">
@@ -181,39 +197,20 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Live Map (Simulated) -->
-                    <div class="lg:col-span-2 bg-white rounded-[3rem] border p-4 shadow-xl overflow-hidden min-h-[400px] relative">
-                        <div class="absolute inset-0 bg-slate-100 flex items-center justify-center opacity-50">
-                            <i class="fas fa-map-marked-alt text-9xl text-slate-300"></i>
-                        </div>
+                    <div class="lg:col-span-2 bg-white rounded-[3rem] border p-4 shadow-xl min-h-[400px] relative">
+                        <div class="absolute inset-0 bg-slate-100 flex items-center justify-center opacity-50"><i class="fas fa-map-marked-alt text-9xl text-slate-300"></i></div>
                         <div class="relative z-10 p-6">
-                            <div class="bg-white/80 backdrop-blur p-4 rounded-2xl inline-flex items-center gap-3 border shadow-sm">
-                                <i class="fas fa-location-crosshairs text-blue-600"></i>
-                                <span id="riderCoords" class="text-xs font-800 text-slate-600 tracking-tighter uppercase">GPS: Tracking disabled</span>
-                            </div>
+                            <div class="bg-white/80 backdrop-blur p-4 rounded-2xl inline-flex items-center gap-3 border shadow-sm"><i class="fas fa-location-crosshairs text-blue-600"></i><span id="riderCoords" class="text-xs font-800 text-slate-600 uppercase">GPS: Tracking disabled</span></div>
                         </div>
                     </div>
-                    <!-- Earnings & Stats -->
                     <div class="space-y-6">
-                        <div class="bg-white p-8 rounded-[3rem] border shadow-xl">
-                            <h4 class="text-xs font-900 text-slate-400 uppercase tracking-widest mb-6">Today's Earnings</h4>
-                            <div class="text-5xl font-900 text-slate-900">$0.00</div>
-                            <div class="mt-4 text-emerald-500 text-xs font-800 flex items-center gap-2"><i class="fas fa-chart-line"></i> +0% from yesterday</div>
-                        </div>
-                        <div class="bg-white p-8 rounded-[3.5rem] border shadow-xl flex-1">
-                            <h4 class="text-xs font-900 text-slate-400 uppercase tracking-widest mb-6">Nearby Requests</h4>
-                            <div id="nearbyRequests" class="space-y-4">
-                                <div class="text-center py-10 text-slate-300 italic text-sm">Go Online to see requests</div>
-                            </div>
-                        </div>
-                        <button onclick="logout()" class="w-full bg-red-50 text-red-500 p-6 rounded-3xl font-800 flex items-center justify-center gap-4 transition-all hover:bg-red-500 hover:text-white">
-                            <i class="fas fa-power-off"></i> LOG OUT
-                        </button>
+                        <div class="bg-white p-8 rounded-[3rem] border shadow-xl"><h4 class="text-xs font-900 text-slate-400 uppercase tracking-widest mb-6">Today's Earnings</h4><div class="text-5xl font-900 text-slate-900">$0.00</div></div>
+                        <div class="bg-white p-8 rounded-[3.5rem] border shadow-xl flex-1"><h4 class="text-xs font-900 text-slate-400 uppercase tracking-widest mb-6">Nearby Requests</h4><div id="nearbyRequests" class="text-center py-10 text-slate-300 italic text-sm">Go Online to see requests</div></div>
+                        <button onclick="logout()" class="w-full bg-red-50 text-red-500 p-6 rounded-3xl font-800 flex items-center justify-center gap-4 transition-all hover:bg-red-500 hover:text-white"><i class="fas fa-power-off"></i> LOG OUT</button>
                     </div>
                 </div>
             </div>
 
-            <!-- MERCHANT/ADMIN INTERFACE (Standard) -->
             <div id="merchantInterface" class="hidden flex flex-col lg:flex-row gap-12">
                 <div class="w-full lg:w-96 space-y-8">
                     <div class="bg-white p-10 rounded-[4rem] border text-center shadow-2xl">
@@ -266,7 +263,7 @@
                 <button onclick="openAuthModal('register', 'partner')" class="w-full bg-blue-600 p-4 rounded-2xl font-800">Become a Partner</button>
             </div>
             <div class="space-y-6">
-                <h4 class="font-900 uppercase text-xs text-blue-400">Platform</h4>
+                <h4 class="font-900 uppercase text-xs text-blue-400">Platform Control</h4>
                 <button onclick="openAuthModal('login', 'admin')" class="w-full bg-slate-800 p-4 rounded-2xl font-800">Admin Login</button>
             </div>
         </div>
@@ -299,9 +296,18 @@
                             <option value="doctor">Doctor / Specialist</option>
                         </select>
                     </div>
-                    <input type="email" id="authEmail" placeholder="Email Address" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
-                    <input type="password" id="authPass" placeholder="Password" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
-                    <button id="authSubmitBtn" onclick="handleAuthSubmit()" class="w-full bg-blue-grade text-white py-5 rounded-2xl font-900 shadow-xl uppercase tracking-widest transition-transform active:scale-95">Log In</button>
+                    <div>
+                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Mobile Number</label>
+                        <div class="flex gap-2">
+                            <span class="bg-slate-100 border p-4 rounded-2xl font-800">+91</span>
+                            <input type="tel" id="authPhone" placeholder="9876543210" class="flex-1 bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Password</label>
+                        <input type="password" id="authPass" placeholder="Password" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
+                    </div>
+                    <button id="authSubmitBtn" onclick="handleAuthSubmit()" class="w-full bg-blue-grade text-white py-5 rounded-2xl font-900 shadow-xl uppercase tracking-widest transition-transform active:scale-95">Proceed</button>
                     <div class="text-center" id="authToggleContainer"><button onclick="toggleAuthMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase tracking-widest">New here? Create account</button></div>
                 </div>
                 <div id="authLoading" class="hidden text-center py-10"><div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div></div>
@@ -319,6 +325,7 @@
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, query, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyALzu7TNODHkSnb0P-AEaqWWkY83xlKRqs",
             authDomain: "villagekart-live.firebaseapp.com",
@@ -357,17 +364,21 @@
             const toggleContainer = document.getElementById('authToggleContainer'), nameField = document.getElementById('field-business-name'), typeField = document.getElementById('field-partner-type');
             
             title.innerText = currentAuthMode === 'login' ? 'LOG IN' : 'JOIN US';
-            sub.innerText = currentAuthRole === 'user' ? 'Get access to village services.' : 'Join our network of partners.';
+            sub.innerText = currentAuthRole === 'user' ? 'Sign in with your mobile number.' : 'Join as a Village Partner.';
             toggleContainer.classList.toggle('hidden', currentAuthRole === 'admin');
             nameField.classList.toggle('hidden', !(currentAuthMode === 'register' && currentAuthRole === 'partner'));
             typeField.classList.toggle('hidden', !(currentAuthMode === 'register' && currentAuthRole === 'partner'));
         };
 
         window.handleAuthSubmit = async () => {
-            const email = document.getElementById('authEmail').value, pass = document.getElementById('authPass').value;
+            const phone = document.getElementById('authPhone').value, pass = document.getElementById('authPass').value;
             const name = document.getElementById('authName').value, partnerType = document.getElementById('authPartnerType').value;
-            if(!email || !pass) return showToast("Enter credentials");
             
+            if(!phone || !pass || phone.length < 10) return showToast("Valid mobile number required");
+            
+            // Map phone to pseudo-email for Firebase Auth compatibility
+            const email = `${phone}@villagekart.com`;
+
             document.getElementById('authContent').classList.add('hidden');
             document.getElementById('authLoading').classList.remove('hidden');
 
@@ -376,12 +387,15 @@
                     await signInWithEmailAndPassword(auth, email, pass);
                 } else {
                     const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                    const profileData = { uid: cred.user.uid, email, role: currentAuthRole, shopName: name || 'User', partnerType: currentAuthRole === 'partner' ? partnerType : 'none', joinedAt: new Date().toISOString() };
+                    const profileData = { uid: cred.user.uid, phone, role: currentAuthRole, shopName: name || `User ${phone.slice(-4)}`, partnerType: currentAuthRole === 'partner' ? partnerType : 'none', joinedAt: new Date().toISOString() };
                     await setDoc(doc(db, 'artifacts', appId, 'users', cred.user.uid, 'profile', 'data'), profileData);
                     if(currentAuthRole === 'partner') await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', cred.user.uid), profileData);
                 }
                 closeAuthModal();
-            } catch (e) { showToast("Auth Error"); }
+            } catch (e) { 
+                const errorMsg = e.message.includes('auth/user-not-found') ? "Account not found" : "Authentication failed";
+                showToast(errorMsg); 
+            }
             finally { document.getElementById('authContent').classList.remove('hidden'); document.getElementById('authLoading').classList.add('hidden'); }
         };
 
@@ -389,17 +403,23 @@
 
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
+            const loginBtnLabel = document.getElementById('userDisplayName');
+            const statusDot = document.getElementById('user-status-dot');
+
             if (user) {
-                document.getElementById('user-status-dot').className = "absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full";
+                statusDot.className = "w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full";
                 const profileDoc = await getDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data'));
                 if (profileDoc.exists()) {
                     userData = profileDoc.data();
                     isPartner = userData.role === 'partner'; isAdmin = userData.role === 'admin';
+                    loginBtnLabel.innerText = userData.shopName.split(' ')[0];
                 }
                 syncData();
             } else {
-                document.getElementById('user-status-dot').className = "absolute bottom-0 right-0 w-3 h-3 bg-slate-300 border-2 border-white rounded-full";
-                userData = null; isPartner = false; isAdmin = false; syncData();
+                statusDot.className = "w-2.5 h-2.5 bg-slate-300 border-2 border-white rounded-full";
+                userData = null; isPartner = false; isAdmin = false; 
+                loginBtnLabel.innerText = "Sign In";
+                syncData();
             }
         });
 
@@ -410,20 +430,12 @@
             const coordsTxt = document.getElementById('riderCoords'), requests = document.getElementById('nearbyRequests');
 
             if(isRiderOnDuty) {
-                slider.style.transform = 'translateX(32px)'; btn.classList.replace('bg-slate-600', 'bg-emerald-500'); label.innerText = 'On Duty'; label.classList.add('text-emerald-400');
-                showToast("You are now online!");
+                slider.style.transform = 'translateX(32px)'; btn.classList.replace('bg-slate-600', 'bg-emerald-500'); label.innerText = 'On Duty';
                 startGpsTracking();
-                requests.innerHTML = `
-                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 animate-pulse">
-                        <div class="flex justify-between font-900 text-xs"><span>NEW REQUEST</span> <span>$12.50</span></div>
-                        <div class="text-[10px] text-slate-500 mt-1">Village Crossing → Market Sector 2</div>
-                        <button class="w-full bg-slate-900 text-white py-2 rounded-xl mt-3 text-[10px] font-900">ACCEPT RIDE</button>
-                    </div>`;
+                requests.innerHTML = `<div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 animate-pulse"><div class="flex justify-between font-900 text-xs"><span>NEW REQUEST</span> <span>$12.50</span></div><div class="text-[10px] text-slate-500 mt-1">Village Crossing → Market</div><button class="w-full bg-slate-900 text-white py-2 rounded-xl mt-3 text-[10px] font-900">ACCEPT</button></div>`;
             } else {
-                slider.style.transform = 'translateX(0)'; btn.classList.replace('bg-emerald-500', 'bg-slate-600'); label.innerText = 'Off Duty'; label.classList.remove('text-emerald-400');
-                stopGpsTracking();
-                coordsTxt.innerText = 'GPS: Tracking disabled';
-                requests.innerHTML = `<div class="text-center py-10 text-slate-300 italic text-sm">Go Online to see requests</div>`;
+                slider.style.transform = 'translateX(0)'; btn.classList.replace('bg-emerald-500', 'bg-slate-600'); label.innerText = 'Off Duty';
+                stopGpsTracking(); coordsTxt.innerText = 'GPS: Tracking disabled'; requests.innerHTML = `<div class="text-center py-10 text-slate-300 italic text-sm">Go Online</div>`;
             }
         };
 
@@ -432,38 +444,16 @@
                 riderWatchId = navigator.geolocation.watchPosition((pos) => {
                     const { latitude, longitude } = pos.coords;
                     document.getElementById('riderCoords').innerText = `GPS: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-                    // Update live location in Firestore for users to see
                     if(currentUser) updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', currentUser.uid), { lat: latitude, lng: longitude, status: 'online' });
-                }, (err) => showToast("GPS Permission Denied"), { enableHighAccuracy: true });
+                });
             }
         };
 
-        const stopGpsTracking = () => {
-            if(riderWatchId) navigator.geolocation.clearWatch(riderWatchId);
-            if(currentUser) updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', currentUser.uid), { status: 'offline' });
-        };
+        const stopGpsTracking = () => { if(riderWatchId) navigator.geolocation.clearWatch(riderWatchId); };
 
         // --- NAVIGATION ---
-        window.showPage = (p) => {
-            document.getElementById('homePage').classList.toggle('hidden', p !== 'home');
-            document.getElementById('adminPage').classList.toggle('hidden', p !== 'admin');
-        };
-
-        window.toggleAdminView = () => {
-            if (!isPartner && !isAdmin) {
-                openAuthModal('register', 'partner');
-            } else { 
-                showPage('admin');
-                const isRider = userData?.partnerType === 'rider';
-                document.getElementById('riderInterface').classList.toggle('hidden', !isRider);
-                document.getElementById('merchantInterface').classList.toggle('hidden', isRider);
-                if(isRider) document.getElementById('riderNameDisplay').innerText = userData.shopName;
-                else if (userData) {
-                    document.getElementById('shopNameDisplay').innerText = userData.shopName;
-                    document.getElementById('partnerTypeLabel').innerText = userData.role.toUpperCase();
-                }
-            }
-        };
+        window.showPage = (p) => { document.getElementById('homePage').classList.toggle('hidden', p !== 'home'); document.getElementById('adminPage').classList.toggle('hidden', p !== 'admin'); };
+        window.toggleAdminView = () => { if (!isPartner && !isAdmin) openAuthModal('register', 'partner'); else { showPage('admin'); const isRider = userData?.partnerType === 'rider'; document.getElementById('riderInterface').classList.toggle('hidden', !isRider); document.getElementById('merchantInterface').classList.toggle('hidden', isRider); if(isRider) document.getElementById('riderNameDisplay').innerText = userData.shopName; else if (userData) { document.getElementById('shopNameDisplay').innerText = userData.shopName; document.getElementById('partnerTypeLabel').innerText = userData.role.toUpperCase(); } } };
 
         const syncData = () => {
             if (unsubscribeProducts) unsubscribeProducts();
@@ -515,27 +505,12 @@
 
         window.deleteItem = async (id) => { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id)); showToast("Deleted"); };
         window.addToBasket = () => { cartCount++; document.getElementById('cartCount').innerText = cartCount; showToast("Added to Cart"); };
-        window.emergencyBooking = (t) => { 
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    showToast(`Booking ${t}... Location: ${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`);
-                    setTimeout(() => showToast(`${t} confirmed! Arriving shortly.`), 3000);
-                });
-            } else {
-                showToast(`Requesting ${t}... Searching partners.`);
-            }
-        };
+        window.emergencyBooking = (t) => { if ("geolocation" in navigator) { navigator.geolocation.getCurrentPosition((pos) => { showToast(`Booking ${t}... Location sent.`); setTimeout(() => showToast(`${t} confirmed!`), 2000); }); } else showToast(`Searching ${t} partners.`); };
         window.initiateConsult = () => { showToast("Connecting to Doctor..."); setTimeout(() => showToast("Doctor available! Connecting video..."), 2500); };
         window.scrollToSection = (id) => { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); };
-        window.toggleAdminTab = (tab) => {
-            document.getElementById('inventorySection').classList.toggle('hidden', tab !== 'inventory');
-            document.getElementById('addProductSection').classList.toggle('hidden', tab !== 'add');
-        };
-        const showToast = (msg) => {
-            const t = document.getElementById('toast'); t.querySelector('span').innerText = msg;
-            t.style.opacity = '1'; t.style.transform = 'translate(-50%, -20px)';
-            setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, 0)'; }, 3000);
-        };
+        window.toggleAdminTab = (tab) => { document.getElementById('inventorySection').classList.toggle('hidden', tab !== 'inventory'); document.getElementById('addProductSection').classList.toggle('hidden', tab !== 'add'); };
+        const showToast = (msg) => { const t = document.getElementById('toast'); t.querySelector('span').innerText = msg; t.style.opacity = '1'; t.style.transform = 'translate(-50%, -20px)'; setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, 0)'; }, 3000); };
+
         const i18n = {
             en: { tagline: "Delivery Direct to your doorstep", grocery: "Grocery Store", subGrocery: "Fresh Harvest", food: "Hot Meals", subFood: "Village Kitchens", booking: "Book Rides", subBooking: "Toto & Cars", doctor: "Doctor Consult", subDoctor: "Live Help", sosTitle: "AMBULANCE", sosSub: "Tap for SOS Emergency", totoTitle: "TOTO RIDE", totoSub: "Local E-Rickshaw", carTitle: "PRIVATE CAR", carSub: "Fast Car Booking", feedTitle: "Recommended for You", live: "Live from Village" },
             bn: { tagline: "সরাসরি আপনার দরজায় ডেলিভারি", grocery: "মুদি বাজার", subGrocery: "টাটকা ফসল", food: "গরম খাবার", subFood: "গ্রামের রান্নাঘর", booking: "গাড়ি বুকিং", subBooking: "টোটো এবং কার", doctor: "ডাক্তার দেখান", subDoctor: "সরাসরি সাহায্য", sosTitle: "অ্যাম্বুলেন্স", sosSub: "জরুরী ব্যবস্থা", totoTitle: "টোটো রাইড", totoSub: "লোকাল ই-রিকশা", carTitle: "প্রাইভেট কার", carSub: "দ্রুত গাড়ি বুকিং", feedTitle: "আপনার জন্য সেরা", live: "সরাসরি গ্রাম থেকে" },
