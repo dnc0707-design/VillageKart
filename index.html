@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VillageKart | Delivery Direct to your doorstep</title>
+    <title>VillageKart | Super App - Delivery & Services</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/d3697e687e.js" crossorigin="anonymous"></script>
     <!-- Firebase SDKs -->
@@ -28,10 +28,8 @@
         }
 
         .logo-font { font-family: 'Zen Dots', cursive; }
-        
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); }
 
-        /* High Accessibility Big Cards */
         .super-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
@@ -47,9 +45,7 @@
             box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
         }
 
-        .emergency-pulse {
-            animation: pulse-red 2.5s infinite;
-        }
+        .emergency-pulse { animation: pulse-red 2.5s infinite; }
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); }
             70% { box-shadow: 0 0 0 20px rgba(225, 29, 72, 0); }
@@ -57,23 +53,21 @@
         }
 
         .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .modal-overlay { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); }
-
-        /* Modern Blue Grade */
-        .bg-blue-grade {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-        }
+        .modal-overlay { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); }
+        .bg-blue-grade { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+        
+        input::placeholder { color: #94a3b8; }
     </style>
 </head>
 <body>
 
-    <!-- Header & Language Switcher -->
+    <!-- Header -->
     <header class="glass sticky top-0 z-50 border-b border-blue-100/50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 md:px-8 h-24 flex items-center justify-between gap-4">
             <!-- Brand -->
             <div class="flex items-center gap-4 cursor-pointer" onclick="showPage('home')">
                 <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-200">
-                    <i class="fas fa-shipping-fast text-2xl"></i>
+                    <i class="fas fa-rocket text-2xl"></i>
                 </div>
                 <div class="hidden sm:block">
                     <h1 class="text-3xl font-normal logo-font text-blue-700 leading-none">VillageKart</h1>
@@ -81,7 +75,7 @@
                 </div>
             </div>
 
-            <!-- Accessibility Language Switcher -->
+            <!-- Language Switcher -->
             <div class="flex items-center bg-blue-50/80 p-1.5 rounded-2xl border border-blue-100">
                 <button onclick="setLanguage('en')" id="btn-en" class="px-4 py-2 rounded-xl text-xs font-900 transition-all lang-active">EN</button>
                 <button onclick="setLanguage('bn')" id="btn-bn" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">বাংলা</button>
@@ -89,11 +83,11 @@
                 <button onclick="setLanguage('st')" id="btn-st" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">ᱥᱟᱱᱛᱟᱲᱤ</button>
             </div>
 
-            <!-- Profile & Cart -->
             <div class="flex items-center gap-4">
                 <button onclick="toggleAdminView()" id="hub-link" class="hidden lg:block text-[10px] font-900 text-slate-400 uppercase tracking-widest hover:text-blue-600">Partner Hub</button>
-                <div id="userProfile" class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200 shadow-inner cursor-pointer">
+                <div onclick="openAuthModal('login')" id="userProfile" class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 border border-blue-200 shadow-inner cursor-pointer relative group">
                     <i class="fas fa-user"></i>
+                    <div id="user-status-dot" class="absolute bottom-0 right-0 w-3 h-3 bg-slate-300 border-2 border-white rounded-full"></div>
                 </div>
                 <button class="relative bg-slate-900 text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl">
                     <i class="fas fa-shopping-basket"></i>
@@ -107,143 +101,103 @@
         
         <!-- HOME PAGE -->
         <section id="homePage" class="space-y-12 pb-24">
-            
-            <!-- MAIN SUPER-APP GRID -->
+            <!-- Services Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                
-                <!-- 1. GROCERY -->
-                <div onclick="filterCategory('Grocery')" class="super-card bg-emerald-600 p-10 rounded-[3rem] text-white shadow-2xl shadow-emerald-200/50">
+                <div onclick="filterCategory('Grocery')" class="super-card bg-emerald-600 p-10 rounded-[3rem] text-white shadow-2xl">
                     <div class="relative z-10">
-                        <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner">
-                            <i class="fas fa-leaf text-3xl"></i>
-                        </div>
-                        <h2 id="cat-grocery" class="text-4xl font-800 leading-tight">Grocery<br>Store</h2>
+                        <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner"><i class="fas fa-leaf text-3xl"></i></div>
+                        <h2 id="cat-grocery" class="text-4xl font-800 leading-tight uppercase">Grocery<br>Store</h2>
                         <p id="sub-grocery" class="text-emerald-100 text-sm mt-4 font-700 opacity-80 uppercase tracking-widest">Fresh Harvest</p>
                     </div>
                     <i class="fas fa-shopping-basket absolute -right-8 -bottom-8 text-[12rem] opacity-10 rotate-12"></i>
                 </div>
 
-                <!-- 2. FOOD -->
-                <div onclick="filterCategory('Food')" class="super-card bg-orange-500 p-10 rounded-[3rem] text-white shadow-2xl shadow-orange-200/50">
+                <div onclick="filterCategory('Food')" class="super-card bg-orange-500 p-10 rounded-[3rem] text-white shadow-2xl">
                     <div class="relative z-10">
-                        <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner">
-                            <i class="fas fa-utensils text-3xl"></i>
-                        </div>
-                        <h2 id="cat-food" class="text-4xl font-800 leading-tight">Hot<br>Meals</h2>
+                        <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner"><i class="fas fa-utensils text-3xl"></i></div>
+                        <h2 id="cat-food" class="text-4xl font-800 leading-tight uppercase">Hot<br>Meals</h2>
                         <p id="sub-food" class="text-orange-100 text-sm mt-4 font-700 opacity-80 uppercase tracking-widest">Village Kitchens</p>
                     </div>
                     <i class="fas fa-hamburger absolute -right-8 -bottom-8 text-[12rem] opacity-10 rotate-12"></i>
                 </div>
 
-                <!-- 3. BOOKINGS (Transport) -->
-                <div onclick="scrollToSection('booking-section')" class="super-card bg-blue-600 p-10 rounded-[3rem] text-white shadow-2xl shadow-blue-200/50">
+                <div onclick="scrollToSection('booking-section')" class="super-card bg-blue-600 p-10 rounded-[3rem] text-white shadow-2xl">
                     <div class="relative z-10">
-                        <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner">
-                            <i class="fas fa-taxi text-3xl"></i>
-                        </div>
-                        <h2 id="cat-booking" class="text-4xl font-800 leading-tight">Book<br>Rides</h2>
+                        <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner"><i class="fas fa-taxi text-3xl"></i></div>
+                        <h2 id="cat-booking" class="text-4xl font-800 leading-tight uppercase">Book<br>Rides</h2>
                         <p id="sub-booking" class="text-blue-100 text-sm mt-4 font-700 opacity-80 uppercase tracking-widest">Toto & Cars</p>
                     </div>
                     <i class="fas fa-map-marker-alt absolute -right-8 -bottom-8 text-[12rem] opacity-10 rotate-12"></i>
                 </div>
 
-                <!-- 4. DOCTOR -->
-                <div onclick="initiateConsult()" class="super-card bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl shadow-slate-300">
+                <div onclick="initiateConsult()" class="super-card bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl">
                     <div class="relative z-10">
-                        <div class="w-16 h-16 bg-blue-500 rounded-3xl flex items-center justify-center mb-8 shadow-lg shadow-blue-500/50">
-                            <i class="fas fa-user-md text-3xl"></i>
-                        </div>
-                        <h2 id="cat-doctor" class="text-4xl font-800 leading-tight">Doctor<br>Consult</h2>
+                        <div class="w-16 h-16 bg-blue-500 rounded-3xl flex items-center justify-center mb-8 shadow-lg"><i class="fas fa-user-md text-3xl"></i></div>
+                        <h2 id="cat-doctor" class="text-4xl font-800 leading-tight uppercase">Doctor<br>Consult</h2>
                         <p id="sub-doctor" class="text-slate-400 text-sm mt-4 font-700 uppercase tracking-widest">Live Help</p>
                     </div>
                     <i class="fas fa-heartbeat absolute -right-8 -bottom-8 text-[12rem] opacity-10 rotate-12"></i>
                 </div>
-
             </div>
 
-            <!-- EMERGENCY & RAPIDO SECTION -->
+            <!-- Rapid Rides & SOS -->
             <div id="booking-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-8 border-t border-slate-200">
-                <!-- Ambulance SOS -->
-                <div onclick="emergencyBooking('Ambulance')" class="col-span-1 bg-white p-8 rounded-[3.5rem] border-4 border-red-100 flex items-center justify-between group emergency-pulse cursor-pointer">
+                <div onclick="emergencyBooking('Ambulance')" class="bg-white p-8 rounded-[3.5rem] border-4 border-red-100 flex items-center justify-between group emergency-pulse cursor-pointer">
                     <div class="flex items-center gap-6">
                         <div class="w-20 h-20 bg-red-600 text-white rounded-full flex items-center justify-center text-3xl shadow-xl"><i class="fas fa-ambulance"></i></div>
-                        <div>
-                            <h3 id="txt-sos-title" class="text-2xl font-900 text-red-600">AMBULANCE</h3>
-                            <p id="txt-sos-sub" class="text-slate-500 font-800 text-sm">Tap for SOS Emergency</p>
-                        </div>
+                        <div><h3 id="txt-sos-title" class="text-2xl font-900 text-red-600">AMBULANCE</h3><p id="txt-sos-sub" class="text-slate-500 font-800 text-sm">Tap for SOS Emergency</p></div>
                     </div>
                     <i class="fas fa-chevron-right text-red-100 text-xl group-hover:translate-x-2 transition-transform"></i>
                 </div>
 
-                <!-- Toto Booking -->
-                <div onclick="emergencyBooking('Toto')" class="col-span-1 bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-300 transition-all">
-                    <div class="flex items-center gap-6">
-                        <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-motorcycle"></i></div>
-                        <div>
-                            <h3 id="txt-toto-title" class="text-2xl font-900 text-slate-900">TOTO RIDE</h3>
-                            <p id="txt-toto-sub" class="text-slate-500 font-800 text-sm">Local E-Rickshaw</p>
-                        </div>
-                    </div>
+                <div onclick="emergencyBooking('Toto Ride')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-300 transition-all">
+                    <div class="flex items-center gap-6"><div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-motorcycle"></i></div><div><h3 id="txt-toto-title" class="text-2xl font-900 text-slate-900">TOTO RIDE</h3><p id="txt-toto-sub" class="text-slate-500 font-800 text-sm">Local E-Rickshaw</p></div></div>
                     <i class="fas fa-chevron-right text-slate-200 text-xl group-hover:translate-x-2 transition-transform"></i>
                 </div>
 
-                <!-- Car Booking -->
-                <div onclick="emergencyBooking('Private Car')" class="col-span-1 bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-300 transition-all">
-                    <div class="flex items-center gap-6">
-                        <div class="w-20 h-20 bg-slate-50 text-slate-800 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-car"></i></div>
-                        <div>
-                            <h3 id="txt-car-title" class="text-2xl font-900 text-slate-900">PRIVATE CAR</h3>
-                            <p id="txt-car-sub" class="text-slate-500 font-800 text-sm">Fast Car Booking</p>
-                        </div>
-                    </div>
+                <div onclick="emergencyBooking('Private Car')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-300 transition-all">
+                    <div class="flex items-center gap-6"><div class="w-20 h-20 bg-slate-50 text-slate-800 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-car"></i></div><div><h3 id="txt-car-title" class="text-2xl font-900 text-slate-900">PRIVATE CAR</h3><p id="txt-car-sub" class="text-slate-500 font-800 text-sm">Fast Car Booking</p></div></div>
                     <i class="fas fa-chevron-right text-slate-200 text-xl group-hover:translate-x-2 transition-transform"></i>
                 </div>
             </div>
 
-            <!-- FEED CONTAINER -->
+            <!-- Feed -->
             <div class="space-y-10 pt-10">
                 <div class="flex items-center justify-between border-b border-slate-200 pb-8">
                     <h3 id="txt-feed-title" class="text-3xl font-900 text-slate-900 tracking-tight">Recommended for You</h3>
-                    <div class="flex items-center gap-3">
-                        <span class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></span>
-                        <span id="txt-live" class="text-[10px] font-900 text-blue-600 uppercase tracking-[0.2em]">Live from Village</span>
-                    </div>
+                    <div class="flex items-center gap-3"><span class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></span><span id="txt-live" class="text-[10px] font-900 text-blue-600 uppercase tracking-[0.2em]">Live from Village</span></div>
                 </div>
-                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-10">
-                    <!-- Products -->
-                </div>
+                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-10"></div>
             </div>
         </section>
 
-        <!-- PARTNER HUB (ADMIN) -->
+        <!-- PARTNER HUB -->
         <section id="adminPage" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div class="flex flex-col lg:flex-row gap-12">
-                <!-- Admin Sidebar -->
                 <div class="w-full lg:w-96 space-y-8">
                     <div class="bg-white p-10 rounded-[4rem] border border-slate-100 text-center shadow-2xl">
-                        <div class="w-24 h-24 bg-blue-grade rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-white text-4xl font-800 shadow-xl">
+                        <div class="w-28 h-28 bg-blue-grade rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-white text-5xl font-800 shadow-xl">
                             <span id="shopInitial">P</span>
                         </div>
                         <h4 id="shopNameDisplay" class="font-800 text-2xl text-slate-900 tracking-tight">Partner Hub</h4>
-                        <div class="mt-4 px-5 py-2 bg-blue-50 text-blue-600 text-[10px] font-900 uppercase rounded-full inline-block">Service Provider</div>
+                        <div id="partnerTypeLabel" class="mt-4 px-6 py-2 bg-blue-50 text-blue-600 text-[10px] font-900 uppercase rounded-full inline-block">Service Provider</div>
                     </div>
                     
-                    <div class="bg-white rounded-[3.5rem] border border-slate-100 p-3 shadow-2xl">
-                        <button onclick="toggleAdminTab('inventory')" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-blue-50 font-800 flex items-center gap-5 text-blue-600 bg-blue-50" id="tab-inventory">
+                    <div class="bg-white rounded-[3rem] border border-slate-200 p-3 shadow-2xl">
+                        <button onclick="toggleAdminTab('inventory')" class="w-full text-left p-6 rounded-[2.5rem] bg-blue-50 text-blue-600 font-800 flex items-center gap-5" id="tab-inventory">
                             <i class="fas fa-boxes"></i> Dashboard
                         </button>
                         <button onclick="toggleAdminTab('add')" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-slate-50 font-800 flex items-center gap-5 text-slate-400" id="tab-add">
                             <i class="fas fa-plus-circle"></i> New Listing
                         </button>
                         <hr class="my-6 mx-6 border-slate-100">
-                        <button onclick="logoutPartner()" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-red-50 text-red-500 font-800 flex items-center gap-5">
+                        <button onclick="logout()" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-red-50 text-red-500 font-800 flex items-center gap-5">
                             <i class="fas fa-power-off"></i> Logout
                         </button>
                     </div>
                 </div>
 
-                <!-- Admin Area -->
-                <div class="flex-1 bg-white p-10 md:p-14 rounded-[5rem] border border-slate-100 shadow-2xl min-h-[700px]">
+                <div class="flex-1 bg-white p-10 md:p-14 rounded-[5rem] border border-slate-200 shadow-2xl min-h-[700px]">
                     <div id="inventorySection">
                         <h3 class="text-4xl font-900 text-slate-900 mb-12">Manage Your Listings</h3>
                         <div class="overflow-x-auto hide-scrollbar">
@@ -251,7 +205,7 @@
                                 <thead class="text-slate-400 text-[10px] font-900 uppercase border-b border-slate-100">
                                     <tr><th class="pb-8">Name</th><th class="pb-8">Category</th><th class="pb-8">Unit Price</th><th class="pb-8 text-right">Delete</th></tr>
                                 </thead>
-                                <tbody id="adminProductTable" class="divide-y divide-slate-50"></tbody>
+                                <tbody id="adminProductTable" class="divide-y divide-slate-100"></tbody>
                             </table>
                         </div>
                     </div>
@@ -284,35 +238,70 @@
         </section>
     </main>
 
-    <!-- Registration Modal -->
-    <div id="loginModal" class="fixed inset-0 modal-overlay z-[100] flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-[4rem] shadow-2xl flex flex-col md:flex-row max-w-4xl w-full overflow-hidden">
+    <!-- AUTH MODAL -->
+    <div id="authModal" class="fixed inset-0 modal-overlay z-[100] flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-[4rem] shadow-2xl flex flex-col md:flex-row max-w-4xl w-full overflow-hidden animate-in zoom-in duration-300">
+            <!-- Left Pane -->
             <div class="bg-blue-grade text-white p-14 md:w-5/12 flex flex-col justify-between">
-                <h2 class="text-5xl font-800 logo-font leading-tight">JOIN THE COMMUNITY.</h2>
-                <p class="text-xl opacity-80 font-500">Smart village services at your fingertips.</p>
-            </div>
-            <div class="p-14 md:w-7/12 bg-white flex flex-col justify-center text-center">
-                <div class="space-y-10">
-                    <h3 class="text-3xl font-900 text-slate-900">Partner Registration</h3>
-                    <button id="regTrigger" class="w-full bg-blue-grade text-white py-6 rounded-[2rem] font-900 shadow-2xl shadow-blue-500/30 transition-transform active:scale-95 uppercase tracking-widest">Join as Partner</button>
-                    <p class="text-slate-400 text-sm font-700 italic">"Empowering villages through direct delivery"</p>
+                <div>
+                    <h2 id="authModalTitle" class="text-4xl font-800 logo-font leading-tight">LOGIN</h2>
+                    <p id="authModalSubtitle" class="text-lg opacity-80 mt-4 font-500">Get access to your orders, rewards and village services.</p>
                 </div>
-                <button onclick="closeModals()" class="mt-12 text-slate-300 font-900 uppercase tracking-widest text-[10px] hover:text-slate-500">Not now</button>
+                <div class="pt-20 opacity-20"><i class="fas fa-shipping-fast text-[160px]"></i></div>
+            </div>
+            
+            <!-- Right Pane -->
+            <div class="p-14 md:w-7/12 bg-white flex flex-col justify-center relative">
+                <button onclick="closeAuthModal()" class="absolute right-10 top-10 text-slate-300 hover:text-slate-600 transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+                
+                <!-- Role Switcher -->
+                <div class="flex bg-slate-100 p-1 rounded-2xl mb-8 self-start">
+                    <button onclick="setAuthRole('user')" id="role-user" class="px-6 py-2 rounded-xl text-xs font-900 transition-all lang-active">USER</button>
+                    <button onclick="setAuthRole('partner')" id="role-partner" class="px-6 py-2 rounded-xl text-xs font-900 transition-all">PARTNER</button>
+                </div>
+
+                <div id="authContent" class="space-y-6">
+                    <div id="field-business-name" class="hidden">
+                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Business/Partner Name</label>
+                        <input type="text" id="authName" placeholder="e.g., Green Village Mart" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none focus:ring-4 focus:ring-blue-500/10">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Email Address</label>
+                        <input type="email" id="authEmail" placeholder="name@example.com" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Password</label>
+                        <input type="password" id="authPass" placeholder="••••••••" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
+                    </div>
+                    
+                    <button id="authSubmitBtn" onclick="handleAuthSubmit()" class="w-full bg-blue-grade text-white py-5 rounded-2xl font-900 shadow-xl uppercase tracking-widest transition-transform active:scale-95">LOG IN</button>
+                    
+                    <div class="text-center">
+                        <button onclick="toggleAuthMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase tracking-widest">New to VillageKart? Create account</button>
+                    </div>
+                </div>
+                
+                <div id="authLoading" class="hidden text-center py-10">
+                    <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p class="text-sm font-800 text-slate-400 uppercase tracking-widest">Please Wait...</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- UI Toast -->
+    <!-- Toast -->
     <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-10 py-5 rounded-[2rem] shadow-2xl opacity-0 transition-all z-[200] font-800 text-sm flex items-center gap-4 border border-white/10">
-        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div>
-        <span>Message</span>
+        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div><span>Message</span>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, query, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyALzu7TNODHkSnb0P-AEaqWWkY83xlKRqs",
             authDomain: "villagekart-live.firebaseapp.com",
@@ -328,24 +317,222 @@
         const db = getFirestore(app);
         const appId = 'villagekart-live';
 
-        let currentUser = null, isSeller = false, currentShopData = null, unsubscribeProducts = null, cartCount = 0;
+        let currentUser = null, isPartner = false, userData = null, unsubscribeProducts = null, cartCount = 0;
+        let currentAuthMode = 'login'; // login, register
+        let currentAuthRole = 'user'; // user, partner
 
-        // --- MULTILINGUAL DICTIONARY ---
-        const i18n = {
-            en: {
-                tagline: "Delivery Direct to your doorstep", grocery: "Grocery Store", subGrocery: "Fresh Harvest", food: "Hot Meals", subFood: "Village Kitchens", booking: "Book Rides", subBooking: "Toto & Cars", doctor: "Doctor Consult", subDoctor: "Live Help", sosTitle: "AMBULANCE", sosSub: "Tap for SOS Emergency", totoTitle: "TOTO RIDE", totoSub: "Local E-Rickshaw", carTitle: "PRIVATE CAR", carSub: "Fast Car Booking", feedTitle: "Recommended for You", live: "Live from Village"
-            },
-            bn: {
-                tagline: "সরাসরি আপনার দরজায় ডেলিভারি", grocery: "মুদি বাজার", subGrocery: "টাটকা ফসল", food: "গরম খাবার", subFood: "গ্রামের রান্নাঘর", booking: "গাড়ি বুকিং", subBooking: "টোটো এবং কার", doctor: "ডাক্তার দেখান", subDoctor: "সরাসরি সাহায্য", sosTitle: "অ্যাম্বুলেন্স", sosSub: "জরুরী ব্যবস্থা", totoTitle: "টোটো রাইড", totoSub: "লোকাল ই-রিকশা", carTitle: "প্রাইভেট কার", carSub: "দ্রুত গাড়ি বুকিং", feedTitle: "আপনার জন্য সেরা", live: "সরাসরি গ্রাম থেকে"
-            },
-            hi: {
-                tagline: "सीधे आपके द्वार पर डिलीवरी", grocery: "किराना स्टोर", subGrocery: "ताज़ी फसल", food: "गरम भोजन", subFood: "गांव की रसोई", booking: "सवारी बुकिंग", subBooking: "टोटो और कार", doctor: "डॉक्टर परामर्श", subDoctor: "लाइव सहायता", sosTitle: "एम्बुलेंस", sosSub: "आपातकालीन सेवा", totoTitle: "टोटो सवारी", totoSub: "स्थानीय ई-रिक्शा", carTitle: "प्राइवेट कार", carSub: "फास्ट कार बुकिंग", feedTitle: "आपके लिए अनुशंसিত", live: "सीधे गांव से"
-            },
-            st: {
-                tagline: "ᱥᱚᱡᱷᱮ ᱟᱢᱟᱜ ᱫᱩᱣᱟᱹᱨ ᱨᱮ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ", grocery: "ᱠᱤᱨᱟᱱᱟ ᱫᱩᱠᱟᱱ", subGrocery: "ᱵᱟᱹᱫᱽ ᱠᱷᱚᱱ ᱛᱟᱡᱟ", food: "ᱞᱚᱞᱚ ᱡᱚᱢᱟᱜ", subFood: "ᱟᱹᱛᱩ ᱨᱮᱭᱟᱜ ᱪᱩᱞᱦᱟᱹ", booking: "ᱜᱟᱹᱰᱤ ᱵᱩᱠᱤᱝ", subBooking: "ᱴᱳᱴᱳ ᱟᱨ ᱠᱟᱨ", doctor: "ᱰᱟᱠᱴᱚᱨ ᱥᱚᱞᱦᱟ", subDoctor: "ᱞᱟᱭᱤᱵᱷ ᱜᱚᱲᱚ", sosTitle: "ᱮᱢᱵᱩᱞᱮᱱᱥ", sosSub: "ᱟᱹᱰᱤ ᱞᱟᱹᱠᱛᱤᱭᱟᱱ", totoTitle: "ᱴᱳᱴᱳ ᱫᱮᱡᱚᱜ", totoSub: "ᱟᱹᱛᱩ ᱨᱮᱱᱟᱜ ᱜᱟᱹᱰᱤ", carTitle: "ᱯᱨᱟᱭᱵᱷᱮᱴ ᱠᱟᱨ", carSub: "ᱞᱚᱜᱚᱱ ᱜᱟᱹᱰᱤ ᱵᱩᱠᱤᱝ", feedTitle: "ᱟᱢ ᱞᱟᱹᱜᱤᱫ ᱱᱟᱯᱟᱭᱟᱜ", live: "ᱟᱹᱛᱩ ᱠᱷᱚᱱ ᱥᱚᱡᱷᱮ"
+        // --- AUTH UI HANDLERS ---
+        window.openAuthModal = (mode) => {
+            currentAuthMode = mode;
+            document.getElementById('authModal').classList.remove('hidden');
+            updateAuthUI();
+        };
+        window.closeAuthModal = () => document.getElementById('authModal').classList.add('hidden');
+        window.toggleAuthMode = () => {
+            currentAuthMode = currentAuthMode === 'login' ? 'register' : 'login';
+            updateAuthUI();
+        };
+        window.setAuthRole = (role) => {
+            currentAuthRole = role;
+            ['user', 'partner'].forEach(r => document.getElementById(`role-${r}`).classList.toggle('lang-active', r === role));
+            updateAuthUI();
+        };
+
+        const updateAuthUI = () => {
+            const title = document.getElementById('authModalTitle');
+            const sub = document.getElementById('authModalSubtitle');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const toggleBtn = document.getElementById('authToggleBtn');
+            const nameField = document.getElementById('field-business-name');
+
+            title.innerText = currentAuthMode === 'login' ? 'LOG IN' : 'JOIN US';
+            sub.innerText = currentAuthRole === 'user' 
+                ? 'Get access to your orders, rewards and village services.' 
+                : 'Join our network of partners and grow your village business.';
+            submitBtn.innerText = currentAuthMode === 'login' ? 'LOG IN' : 'CREATE ACCOUNT';
+            toggleBtn.innerText = currentAuthMode === 'login' ? 'New here? Create account' : 'Already have account? Log in';
+            
+            // Show business name field only for partner registration
+            nameField.classList.toggle('hidden', !(currentAuthMode === 'register' && currentAuthRole === 'partner'));
+        };
+
+        window.handleAuthSubmit = async () => {
+            const email = document.getElementById('authEmail').value;
+            const pass = document.getElementById('authPass').value;
+            const name = document.getElementById('authName').value;
+
+            if(!email || !pass) return showToast("Enter all credentials");
+            
+            document.getElementById('authContent').classList.add('hidden');
+            document.getElementById('authLoading').classList.remove('hidden');
+
+            try {
+                if(currentAuthMode === 'login') {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                    showToast("Welcome back!");
+                } else {
+                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                    // Save profile info
+                    const profileData = {
+                        uid: cred.user.uid,
+                        email: email,
+                        role: currentAuthRole,
+                        shopName: name || 'Unnamed Account',
+                        joinedAt: new Date().toISOString()
+                    };
+                    await setDoc(doc(db, 'artifacts', appId, 'users', cred.user.uid, 'profile', 'data'), profileData);
+                    
+                    // If partner, also save to global sellers for discovery
+                    if(currentAuthRole === 'partner') {
+                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', cred.user.uid), profileData);
+                    }
+                    showToast("Account Created Successfully!");
+                }
+                closeAuthModal();
+            } catch (e) {
+                console.error(e);
+                showToast(e.message.split('/')[1]?.replace(')', '') || "Auth Failed");
+            } finally {
+                document.getElementById('authContent').classList.remove('hidden');
+                document.getElementById('authLoading').classList.add('hidden');
             }
         };
 
+        window.logout = async () => {
+            await signOut(auth);
+            showPage('home');
+            showToast("Signed Out");
+        };
+
+        // --- AUTH LISTENER ---
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            if (user) {
+                document.getElementById('user-status-dot').className = "absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full";
+                
+                // Fetch Profile
+                const profileDoc = await getDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data'));
+                if (profileDoc.exists()) {
+                    userData = profileDoc.data();
+                    isPartner = userData.role === 'partner';
+                    updateAdminUI();
+                }
+                syncData();
+            } else {
+                document.getElementById('user-status-dot').className = "absolute bottom-0 right-0 w-3 h-3 bg-slate-300 border-2 border-white rounded-full";
+                userData = null;
+                isPartner = false;
+                syncData(); // Public data sync
+            }
+        });
+
+        // --- DATA SYNC ---
+        const syncData = () => {
+            if (unsubscribeProducts) unsubscribeProducts();
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), (snapshot) => {
+                const list = []; snapshot.forEach(d => list.push({ id: d.id, ...d.data() }));
+                renderFeed(list);
+                if (isPartner && currentUser) {
+                    renderAdminList(list.filter(p => p.sellerId === currentUser.uid));
+                }
+            });
+        };
+
+        // --- NAVIGATION ---
+        window.showPage = (p) => {
+            document.getElementById('homePage').classList.toggle('hidden', p !== 'home');
+            document.getElementById('adminPage').classList.toggle('hidden', p !== 'admin');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.toggleAdminView = () => {
+            if (!isPartner) {
+                openAuthModal('register');
+                setAuthRole('partner');
+                showToast("Please register as a partner to access the hub.");
+            } else { 
+                showPage(document.getElementById('adminPage').classList.contains('hidden') ? 'admin' : 'home'); 
+            }
+        };
+
+        // --- RENDERERS ---
+        const renderFeed = (products) => {
+            const grid = document.getElementById('productGrid');
+            if (products.length === 0) { grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-300 font-800 italic text-2xl">Scanning village market...</div>`; return; }
+            grid.innerHTML = products.map(p => `
+                <div class="bg-white p-6 rounded-[3rem] border border-slate-200 transition-all hover:shadow-2xl group">
+                    <div class="aspect-square rounded-[2.5rem] bg-slate-50 mb-6 overflow-hidden flex items-center justify-center p-6 border border-slate-100">
+                        <img src="https://source.unsplash.com/featured/?${p.keyword}" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/400?text=Item'">
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-[10px] font-900 text-blue-600 uppercase tracking-widest">${p.category}</p>
+                        <h4 class="text-base font-900 text-slate-900 line-clamp-1">${p.title}</h4>
+                        <div class="flex items-center justify-between pt-6 border-t border-slate-50 mt-4">
+                            <div class="text-2xl font-900 text-slate-900">$${p.price}</div>
+                            <button onclick="addToBasket()" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-xl active:scale-90 hover:bg-blue-600"><i class="fas fa-plus text-sm"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        const renderAdminList = (products) => {
+            document.getElementById('adminProductTable').innerHTML = products.map(p => `
+                <tr class="hover:bg-blue-50 transition-all">
+                    <td class="py-8 font-800 text-base text-slate-900">${p.title}</td>
+                    <td class="py-8 font-800 text-[10px] text-slate-400 uppercase">${p.category}</td>
+                    <td class="py-8 font-900 text-base text-slate-900">$${p.price}</td>
+                    <td class="py-8 text-right"><button onclick="deleteItem('${p.id}')" class="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white flex items-center justify-center ml-auto"><i class="fas fa-trash-alt"></i></button></td>
+                </tr>
+            `).join('');
+        };
+
+        // --- PARTNER ACTIONS ---
+        document.getElementById('addProductForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const payload = {
+                title: document.getElementById('pTitle').value,
+                category: document.getElementById('pCategory').value,
+                price: parseFloat(document.getElementById('pPrice').value),
+                stock: parseInt(document.getElementById('pStock').value),
+                desc: document.getElementById('pDesc').value,
+                keyword: document.getElementById('pImageKeyword').value || 'item',
+                sellerId: currentUser.uid,
+                sellerName: userData.shopName,
+                createdAt: new Date().toISOString()
+            };
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), payload);
+                showToast("Listing Published Live!"); e.target.reset(); toggleAdminTab('inventory');
+            } catch (err) { showToast("Error publishing entry"); }
+        };
+
+        // --- UTILS ---
+        window.deleteItem = async (id) => { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id)); showToast("Deleted"); };
+        window.addToBasket = () => { cartCount++; document.getElementById('cartCount').innerText = cartCount; showToast("Added to Cart"); };
+        window.emergencyBooking = (t) => { showToast(`Requesting ${t}... Searching nearest partner.`); setTimeout(() => showToast(`${t} confirmed! Arriving shortly.`), 3000); };
+        window.initiateConsult = () => { showToast("Connecting to Doctor..."); setTimeout(() => showToast("Doctor available! Connecting video..."), 2500); };
+        window.scrollToSection = (id) => { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); };
+        window.toggleAdminTab = (tab) => {
+            document.getElementById('inventorySection').classList.toggle('hidden', tab !== 'inventory');
+            document.getElementById('addProductSection').classList.toggle('hidden', tab !== 'add');
+            document.getElementById('tab-inventory').className = tab === 'inventory' ? "w-full text-left p-6 rounded-[2.5rem] bg-blue-50 text-blue-600 font-800 flex items-center gap-5" : "w-full text-left p-6 rounded-[2.5rem] hover:bg-slate-50 text-slate-400 font-800 flex items-center gap-5";
+            document.getElementById('tab-add').className = tab === 'add' ? "w-full text-left p-6 rounded-[2.5rem] bg-blue-50 text-blue-600 font-800 flex items-center gap-5" : "w-full text-left p-6 rounded-[2.5rem] hover:bg-slate-50 text-slate-400 font-800 flex items-center gap-5";
+        };
+        const updateAdminUI = () => { if (userData) document.getElementById('shopNameDisplay').innerText = userData.shopName; };
+        const showToast = (msg) => {
+            const t = document.getElementById('toast'); t.querySelector('span').innerText = msg;
+            t.style.opacity = '1'; t.style.transform = 'translate(-50%, -20px)';
+            setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, 0)'; }, 3000);
+        };
+
+        // --- I18N ---
+        const i18n = {
+            en: { tagline: "Delivery Direct to your doorstep", grocery: "Grocery Store", subGrocery: "Fresh Harvest", food: "Hot Meals", subFood: "Village Kitchens", booking: "Book Rides", subBooking: "Toto & Cars", doctor: "Doctor Consult", subDoctor: "Live Help", sosTitle: "AMBULANCE", sosSub: "Tap for SOS Emergency", totoTitle: "TOTO RIDE", totoSub: "Local E-Rickshaw", carTitle: "PRIVATE CAR", carSub: "Fast Car Booking", feedTitle: "Recommended for You", live: "Live from Village" },
+            bn: { tagline: "সরাসরি আপনার দরজায় ডেলিভারি", grocery: "মুদি বাজার", subGrocery: "টাটকা ফসল", food: "গরম খাবার", subFood: "গ্রামের রান্নাঘর", booking: "গাড়ি বুকিং", subBooking: "টোটো এবং কার", doctor: "ডাক্তার দেখান", subDoctor: "সরাসরি সাহায্য", sosTitle: "অ্যাম্বুলেন্স", sosSub: "জরুরী ব্যবস্থা", totoTitle: "টোটো রাইড", totoSub: "লোকাল ই-রিকশা", carTitle: "প্রাইভেট কার", carSub: "দ্রুত গাড়ি বুকিং", feedTitle: "আপনার জন্য সেরা", live: "সরাসরি গ্রাম থেকে" },
+            hi: { tagline: "सीधे आपके द्वार पर डिलीवरी", grocery: "किराना स्टोर", subGrocery: "ताज़ी फसल", food: "गरम भोजन", subFood: "गांव की रसोई", booking: "सवारी बुकिंग", subBooking: "टोटो और कार", doctor: "डॉक्टर परामर्श", subDoctor: "लाइव सहायता", sosTitle: "एम्बुलेंस", sosSub: "आपातकालीन सेवा", totoTitle: "टोटो सवारी", totoSub: "स्थानीय ई-रिक्शा", carTitle: "प्राइवेट कार", carSub: "फास्ट कार बुकिंग", feedTitle: "आपके लिए अनुशंसित", live: "सीधे गांव से" },
+            st: { tagline: "ᱥᱚᱡᱷᱮ ᱟᱢᱟᱜ ᱫᱩᱣᱟᱹᱨ ᱨᱮ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ", grocery: "ᱠᱤᱨᱟᱱᱟ ᱫᱩᱠᱟᱱ", subGrocery: "ᱵᱟᱹᱫᱽ ᱠᱷᱚᱱ ᱛᱟᱡᱟ", food: "ᱞᱚᱞᱚ ᱡᱚᱢᱟᱜ", subFood: "ᱟᱹᱛᱩ ᱨᱮᱭᱟᱜ ᱪᱩᱞᱦᱟᱹ", booking: "ᱜᱟᱹᱰᱤ ᱵᱩᱠᱤᱝ", subBooking: "ᱴᱳᱴᱳ ᱟᱨ ᱠᱟᱨ", doctor: "ᱰᱟᱠᱴᱚᱨ ᱥᱚᱞᱦᱟ", subDoctor: "ᱞᱟᱭᱤᱵᱷ ᱜᱚᱲᱚ", sosTitle: "ᱮᱢᱵᱩᱞᱮᱱᱥ", sosSub: "ᱟᱹᱰᱤ ᱞᱟᱹᱠᱛᱤᱭᱟᱱ", totoTitle: "ᱴᱳᱴᱳ ᱫᱮᱡᱚᱜ", totoSub: "ᱟᱹᱛᱩ ᱨᱮᱱᱟᱜ ᱜᱟᱹᱰᱤ", carTitle: "ᱯᱨᱟᱭᱵᱷᱮᱴ ᱠᱟᱨ", carSub: "ᱞᱚᱜᱚᱱ ᱜᱟᱹᱰᱤ ᱵᱩᱠᱤᱝ", feedTitle: "ᱟᱢ ᱞᱟᱹᱜᱤᱫ ᱱᱟᱯᱟᱭᱟᱜ", live: "ᱟᱹᱛᱩ ᱠᱷᱚᱱ ᱥᱚᱡᱷᱮ" }
+        };
         window.setLanguage = (lang) => {
             const t = i18n[lang];
             document.getElementById('nav-tagline').innerText = t.tagline;
@@ -365,143 +552,10 @@
             document.getElementById('txt-car-sub').innerText = t.carSub;
             document.getElementById('txt-feed-title').innerText = t.feedTitle;
             document.getElementById('txt-live').innerText = t.live;
-
-            ['en', 'bn', 'hi', 'st'].forEach(l => document.getElementById(`btn-${l}`).classList.remove('lang-active'));
-            document.getElementById(`btn-${lang}`).classList.add('lang-active');
+            ['en', 'bn', 'hi', 'st'].forEach(l => document.getElementById(`btn-${l}`).classList.toggle('lang-active', l === lang));
         };
 
-        // --- AUTH & DATA SYNC ---
-        const startup = async () => {
-            try { await signInAnonymously(auth); } catch (e) { console.error(e); }
-        };
-
-        onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
-            if (user) {
-                const sellerDoc = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', user.uid));
-                if (sellerDoc.exists()) {
-                    isSeller = true; currentShopData = sellerDoc.data();
-                    updateAdminUI();
-                }
-                syncData();
-            }
-        });
-
-        const syncData = () => {
-            if (unsubscribeProducts) unsubscribeProducts();
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), (snapshot) => {
-                const list = []; snapshot.forEach(d => list.push({ id: d.id, ...d.data() }));
-                renderFeed(list);
-                if (isSeller) renderAdminList(list.filter(p => p.sellerId === currentUser.uid));
-            });
-        };
-
-        // --- NAVIGATION ---
-        window.showPage = (p) => {
-            document.getElementById('homePage').classList.toggle('hidden', p !== 'home');
-            document.getElementById('adminPage').classList.toggle('hidden', p !== 'admin');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.toggleAdminView = () => {
-            if (!isSeller) {
-                document.getElementById('loginModal').classList.remove('hidden');
-                document.getElementById('regTrigger').onclick = handlePartnerReg;
-            } else {
-                showPage(document.getElementById('adminPage').classList.contains('hidden') ? 'admin' : 'home');
-            }
-        };
-
-        const handlePartnerReg = async () => {
-            const name = prompt("Enter Business or Service Name:");
-            if (!name) return;
-            try {
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', auth.currentUser.uid), { shopName: name, joinedAt: new Date().toISOString() });
-                isSeller = true; currentShopData = { shopName: name };
-                updateAdminUI(); closeModals(); showPage('admin');
-                showToast(`Welcome to the VillageKart network, ${name}!`);
-            } catch (e) { console.error(e); }
-        };
-
-        // --- RENDERERS ---
-        const renderFeed = (products) => {
-            const grid = document.getElementById('productGrid');
-            if (products.length === 0) { grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-300 font-800 italic text-2xl">Restocking village goods...</div>`; return; }
-            grid.innerHTML = products.map(p => `
-                <div class="bg-white p-6 rounded-[3.5rem] border border-slate-200 transition-all hover:shadow-2xl hover:-translate-y-3 group">
-                    <div class="aspect-square rounded-[2.5rem] bg-slate-50 mb-6 overflow-hidden flex items-center justify-center p-6 border border-slate-100">
-                        <img src="https://source.unsplash.com/featured/?${p.keyword}" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/400x400?text=Item'">
-                    </div>
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between">
-                            <p class="text-[10px] font-900 text-blue-600 uppercase tracking-widest">${p.category}</p>
-                            <span class="text-[10px] font-900 text-slate-400">★ 4.8</span>
-                        </div>
-                        <h4 class="text-base font-900 text-slate-900 line-clamp-1">${p.title}</h4>
-                        <div class="flex items-center justify-between pt-6 border-t border-slate-50 mt-4">
-                            <div class="text-2xl font-900 text-slate-900 tracking-tighter">$${p.price}</div>
-                            <button onclick="addToBasket('${p.id}')" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-xl active:scale-90 hover:bg-blue-600 transition-colors">
-                                <i class="fas fa-plus text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        };
-
-        const renderAdminList = (products) => {
-            document.getElementById('adminProductTable').innerHTML = products.map(p => `
-                <tr class="hover:bg-blue-50 transition-all">
-                    <td class="py-8 font-800 text-base text-slate-900">${p.title}</td>
-                    <td class="py-8 font-800 text-[10px] text-slate-400 uppercase tracking-widest">${p.category}</td>
-                    <td class="py-8 font-900 text-base text-slate-900">$${p.price}</td>
-                    <td class="py-8 text-right"><button onclick="deleteItem('${p.id}')" class="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center ml-auto"><i class="fas fa-trash-alt"></i></button></td>
-                </tr>
-            `).join('');
-        };
-
-        // --- PARTNER ACTIONS ---
-        document.getElementById('addProductForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const payload = {
-                title: document.getElementById('pTitle').value,
-                category: document.getElementById('pCategory').value,
-                price: parseFloat(document.getElementById('pPrice').value),
-                stock: parseInt(document.getElementById('pStock').value),
-                desc: document.getElementById('pDesc').value,
-                keyword: document.getElementById('pImageKeyword').value || 'item',
-                sellerId: currentUser.uid,
-                sellerName: currentShopData.shopName,
-                createdAt: new Date().toISOString()
-            };
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), payload);
-                showToast("Listing Published Live!"); e.target.reset(); toggleAdminTab('inventory');
-            } catch (err) { showToast("Error publishing entry"); }
-        };
-
-        // --- UTILS ---
-        window.deleteItem = async (id) => { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id)); showToast("Entry Deleted"); };
-        window.addToBasket = () => { cartCount++; document.getElementById('cartCount').innerText = cartCount; showToast("Added to Basket"); };
-        window.emergencyBooking = (t) => { showToast(`Requesting ${t}... Searching nearest partner.`); setTimeout(() => showToast(`${t} confirmed! Arriving shortly.`), 3000); };
-        window.initiateConsult = () => { showToast("Connecting to on-duty Doctor..."); setTimeout(() => showToast("Doctor available! Connecting video..."), 2500); };
-        window.logoutPartner = () => { isSeller = false; showPage('home'); };
-        window.scrollToSection = (id) => { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); };
-        window.closeModals = () => document.getElementById('loginModal').classList.add('hidden');
-        window.toggleAdminTab = (tab) => {
-            document.getElementById('inventorySection').classList.toggle('hidden', tab !== 'inventory');
-            document.getElementById('addProductSection').classList.toggle('hidden', tab !== 'add');
-            document.getElementById('tab-inventory').className = tab === 'inventory' ? "w-full text-left p-6 rounded-[2.5rem] bg-blue-50 text-blue-600 font-800 flex items-center gap-5" : "w-full text-left p-6 rounded-[2.5rem] hover:bg-slate-50 text-slate-400 font-800 flex items-center gap-5";
-            document.getElementById('tab-add').className = tab === 'add' ? "w-full text-left p-6 rounded-[2.5rem] bg-blue-50 text-blue-600 font-800 flex items-center gap-5" : "w-full text-left p-6 rounded-[2.5rem] hover:bg-slate-50 text-slate-400 font-800 flex items-center gap-5";
-        };
-        const updateAdminUI = () => { if (currentShopData) document.getElementById('shopNameDisplay').innerText = currentShopData.shopName; };
-        const showToast = (msg) => {
-            const t = document.getElementById('toast'); t.querySelector('span').innerText = msg;
-            t.style.opacity = '1'; t.style.transform = 'translate(-50%, -20px)';
-            setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, 0)'; }, 3000);
-        };
-
-        window.onload = async () => { await startup(); setLanguage('en'); };
+        window.onload = () => setLanguage('en');
     </script>
 </body>
 </html>
