@@ -77,9 +77,11 @@
             transform: scale(1.02);
         }
         
-        .welcome-highlight {
-            color: var(--primary-blue);
-            font-weight: 800;
+        .welcome-badge {
+            background: #eff6ff;
+            color: var(--primary-blue) !important;
+            border-color: var(--primary-blue);
+            font-weight: 900 !important;
         }
     </style>
 </head>
@@ -88,7 +90,7 @@
     <!-- Header -->
     <header class="glass sticky top-0 z-50 border-b border-blue-100/50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 md:px-8 h-24 flex items-center justify-between gap-4">
-            <!-- Logo -->
+            <!-- Brand -->
             <div class="flex items-center gap-4 cursor-pointer group" onclick="showPage('home')">
                 <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-200 transition-transform group-hover:rotate-6">
                     <i class="fas fa-rocket text-2xl"></i>
@@ -108,8 +110,8 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <!-- Welcome greeting is shown here -->
-                <button id="mainLoginBtn" onclick="openAuthModal('login', 'user')" class="header-login-btn px-6 py-3 rounded-full flex items-center gap-3 shadow-md max-w-[380px]">
+                <!-- Welcome Greeting Button -->
+                <button id="mainLoginBtn" onclick="openAuthModal('login', 'user')" class="header-login-btn px-6 py-3 rounded-full flex items-center gap-3 shadow-md max-w-[400px]">
                     <i class="fas fa-user-circle text-xl flex-shrink-0"></i>
                     <span id="userDisplayName" class="truncate">Sign In / Register</span>
                     <div id="user-status-dot" class="w-3 h-3 bg-slate-300 border-2 border-white rounded-full flex-shrink-0"></div>
@@ -127,7 +129,7 @@
         
         <!-- CUSTOMER VIEW -->
         <section id="homePage" class="space-y-12 pb-24">
-            <!-- CATEGORY TABS -->
+            <!-- MAJOR CATEGORY TABS -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <button id="tab-grocery" onclick="switchCategory('Grocery')" class="super-card bg-white p-8 rounded-[3rem] border-2 border-emerald-100 flex flex-col items-center justify-center text-emerald-600 shadow-xl group">
                     <div class="w-16 h-16 bg-emerald-50 rounded-3xl flex items-center justify-center mb-4 transition-colors group-hover:bg-emerald-100"><i class="fas fa-leaf text-3xl"></i></div>
@@ -143,21 +145,21 @@
                 </button>
             </div>
 
-            <!-- CONTENT FOR RIDES -->
+            <!-- RIDE SECTION -->
             <div id="ride-section" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4">
                 <div class="col-span-full mb-4"><h3 class="text-2xl font-900 text-slate-800 uppercase tracking-tighter">Ride Services</h3></div>
                 <div onclick="emergencyBooking('Ambulance')" class="bg-white p-8 rounded-[3.5rem] border-4 border-red-100 flex items-center justify-between group emergency-pulse cursor-pointer">
                     <div class="flex items-center gap-6"><div class="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-ambulance"></i></div><div><h3 class="text-xl font-900 text-red-600 uppercase">Ambulance</h3><p class="text-slate-500 font-800 text-xs">Emergency SOS</p></div></div>
                 </div>
                 <div onclick="emergencyBooking('Toto')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-400">
-                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-motorcycle"></i></div><div><h3 class="text-xl font-900 text-slate-900 uppercase">Toto Ride</h3><p class="text-slate-500 font-800 text-xs">Local E-Rickshaw</p></div></div>
+                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-motorcycle"></i></div><div><h3 class="text-xl font-900 text-slate-900 uppercase">Toto Ride</h3><p class="text-slate-500 font-800 text-xs">Local E-Rickshaw</p></div></div>
                 </div>
                 <div onclick="emergencyBooking('Car')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-400">
                     <div class="flex items-center gap-6"><div class="w-20 h-20 bg-slate-50 text-slate-800 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-car"></i></div><div><h3 id="car-title" class="text-xl font-900 text-slate-900 uppercase">Private Car</h3><p class="text-slate-500 font-800 text-xs">Comfort travel</p></div></div>
                 </div>
             </div>
 
-            <!-- CONTENT FOR MARKETPLACE -->
+            <!-- MARKETPLACE SECTION -->
             <div id="marketplace-section" class="space-y-10 pt-4">
                 <div class="flex items-center justify-between border-b border-slate-200 pb-8">
                     <h3 id="feed-title" class="text-3xl font-900 text-slate-900 tracking-tight uppercase tracking-widest">Village Market</h3>
@@ -210,12 +212,12 @@
                     <!-- ADD PRODUCT SECTION (Default after Partner Login) -->
                     <div id="addProductSection">
                         <div class="mb-10">
-                            <h3 class="text-4xl font-900 text-slate-900 uppercase tracking-tighter">Add New Product</h3>
-                            <p class="text-slate-400 font-700 mt-2 uppercase tracking-widest text-[10px]">Your shop items will be listed for all village users instantly.</p>
+                            <h3 class="text-4xl font-900 text-slate-900 uppercase tracking-tighter">Add to Store</h3>
+                            <p class="text-slate-400 font-700 mt-2 uppercase tracking-widest text-[10px]">Your products will be listed for all village users instantly.</p>
                         </div>
                         <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-2 gap-10">
                             <div class="space-y-6">
-                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Item Name</label><input type="text" id="pTitle" required placeholder="e.g. Pure Honey (500g)" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"></div>
+                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Item Name</label><input type="text" id="pTitle" required placeholder="e.g. Fresh Potato (1kg)" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"></div>
                                 <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Category</label><select id="pCategory" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200"><option value="Grocery">Grocery</option><option value="Food">Hot Meals</option></select></div>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Price ($)</label><input type="number" step="0.01" id="pPrice" required placeholder="0.00" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200"></div>
@@ -223,26 +225,26 @@
                                 </div>
                             </div>
                             <div class="space-y-6">
-                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Product Description</label><textarea id="pDesc" rows="4" placeholder="Brief details about the product..." class="w-full bg-slate-50 border p-5 rounded-[1.5rem] border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"></textarea></div>
+                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Description</label><textarea id="pDesc" rows="4" placeholder="Brief details about the product..." class="w-full bg-slate-50 border p-5 rounded-[1.5rem] border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"></textarea></div>
                                 <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Visual Magic Key</label><input type="text" id="pImageKeyword" placeholder="e.g. Honey, Milk, Burger" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200"></div>
-                                <button type="submit" class="w-full bg-blue-grade text-white py-6 rounded-[1.5rem] font-900 shadow-xl uppercase tracking-widest hover:scale-[1.02] transition-transform">Publish to VillageKart</button>
+                                <button type="submit" class="w-full bg-blue-grade text-white py-6 rounded-[1.5rem] font-900 shadow-xl uppercase tracking-widest hover:scale-[1.02] transition-transform">Publish live now</button>
                             </div>
                         </form>
                     </div>
 
                     <!-- INVENTORY SECTION -->
                     <div id="inventorySection" class="hidden">
-                        <div class="flex justify-between items-center mb-12"><h3 class="text-4xl font-900 text-slate-900 uppercase tracking-tighter">Inventory List</h3><button onclick="toggleTab('add')" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-900 text-sm shadow-xl">+ New Item</button></div>
-                        <div class="overflow-x-auto"><table class="w-full text-left"><thead class="text-slate-400 text-[10px] font-900 uppercase border-b border-slate-100"><tr><th class="pb-8 px-4">Item</th><th class="pb-8 px-4">Category</th><th class="pb-8 text-center">Price</th><th class="pb-8 text-right">Action</th></tr></thead><tbody id="adminProductTable" class="divide-y divide-slate-100"></tbody></table></div>
+                        <div class="flex justify-between items-center mb-12"><h3 class="text-4xl font-900 text-slate-900 uppercase tracking-tighter text-center">My Shop Inventory</h3><button onclick="toggleTab('add')" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-900 text-sm shadow-xl">+ New Item</button></div>
+                        <div class="overflow-x-auto"><table class="w-full text-left"><thead class="text-slate-400 text-[10px] font-900 uppercase border-b border-slate-100"><tr><th class="pb-8 px-4">Item</th><th class="pb-8 px-4">Category</th><th class="pb-8 px-4 text-center">Price</th><th class="pb-8 px-4 text-right">Delete</th></tr></thead><tbody id="adminProductTable" class="divide-y divide-slate-100"></tbody></table></div>
                     </div>
 
                     <!-- PROFILE SECTION -->
                     <div id="profileSection" class="hidden">
-                        <div class="mb-10"><h3 class="text-4xl font-900 text-slate-900 uppercase tracking-tighter">My Profile</h3><p class="text-slate-400 font-700 mt-2 uppercase tracking-widest text-[10px]">Manage your contact information and store settings.</p></div>
+                        <div class="mb-10"><h3 class="text-4xl font-900 text-slate-900 uppercase tracking-tighter">Manage Profile</h3><p class="text-slate-400 font-700 mt-2 uppercase tracking-widest text-[10px]">Add your contact information here.</p></div>
                         <div class="max-w-xl space-y-8">
-                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Store Mobile Number</label><input type="tel" id="profPhone" placeholder="Enter Mobile Number" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200"></div>
-                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Store Email ID</label><input type="email" id="profEmail" placeholder="Enter Email ID" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200"></div>
-                            <button onclick="saveProfileUpdates()" class="bg-slate-900 text-white px-10 py-5 rounded-2xl font-900 uppercase tracking-widest hover:bg-blue-600 transition-all">Save Profile Changes</button>
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Mobile Number</label><input type="tel" id="profPhone" placeholder="Enter Mobile" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200"></div>
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Email ID</label><input type="email" id="profEmail" placeholder="Enter Email" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200"></div>
+                            <button onclick="saveProfileUpdates()" class="bg-slate-900 text-white px-10 py-5 rounded-2xl font-900 uppercase tracking-widest hover:bg-blue-600 transition-all">Update Details</button>
                         </div>
                     </div>
                 </div>
@@ -250,21 +252,12 @@
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-white py-20 px-8 mt-20 rounded-t-[5rem]">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 border-b border-white/5 pb-16">
-            <div class="space-y-6"><h1 class="text-4xl logo-font text-blue-400 leading-none">VillageKart</h1><p class="text-slate-400 text-sm tracking-tight leading-relaxed uppercase">Direct community network for life's essentials.</p></div>
-            <div class="space-y-6"><h4 class="font-900 uppercase text-xs text-blue-500 tracking-widest uppercase text-xs">Partner Program</h4><button onclick="openAuthModal('register', 'partner')" class="text-left bg-blue-600 p-4 rounded-2xl font-800 shadow-xl hover:bg-blue-700 transition-all flex items-center gap-3 uppercase"><i class="fas fa-handshake"></i> Become a Partner</button></div>
-            <div class="space-y-6"><h4 class="font-900 uppercase text-xs text-blue-500 tracking-widest uppercase text-xs">Admin Access</h4><button onclick="openAuthModal('login', 'admin')" class="w-full bg-slate-800 p-4 rounded-2xl font-800 hover:bg-slate-700 transition-all uppercase tracking-widest text-xs">Platform Internal</button></div>
-        </div>
-    </footer>
-
-    <!-- AUTH MODAL (Store Name & Pass only) -->
+    <!-- AUTH MODAL -->
     <div id="authModal" class="fixed inset-0 modal-overlay z-[100] flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-[4rem] shadow-2xl flex flex-col md:flex-row max-w-4xl w-full overflow-hidden animate-in zoom-in duration-300 relative">
             <button onclick="closeAuthModal()" class="absolute right-8 top-8 text-slate-300 hover:text-slate-600 z-[110] bg-white w-12 h-12 rounded-full shadow-2xl flex items-center justify-center border border-slate-100 active:scale-90 transition-transform"><i class="fas fa-times"></i></button>
             <div class="bg-blue-grade text-white p-14 md:w-5/12 flex flex-col justify-between">
-                <div><h2 id="authTitle" class="text-5xl font-800 logo-font leading-tight uppercase tracking-tighter">Login</h2><p id="authSub" class="text-lg opacity-80 mt-6 font-500 leading-relaxed uppercase">Join the village community.</p></div>
+                <div><h2 id="authTitle" class="text-5xl font-800 logo-font leading-tight uppercase tracking-tighter">Login</h2><p id="authSub" class="text-lg opacity-80 mt-6 font-500 leading-relaxed uppercase">Direct village services.</p></div>
                 <div class="pt-20 opacity-20"><i class="fas fa-shipping-fast text-[180px]"></i></div>
             </div>
             <div class="p-14 md:w-7/12 bg-white flex flex-col justify-center pt-24 md:pt-14">
@@ -275,8 +268,8 @@
                 </div>
                 <div id="authContent" class="space-y-5">
                     <div>
-                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1.5 ml-1 uppercase">Store / Display Name</label>
-                        <input type="text" id="authName" placeholder="Enter your Name/Store Name" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 focus:ring-2 focus:ring-blue-500 outline-none border-slate-200">
+                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1.5 ml-1 uppercase">Store / User Name</label>
+                        <input type="text" id="authName" placeholder="Enter name" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 focus:ring-2 focus:ring-blue-500 outline-none border-slate-200">
                     </div>
                     <div id="field-type" class="hidden">
                         <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1.5 ml-1 uppercase">I am a...</label>
@@ -290,20 +283,20 @@
                         <input type="password" id="authPass" placeholder="••••••••" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 focus:ring-2 focus:ring-blue-500 outline-none border-slate-200">
                     </div>
                     <button onclick="processAuth()" id="authBtnSubmit" class="w-full bg-blue-grade text-white py-5 rounded-[1.5rem] font-900 shadow-2xl uppercase tracking-widest transition-all active:scale-95 mt-4">Continue</button>
-                    <div class="text-center" id="authToggle"><button onclick="toggleMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase tracking-widest">New to VillageKart? Create account</button></div>
+                    <div class="text-center" id="authToggle"><button onclick="toggleMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase tracking-widest">New here? Register</button></div>
                 </div>
                 <div id="authLoading" class="hidden text-center py-10"><div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p class="text-[10px] font-900 uppercase tracking-widest text-slate-400 uppercase">Authenticating...</p></div>
                 <div id="authSuccessMsg" class="hidden text-center py-10 space-y-4">
                     <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl"><i class="fas fa-check"></i></div>
-                    <h3 class="text-2xl font-900 text-slate-900 uppercase tracking-tighter">Registration Success!</h3>
-                    <p class="text-slate-500 font-700 uppercase tracking-widest text-[10px]">Now, please login to your account.</p>
-                    <button onclick="toggleMode()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-800 text-sm uppercase tracking-widest">Sign In Now</button>
+                    <h3 class="text-2xl font-900 text-slate-900 uppercase tracking-tighter">Account Created!</h3>
+                    <p class="text-slate-500 font-700 uppercase tracking-widest text-[10px]">Registration successful. Now Sign In.</p>
+                    <button onclick="toggleMode()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-800 text-sm uppercase tracking-widest">Login Now</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- Toast -->
     <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-10 py-5 rounded-[2rem] shadow-2xl opacity-0 transition-all z-[200] font-800 text-sm flex items-center gap-4 border border-white/10">
         <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div><span>Message</span>
     </div>
@@ -340,22 +333,24 @@
         function updateAuthUI() {
             const title = document.getElementById('authTitle'), sub = document.getElementById('authSub'), toggleBtn = document.getElementById('authToggleBtn');
             title.innerText = cMode.toUpperCase();
-            sub.innerText = cRole === 'user' ? 'Village services direct to your doorstep.' : 'Join as a community partner.';
+            sub.innerText = cRole === 'user' ? 'Village Services.' : 'Join as a Partner.';
             document.getElementById('field-type').classList.toggle('hidden', !(cMode === 'register' && cRole === 'partner'));
             document.getElementById('authToggle').classList.toggle('hidden', cRole === 'admin');
-            toggleBtn.innerText = cMode === 'login' ? 'New here? Create account' : 'Already have account? Sign In';
+            toggleBtn.innerText = cMode === 'login' ? 'New here? Register' : 'Already registered? Login';
         }
 
-        // --- AUTH PROCESS (Name & Pass Mapping) ---
+        // --- AUTH LOGIC (Store Name to Pseudo Email) ---
         window.processAuth = async () => {
             const nameRaw = document.getElementById('authName').value;
             const pass = document.getElementById('authPass').value;
             const type = document.getElementById('authType').value;
-            if(!nameRaw || pass.length < 6) return showToast("Name & Password (min 6) required");
-            const slug = nameRaw.toLowerCase().replace(/\s/g, '');
+            if(!nameRaw || pass.length < 6) return showToast("Name & 6-char Password required");
+            const slug = nameRaw.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
             const pseudoEmail = `${slug}@village.app`;
+
             document.getElementById('authContent').classList.add('hidden');
             document.getElementById('authLoading').classList.remove('hidden');
+
             try {
                 if(cMode === 'login') {
                     await signInWithEmailAndPassword(auth, pseudoEmail, pass);
@@ -370,7 +365,7 @@
                     document.getElementById('authSuccessMsg').classList.remove('hidden');
                 }
             } catch (e) { 
-                showToast(e.code.replace('auth/', '').replace(/-/g, ' '));
+                showToast("Auth failed. Check inputs.");
                 document.getElementById('authContent').classList.remove('hidden');
                 document.getElementById('authLoading').classList.add('hidden');
             }
@@ -386,54 +381,63 @@
                 const p = await getDoc(doc(db, 'artifacts', appId, 'users', u.uid, 'profile', 'data'));
                 if(p.exists()) { 
                     userData = p.data(); 
+                    // WELCOME GREETING
                     btn.innerText = `Welcome ${userData.shopName}`; 
-                    btn.classList.add('btn-welcome');
-                    if(userData.role === 'partner' || userData.role === 'admin') toggleAdminView();
+                    btn.classList.add('welcome-badge');
+                    
+                    // AUTO REDIRECT TO ADD PRODUCT
+                    if(userData.role === 'partner' || userData.role === 'admin') {
+                        toggleAdminView(); 
+                    }
                 }
                 syncData();
             } else {
                 dot.className = "w-3 h-3 bg-slate-300 border-2 border-white rounded-full";
-                userData = null; btn.innerText = "Sign In / Register"; btn.classList.remove('btn-welcome'); syncData();
+                userData = null; btn.innerText = "Sign In / Register"; btn.classList.remove('welcome-badge'); syncData();
             }
         });
 
-        // --- PARTNER DASHBOARD ACTIONS ---
+        // --- DASHBOARD ACTIONS ---
         window.saveProfileUpdates = async () => {
             const phone = document.getElementById('profPhone').value, email = document.getElementById('profEmail').value;
             if(!currentUser) return;
             try {
                 await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'data'), { phone, contactEmail: email });
                 if(userData.role === 'partner') await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', currentUser.uid), { phone, contactEmail: email });
-                showToast("Profile Saved!");
-            } catch (e) { showToast("Error Saving"); }
+                showToast("Profile Updated!");
+            } catch (e) { showToast("Error saving"); }
         };
 
         window.toggleTab = (tab) => { 
             document.getElementById('inventorySection').classList.toggle('hidden', tab !== 'list'); 
             document.getElementById('addProductSection').classList.toggle('hidden', tab !== 'add'); 
             document.getElementById('profileSection').classList.toggle('hidden', tab !== 'profile'); 
+            
             document.getElementById('tab-btn-list').className = `w-full text-left p-6 rounded-[2.5rem] font-800 flex items-center gap-5 transition-all ${tab === 'list' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50'}`;
             document.getElementById('tab-btn-add').className = `w-full text-left p-6 rounded-[2.5rem] font-800 flex items-center gap-5 transition-all ${tab === 'add' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50'}`;
             document.getElementById('tab-btn-profile').className = `w-full text-left p-6 rounded-[2.5rem] font-800 flex items-center gap-5 transition-all ${tab === 'profile' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50'}`;
         };
 
         window.toggleAdminView = () => {
-            if(!userData || (userData.role !== 'partner' && userData.role !== 'admin')) return openAuthModal('register', 'partner');
+            if(!userData) return;
             showPage('admin');
             const isRider = userData.partnerType === 'rider';
             document.getElementById('riderView').classList.toggle('hidden', !isRider);
             document.getElementById('merchantView').classList.toggle('hidden', isRider);
+            
             if(!isRider) {
                 document.getElementById('shopNameDisplaySidebar').innerText = userData.shopName;
                 document.getElementById('shopInitial').innerText = userData.shopName[0].toUpperCase();
                 document.getElementById('roleTag').innerText = (userData.role === 'admin' ? 'ADMIN' : userData.partnerType.toUpperCase());
                 document.getElementById('profPhone').value = userData.phone || "";
                 document.getElementById('profEmail').value = userData.contactEmail || "";
-                toggleTab('add'); // Land on Add Product as requested
-            } else document.getElementById('riderNameDisplay').innerText = userData.shopName;
+                toggleTab('add'); // LAND ON ADD PAGE
+            } else {
+                document.getElementById('riderNameDisplay').innerText = userData.shopName;
+            }
         };
 
-        // --- MARKETPLACE LOGIC ---
+        // --- MARKETPLACE & RIDES ---
         window.switchCategory = (cat) => {
             currentActiveCategory = cat;
             ['grocery', 'food', 'ride'].forEach(t => {
@@ -451,8 +455,9 @@
             productUnsub = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), sn => {
                 const list = []; sn.forEach(d => { const data = d.data(); if(data.category === currentActiveCategory) list.push({ id: d.id, ...data }); });
                 const grid = document.getElementById('productGrid');
-                if(list.length === 0) grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-300 font-900 italic text-2xl tracking-tighter">Market opening soon...</div>`;
+                if(list.length === 0) grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-300 font-900 italic text-2xl tracking-tighter uppercase">Market loading...</div>`;
                 else grid.innerHTML = list.map(p => `<div class="bg-white p-6 rounded-[3.5rem] border border-slate-200 transition-all hover:shadow-2xl hover:-translate-y-2 group"><div class="aspect-square rounded-[2.5rem] bg-slate-50 mb-6 overflow-hidden flex items-center justify-center p-6 border border-slate-100"><img src="https://source.unsplash.com/featured/?${p.keyword}" class="w-full h-full object-contain group-hover:scale-110 transition-all"></div><div class="space-y-2"><p class="text-[10px] font-900 text-blue-600 uppercase tracking-widest font-800">${p.category}</p><h4 class="text-base font-900 text-slate-900 line-clamp-1">${p.title}</h4><div class="flex items-center justify-between pt-6 border-t mt-4 border-slate-50"><div class="text-2xl font-900 tracking-tighter">$${p.price}</div><button onclick="addToCart()" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-xl active:scale-90 hover:bg-blue-600 transition-all"><i class="fas fa-plus text-sm"></i></button></div></div></div>`).join('');
+                
                 if(currentUser && (userData?.role === 'partner' || userData?.role === 'admin')) {
                     const adminList = []; sn.forEach(d => adminList.push({id: d.id, ...d.data()}));
                     const filtered = userData.role === 'admin' ? adminList : adminList.filter(x => x.sellerId === currentUser.uid);
@@ -463,17 +468,27 @@
 
         document.getElementById('addProductForm').onsubmit = async (e) => {
             e.preventDefault();
+            if(!currentUser || !userData) return showToast("Not Authenticated");
             await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), { title: document.getElementById('pTitle').value, category: document.getElementById('pCategory').value, price: parseFloat(document.getElementById('pPrice').value), stock: parseInt(document.getElementById('pStock').value), desc: document.getElementById('pDesc').value, keyword: document.getElementById('pImageKeyword').value || 'item', sellerId: currentUser.uid, sellerName: userData.shopName, createdAt: new Date().toISOString() });
-            showToast("Product Published!"); e.target.reset(); toggleTab('list');
+            showToast("Published Successfully!"); e.target.reset(); toggleTab('list');
         };
 
         window.delItem = async (id) => { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id)); showToast("Deleted"); };
         window.addToCart = () => { cartCount++; document.getElementById('cartCount').innerText = cartCount; showToast("Added to Cart!"); };
         window.emergencyBooking = async (type) => { if(!currentUser) return openAuthModal('login', 'user'); showToast(`Requesting ${type}...`); await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'rideRequests'), { userId: currentUser.uid, type, status: 'pending', fare: (Math.random()*50 + 20).toFixed(2), createdAt: new Date().toISOString() }); };
-        window.initiateConsult = () => { showToast("Calling village doctor..."); setTimeout(() => showToast("Connecting video..."), 2500); };
         window.showPage = (p) => { document.getElementById('homePage').classList.toggle('hidden', p !== 'home'); document.getElementById('adminPage').classList.toggle('hidden', p !== 'admin'); if(p === 'home') window.scrollTo({top: 0, behavior: 'smooth'}); };
-        window.scrollToSection = (id) => { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); };
         const showToast = (m) => { const t = document.getElementById('toast'); t.querySelector('span').innerText = m; t.style.opacity = '1'; t.style.transform = 'translate(-50%, -20px)'; setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, 0)'; }, 3000); };
+
+        window.toggleDuty = () => {
+            isDuty = !isDuty;
+            const slider = document.getElementById('dutySlider'), btn = document.getElementById('dutyBtn'), label = document.getElementById('dutyLabel'), gps = document.getElementById('gpsCoords');
+            if(isDuty) { slider.style.transform = 'translateX(40px)'; btn.classList.replace('bg-slate-600', 'bg-emerald-500'); label.innerText = 'Online'; showToast("Duty Started!"); startTracking(); listenForRides(); } 
+            else { slider.style.transform = 'translateX(0)'; btn.classList.replace('bg-emerald-500', 'bg-slate-600'); label.innerText = 'Offline'; if(watchId) navigator.geolocation.clearWatch(watchId); gps.innerText = "GPS TRACKING DEACTIVATED"; }
+        };
+        const startTracking = () => { if(navigator.geolocation) watchId = navigator.geolocation.watchPosition(p => { document.getElementById('gpsCoords').innerText = `GPS: ${p.coords.latitude.toFixed(4)}, ${p.coords.longitude.toFixed(4)}`; if(currentUser) updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', currentUser.uid), { lat: p.coords.latitude, lng: p.coords.longitude, status: 'online' }); }); };
+        const listenForRides = () => { const q = collection(db, 'artifacts', appId, 'public', 'data', 'rideRequests'); rideUnsub = onSnapshot(q, (sn) => { const requests = document.getElementById('riderRequests'); requests.innerHTML = ""; sn.forEach(d => { const r = d.data(); if(r.status === 'pending') { requests.innerHTML += `<div class="bg-blue-600 p-6 rounded-3xl text-white shadow-xl animate-pulse"><div class="flex justify-between font-900 text-xs uppercase mb-2"><span>${r.type} REQUEST</span> <span>$${r.fare}</span></div><button onclick="acceptRide('${d.id}')" class="w-full bg-white text-blue-600 py-3 rounded-2xl mt-4 font-900 text-[10px] uppercase">Accept</button></div>`; } }); }); };
+
+        window.onload = () => { setLanguage('en'); switchCategory('Grocery'); };
 
         const i18n = {
             en: { tagline: "Delivery Direct to your doorstep", grocery: "Book Grocery", food: "Order Food", ride: "Book Ride" },
@@ -489,7 +504,6 @@
             document.getElementById('btn-txt-ride').innerText = t.ride;
             ['en', 'bn', 'hi', 'st'].forEach(x => document.getElementById(`btn-${x}`)?.classList.toggle('lang-active', x === l));
         };
-        window.onload = () => { setLanguage('en'); switchCategory('Grocery'); };
     </script>
 </body>
 </html>
