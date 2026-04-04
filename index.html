@@ -304,7 +304,7 @@
                         </div>
                     </div>
                     <div>
-                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Password</label>
+                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Password (Min 6 chars)</label>
                         <input type="password" id="authPass" placeholder="Password" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
                     </div>
                     <button id="authSubmitBtn" onclick="handleAuthSubmit()" class="w-full bg-blue-grade text-white py-5 rounded-2xl font-900 shadow-xl uppercase tracking-widest transition-transform active:scale-95">Proceed</button>
@@ -355,7 +355,10 @@
         window.toggleAuthMode = () => { currentAuthMode = currentAuthMode === 'login' ? 'register' : 'login'; updateAuthUI(); };
         window.setAuthRole = (role) => {
             currentAuthRole = role;
-            ['user', 'partner', 'admin'].forEach(r => document.getElementById(`role-${r}`).classList.toggle('lang-active', r === role));
+            ['user', 'partner', 'admin'].forEach(r => {
+                const btn = document.getElementById(`role-${r}`);
+                if(btn) btn.classList.toggle('lang-active', r === role);
+            });
             updateAuthUI();
         };
 
@@ -375,8 +378,8 @@
             const name = document.getElementById('authName').value, partnerType = document.getElementById('authPartnerType').value;
             
             if(!phone || !pass || phone.length < 10) return showToast("Valid mobile number required");
+            if(pass.length < 6) return showToast("Password must be at least 6 characters");
             
-            // Map phone to pseudo-email for Firebase Auth compatibility
             const email = `${phone}@villagekart.com`;
 
             document.getElementById('authContent').classList.add('hidden');
@@ -385,16 +388,22 @@
             try {
                 if(currentAuthMode === 'login') {
                     await signInWithEmailAndPassword(auth, email, pass);
+                    showToast("Logged in!");
                 } else {
                     const cred = await createUserWithEmailAndPassword(auth, email, pass);
                     const profileData = { uid: cred.user.uid, phone, role: currentAuthRole, shopName: name || `User ${phone.slice(-4)}`, partnerType: currentAuthRole === 'partner' ? partnerType : 'none', joinedAt: new Date().toISOString() };
                     await setDoc(doc(db, 'artifacts', appId, 'users', cred.user.uid, 'profile', 'data'), profileData);
                     if(currentAuthRole === 'partner') await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', cred.user.uid), profileData);
+                    showToast("Registration Success!");
                 }
                 closeAuthModal();
             } catch (e) { 
-                const errorMsg = e.message.includes('auth/user-not-found') ? "Account not found" : "Authentication failed";
-                showToast(errorMsg); 
+                console.error(e.code);
+                let msg = "Authentication failed";
+                if(e.code === 'auth/email-already-in-use') msg = "Mobile already registered";
+                if(e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found') msg = "Invalid credentials";
+                if(e.code === 'auth/network-request-failed') msg = "Network error";
+                showToast(msg);
             }
             finally { document.getElementById('authContent').classList.remove('hidden'); document.getElementById('authLoading').classList.add('hidden'); }
         };
