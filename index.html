@@ -102,7 +102,7 @@
             </div>
 
             <!-- Language Switcher -->
-            <div class="hidden lg:flex items-center bg-blue-50/80 p-1.5 rounded-2xl border border-blue-100">
+            <div class="hidden lg:flex items-center bg-blue-50/80 p-1.5 rounded-2xl border border-blue-100 shadow-inner">
                 <button onclick="setLanguage('en')" id="btn-en" class="px-4 py-2 rounded-xl text-xs font-900 transition-all lang-active">EN</button>
                 <button onclick="setLanguage('bn')" id="btn-bn" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">বাংলা</button>
                 <button onclick="setLanguage('hi')" id="btn-hi" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">हिन्दी</button>
@@ -152,7 +152,7 @@
                     <div class="flex items-center gap-6"><div class="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-ambulance"></i></div><div><h3 class="text-xl font-900 text-red-600 uppercase">Ambulance</h3><p class="text-slate-500 font-800 text-xs">Emergency SOS</p></div></div>
                 </div>
                 <div onclick="emergencyBooking('Toto')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-400">
-                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-motorcycle"></i></div><div><h3 class="text-xl font-900 text-slate-900 uppercase">Toto Ride</h3><p class="text-slate-500 font-800 text-xs">Local E-Rickshaw</p></div></div>
+                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-motorcycle"></i></div><div><h3 class="text-xl font-900 text-slate-900 uppercase">Toto Ride</h3><p class="text-slate-500 font-800 text-xs">Local E-Rickshaw</p></div></div>
                 </div>
                 <div onclick="emergencyBooking('Car')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-400">
                     <div class="flex items-center gap-6"><div class="w-20 h-20 bg-slate-50 text-slate-800 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-car"></i></div><div><h3 id="car-title" class="text-xl font-900 text-slate-900 uppercase">Private Car</h3><p class="text-slate-500 font-800 text-xs">Comfort travel</p></div></div>
@@ -252,12 +252,22 @@
         </section>
     </main>
 
-    <!-- AUTH MODAL -->
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-20 px-8 mt-20 rounded-t-[5rem]">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 border-b border-white/5 pb-16">
+            <div class="space-y-6"><h1 class="text-4xl logo-font text-blue-400 leading-none">VillageKart</h1><p class="text-slate-400 text-sm tracking-tight leading-relaxed uppercase">Direct community network for life's essentials.</p></div>
+            <div class="space-y-6"><h4 class="font-900 uppercase text-xs text-blue-500 tracking-widest uppercase text-xs">Partner Program</h4><button onclick="openAuthModal('register', 'partner')" class="text-left bg-blue-600 p-4 rounded-2xl font-800 shadow-xl hover:bg-blue-700 transition-all flex items-center gap-3 uppercase"><i class="fas fa-handshake"></i> Become a Partner</button></div>
+            <div class="space-y-6"><h4 class="font-900 uppercase text-xs text-blue-500 tracking-widest uppercase text-xs">Admin Access</h4><button onclick="openAuthModal('login', 'admin')" class="w-full bg-slate-800 p-4 rounded-2xl font-800 hover:bg-slate-700 transition-all uppercase tracking-widest text-xs">Internal Access</button></div>
+        </div>
+        <p class="text-center pt-8 text-slate-600 text-[10px] font-900 uppercase tracking-[0.3em]">© 2024 VillageKart Super App</p>
+    </footer>
+
+    <!-- AUTH MODAL (Store Name & Pass only) -->
     <div id="authModal" class="fixed inset-0 modal-overlay z-[100] flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-[4rem] shadow-2xl flex flex-col md:flex-row max-w-4xl w-full overflow-hidden animate-in zoom-in duration-300 relative">
             <button onclick="closeAuthModal()" class="absolute right-8 top-8 text-slate-300 hover:text-slate-600 z-[110] bg-white w-12 h-12 rounded-full shadow-2xl flex items-center justify-center border border-slate-100 active:scale-90 transition-transform"><i class="fas fa-times"></i></button>
             <div class="bg-blue-grade text-white p-14 md:w-5/12 flex flex-col justify-between">
-                <div><h2 id="authTitle" class="text-5xl font-800 logo-font leading-tight uppercase tracking-tighter">Login</h2><p id="authSub" class="text-lg opacity-80 mt-6 font-500 leading-relaxed uppercase">Direct village services.</p></div>
+                <div><h2 id="authTitle" class="text-5xl font-800 logo-font leading-tight uppercase tracking-tighter">Login</h2><p id="authSub" class="text-lg opacity-80 mt-6 font-500 leading-relaxed uppercase">Join the village community.</p></div>
                 <div class="pt-20 opacity-20"><i class="fas fa-shipping-fast text-[180px]"></i></div>
             </div>
             <div class="p-14 md:w-7/12 bg-white flex flex-col justify-center pt-24 md:pt-14">
@@ -296,7 +306,7 @@
         </div>
     </div>
 
-    <!-- Toast -->
+    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-10 py-5 rounded-[2rem] shadow-2xl opacity-0 transition-all z-[200] font-800 text-sm flex items-center gap-4 border border-white/10">
         <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div><span>Message</span>
     </div>
@@ -344,8 +354,12 @@
             const nameRaw = document.getElementById('authName').value;
             const pass = document.getElementById('authPass').value;
             const type = document.getElementById('authType').value;
-            if(!nameRaw || pass.length < 6) return showToast("Name & 6-char Password required");
+            
+            // Validation
             const slug = nameRaw.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+            if(!slug || slug.length < 3) return showToast("Name must be at least 3 alphanumeric characters");
+            if(pass.length < 6) return showToast("Password min 6 chars required");
+            
             const pseudoEmail = `${slug}@village.app`;
 
             document.getElementById('authContent').classList.add('hidden');
@@ -365,7 +379,11 @@
                     document.getElementById('authSuccessMsg').classList.remove('hidden');
                 }
             } catch (e) { 
-                showToast("Auth failed. Check inputs.");
+                console.error("Auth Error:", e.code);
+                let msg = "Authentication failed. Please check your inputs.";
+                if(e.code === 'auth/email-already-in-use') msg = "This Store Name is already taken.";
+                if(e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found') msg = "Incorrect Store Name or Password.";
+                showToast(msg);
                 document.getElementById('authContent').classList.remove('hidden');
                 document.getElementById('authLoading').classList.add('hidden');
             }
@@ -389,6 +407,8 @@
                     if(userData.role === 'partner' || userData.role === 'admin') {
                         toggleAdminView(); 
                     }
+                } else {
+                   btn.innerText = "Complete Profile";
                 }
                 syncData();
             } else {
@@ -429,6 +449,7 @@
                 document.getElementById('shopNameDisplaySidebar').innerText = userData.shopName;
                 document.getElementById('shopInitial').innerText = userData.shopName[0].toUpperCase();
                 document.getElementById('roleTag').innerText = (userData.role === 'admin' ? 'ADMIN' : userData.partnerType.toUpperCase());
+                // Pre-fill profile
                 document.getElementById('profPhone').value = userData.phone || "";
                 document.getElementById('profEmail').value = userData.contactEmail || "";
                 toggleTab('add'); // LAND ON ADD PAGE
@@ -442,8 +463,10 @@
             currentActiveCategory = cat;
             ['grocery', 'food', 'ride'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
-                el.className = el.className.replace(/tab-active-\w+/g, "").trim();
-                if(t === cat.toLowerCase()) el.classList.add(`tab-active-${t}`);
+                if(el) {
+                  el.className = el.className.replace(/tab-active-\w+/g, "").trim();
+                  if(t === cat.toLowerCase()) el.classList.add(`tab-active-${t}`);
+                }
             });
             const rideSec = document.getElementById('ride-section'), marketSec = document.getElementById('marketplace-section');
             if(cat === 'Ride') { rideSec.classList.remove('hidden'); marketSec.classList.add('hidden'); } 
@@ -502,7 +525,10 @@
             document.getElementById('btn-txt-grocery').innerText = t.grocery;
             document.getElementById('btn-txt-food').innerText = t.food;
             document.getElementById('btn-txt-ride').innerText = t.ride;
-            ['en', 'bn', 'hi', 'st'].forEach(x => document.getElementById(`btn-${x}`)?.classList.toggle('lang-active', x === l));
+            ['en', 'bn', 'hi', 'st'].forEach(x => {
+              const el = document.getElementById(`btn-${x}`);
+              if(el) el.classList.toggle('lang-active', x === l);
+            });
         };
     </script>
 </body>
