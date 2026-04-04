@@ -17,7 +17,8 @@
             --primary-blue: #1d4ed8;
             --secondary-blue: #3b82f6;
             --emergency-red: #e11d48;
-            --rider-yellow: #facc15;
+            --grocery-green: #059669;
+            --food-orange: #ea580c;
         }
 
         body { 
@@ -279,7 +280,7 @@
                 <div class="pt-20 opacity-20"><i class="fas fa-shipping-fast text-[180px]"></i></div>
             </div>
             <div class="p-14 md:w-7/12 bg-white flex flex-col justify-center pt-24 md:pt-14">
-                <div class="flex bg-slate-100 p-1 rounded-2xl mb-8 self-start border border-slate-200/50">
+                <div class="flex bg-slate-100 p-1 rounded-2xl mb-8 self-start border border-slate-200/50 shadow-inner">
                     <button onclick="setAuthRole('user')" id="role-user" class="px-8 py-3 rounded-xl text-xs font-900 transition-all lang-active">USER</button>
                     <button onclick="setAuthRole('partner')" id="role-partner" class="px-8 py-3 rounded-xl text-xs font-900 transition-all">PARTNER</button>
                     <button onclick="setAuthRole('admin')" id="role-admin" class="px-8 py-3 rounded-xl text-xs font-900 transition-all">ADMIN</button>
@@ -298,7 +299,11 @@
                         </select>
                     </div>
                     <div>
-                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1.5 ml-1">10-Digit Mobile Number</label>
+                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1.5 ml-1">Email Address</label>
+                        <input type="email" id="authEmail" placeholder="name@example.com" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none border-slate-200 focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div id="field-phone" class="hidden">
+                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1.5 ml-1">Mobile Number</label>
                         <div class="flex gap-3"><span class="bg-slate-100 p-4 px-5 rounded-2xl font-900 text-slate-500 border border-slate-200">+91</span><input type="tel" id="authPhone" maxlength="10" placeholder="9876543210" class="flex-1 bg-slate-50 border p-4 rounded-2xl font-800 outline-none border-slate-200"></div>
                     </div>
                     <div>
@@ -306,7 +311,7 @@
                         <input type="password" id="authPass" placeholder="••••••••" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 focus:ring-2 focus:ring-blue-500 outline-none border-slate-200">
                     </div>
                     <button onclick="processAuth()" class="w-full bg-blue-grade text-white py-5 rounded-[1.5rem] font-900 shadow-2xl uppercase tracking-widest transition-all active:scale-95 mt-4">Continue</button>
-                    <div class="text-center" id="authToggle"><button onclick="toggleMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase tracking-widest">New to VillageKart? Create account</button></div>
+                    <div class="text-center" id="authToggle"><button onclick="toggleMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase tracking-widest">New here? Create account</button></div>
                 </div>
                 <div id="authLoading" class="hidden text-center py-10"><div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p class="text-[10px] font-900 uppercase tracking-widest text-slate-400">Verifying...</p></div>
             </div>
@@ -353,17 +358,22 @@
             sub.innerText = cRole === 'user' ? 'Village services direct to your doorstep.' : 'Join as a community partner.';
             document.getElementById('field-name').classList.toggle('hidden', cMode === 'login');
             document.getElementById('field-type').classList.toggle('hidden', !(cMode === 'register' && cRole === 'partner'));
+            document.getElementById('field-phone').classList.toggle('hidden', cMode === 'login');
             document.getElementById('authToggle').classList.toggle('hidden', cRole === 'admin');
-            toggleBtn.innerText = cMode === 'login' ? 'New to VillageKart? Register Now' : 'Already have account? Sign In';
+            toggleBtn.innerText = cMode === 'login' ? 'New here? Register Now' : 'Already have account? Sign In';
         }
 
         window.processAuth = async () => {
-            const phoneVal = document.getElementById('authPhone').value, pass = document.getElementById('authPass').value;
-            const name = document.getElementById('authName').value, type = document.getElementById('authType').value;
-            const phone = phoneVal.replace(/\D/g, ''); 
-            if(!phone || phone.length !== 10 || pass.length < 6) return showToast("Enter 10-digit Mobile & 6-char Pass");
+            const email = document.getElementById('authEmail').value;
+            const pass = document.getElementById('authPass').value;
+            const name = document.getElementById('authName').value;
+            const phoneVal = document.getElementById('authPhone').value;
+            const type = document.getElementById('authType').value;
             
-            const email = `${phone}@villagekart.com`;
+            if(!email || !pass) return showToast("Enter Email and Password");
+            if(pass.length < 6) return showToast("Password min 6 characters");
+            if(cMode === 'register' && (!name || !phoneVal)) return showToast("Name and Phone required");
+
             document.getElementById('authContent').classList.add('hidden');
             document.getElementById('authLoading').classList.remove('hidden');
 
@@ -373,13 +383,13 @@
                     showToast("Welcome Back!");
                 } else {
                     const cr = await createUserWithEmailAndPassword(auth, email, pass);
-                    const profile = { uid: cr.user.uid, phone, role: cRole, shopName: name || `User ${phone.slice(-4)}`, partnerType: cRole === 'partner' ? type : 'none', joined: new Date().toISOString() };
+                    const profile = { uid: cr.user.uid, email, phone: phoneVal, role: cRole, shopName: name, partnerType: cRole === 'partner' ? type : 'none', joined: new Date().toISOString() };
                     await setDoc(doc(db, 'artifacts', appId, 'users', cr.user.uid, 'profile', 'data'), profile);
                     if(cRole === 'partner') await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', cr.user.uid), profile);
                     showToast("Account Ready!");
                 }
                 closeAuthModal();
-            } catch (e) { showToast("Authentication Failed - Check Data/Settings"); console.error(e); }
+            } catch (e) { showToast(e.code.replace('auth/', '').replace(/-/g, ' ')); }
             finally { document.getElementById('authContent').classList.remove('hidden'); document.getElementById('authLoading').classList.add('hidden'); }
         };
 
