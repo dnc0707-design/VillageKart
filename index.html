@@ -3,552 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VillageKart | Super App - Delivery & Services</title>
+    <title>Interactive Report: The Rise of Quick Commerce</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/d3697e687e.js" crossorigin="anonymous"></script>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js" type="module"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js" type="module"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Zen+Dots&display=swap');
-        
-        :root {
-            --primary-blue: #1d4ed8;
-            --secondary-blue: #3b82f6;
-            --emergency-red: #e11d48;
-            --rider-yellow: #facc15;
+        body {
+            background-color: #faf9f6;
+            color: #334155;
+            font-family: system-ui, -apple-system, sans-serif;
         }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f1f5f9;
-            color: #0f172a;
-        }
-
-        .logo-font { font-family: 'Zen Dots', cursive; }
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); }
-
-        .super-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
+        .chart-container {
             position: relative;
-            overflow: hidden;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 400px;
         }
-        .super-card:hover { transform: translateY(-8px); }
-        .super-card:active { transform: scale(0.96); }
-
-        .lang-active {
-            background-color: var(--primary-blue);
-            color: white;
-            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 50vh;
+            }
         }
-
-        .emergency-pulse { animation: pulse-red 2.5s infinite; }
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); }
-            70% { box-shadow: 0 0 0 20px rgba(225, 29, 72, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+        .stat-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
-
-        .rider-gradient { background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); }
-        .bg-blue-grade { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
-        
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .modal-overlay { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); }
-
-        /* Attractive Header Button */
-        .header-login-btn {
-            background: white;
-            color: var(--primary-blue);
-            border: 2px solid var(--primary-blue);
-            transition: all 0.3s ease;
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
-        .header-login-btn:hover {
-            background: var(--primary-blue);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(29, 78, 216, 0.2);
+        .nav-btn {
+            transition: all 0.2s ease;
+        }
+        .nav-btn.active {
+            background-color: #8b5cf6;
+            color: #ffffff;
+            border-color: #8b5cf6;
         }
     </style>
 </head>
-<body>
+<body class="antialiased min-h-screen flex flex-col">
 
-    <!-- Header -->
-    <header class="glass sticky top-0 z-50 border-b border-blue-100/50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 md:px-8 h-24 flex items-center justify-between gap-4">
-            <!-- Brand -->
-            <div class="flex items-center gap-4 cursor-pointer" onclick="showPage('home')">
-                <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-200">
-                    <i class="fas fa-rocket text-2xl"></i>
-                </div>
-                <div class="hidden sm:block">
-                    <h1 class="text-3xl font-normal logo-font text-blue-700 leading-none">VillageKart</h1>
-                    <p id="nav-tagline" class="text-[10px] font-900 uppercase tracking-widest text-blue-400 mt-2">Delivery Direct to your doorstep</p>
-                </div>
+    <!-- Chosen Palette: Warm Neutrals with Violet and Orange Accents -->
+    <!-- Application Structure Plan: A dashboard layout was chosen to present the '2025 E-commerce vs Quick Commerce Report'. It features a top navigation for section filtering, a summary statistics row for immediate high-level insights, and a main content grid housing interactive charts. This allows users to immediately grasp the macro trends before drilling down into specific regional or demographic data via interactive toggle buttons. The structure prioritizes a top-down analytical flow. -->
+    <!-- Visualization & Content Choices: 
+    1. Market Growth (Goal: Show Trend over Time -> Line Chart -> Interactive Region Toggles -> Chart.js): Shows the rapid rise of Quick Commerce vs Traditional. 
+    2. User Demographics (Goal: Show Proportions -> Doughnut Chart -> Hover tooltips -> Chart.js): Highlights the core audience driving the trend. 
+    3. Delivery Times (Goal: Compare Categories -> Bar Chart -> Interactive Sort -> Chart.js): Contrasts the core value proposition across different platforms. 
+    Confirmed NO SVG/Mermaid used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <span class="text-3xl">&#128640;</span>
+                <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Q-Comm 2025 Insight</h1>
             </div>
-
-            <!-- Language Switcher -->
-            <div class="flex items-center bg-blue-50/80 p-1.5 rounded-2xl border border-blue-100">
-                <button onclick="setLanguage('en')" id="btn-en" class="px-4 py-2 rounded-xl text-xs font-900 transition-all lang-active">EN</button>
-                <button onclick="setLanguage('bn')" id="btn-bn" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">বাংলা</button>
-                <button onclick="setLanguage('hi')" id="btn-hi" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">हिन्दी</button>
-                <button onclick="setLanguage('st')" id="btn-st" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">ᱥᱟᱱᱛᱟᱲᱤ</button>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <!-- Redesigned Attractive Login Button -->
-                <button id="mainLoginBtn" onclick="openAuthModal('login', 'user')" class="header-login-btn px-6 py-2.5 rounded-full text-sm font-800 flex items-center gap-2 shadow-sm">
-                    <i class="fas fa-user-circle text-lg"></i>
-                    <span id="userDisplayName">Sign In</span>
-                    <div id="user-status-dot" class="w-2.5 h-2.5 bg-slate-300 border-2 border-white rounded-full"></div>
-                </button>
-
-                <button class="relative bg-slate-900 text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl hover:scale-105 transition-transform">
-                    <i class="fas fa-shopping-basket"></i>
-                    <span id="cartCount" class="absolute -top-2 -right-2 bg-blue-600 text-[10px] rounded-full w-6 h-6 flex items-center justify-center border-2 border-white font-900">0</span>
-                </button>
+            <div class="flex gap-2 bg-slate-100 p-1 rounded-lg">
+                <button id="btn-global" class="nav-btn active px-4 py-2 rounded-md text-sm font-semibold text-slate-600 border border-transparent">Global Data</button>
+                <button id="btn-urban" class="nav-btn px-4 py-2 rounded-md text-sm font-semibold text-slate-600 border border-transparent hover:bg-slate-200">Urban Centers</button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto p-4 md:p-8">
-        
-        <!-- HOME PAGE (CUSTOMER) -->
-        <section id="homePage" class="space-y-12 pb-24">
-            <!-- Services Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div onclick="filterCategory('Grocery')" class="super-card bg-emerald-600 p-10 rounded-[3rem] text-white shadow-2xl">
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner"><i class="fas fa-leaf text-3xl"></i></div>
-                        <h2 id="cat-grocery" class="text-4xl font-800 leading-tight uppercase">Grocery Store</h2>
-                        <p id="sub-grocery" class="text-emerald-100 text-sm mt-4 font-700 opacity-80 uppercase tracking-widest">Fresh Harvest</p>
-                    </div>
-                </div>
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 w-full">
 
-                <div onclick="filterCategory('Food')" class="super-card bg-orange-500 p-10 rounded-[3rem] text-white shadow-2xl">
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner"><i class="fas fa-utensils text-3xl"></i></div>
-                        <h2 id="cat-food" class="text-4xl font-800 leading-tight uppercase">Hot Meals</h2>
-                        <p id="sub-food" class="text-orange-100 text-sm mt-4 font-700 opacity-80 uppercase tracking-widest">Village Kitchens</p>
-                    </div>
-                </div>
-
-                <div onclick="scrollToSection('booking-section')" class="super-card bg-blue-600 p-10 rounded-[3rem] text-white shadow-2xl">
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-8 shadow-inner"><i class="fas fa-taxi text-3xl"></i></div>
-                        <h2 id="cat-booking" class="text-4xl font-800 leading-tight uppercase">Book Rides</h2>
-                        <p id="sub-booking" class="text-blue-100 text-sm mt-4 font-700 opacity-80 uppercase tracking-widest">Toto & Cars</p>
-                    </div>
-                </div>
-
-                <div onclick="initiateConsult()" class="super-card bg-slate-900 p-10 rounded-[3rem] text-white shadow-2xl">
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 bg-blue-500 rounded-3xl flex items-center justify-center mb-8 shadow-lg"><i class="fas fa-user-md text-3xl"></i></div>
-                        <h2 id="cat-doctor" class="text-4xl font-800 leading-tight uppercase">Doctor Consult</h2>
-                        <p id="sub-doctor" class="text-slate-400 text-sm mt-4 font-700 uppercase tracking-widest">Live Help</p>
-                    </div>
-                </div>
+        <section id="executive-summary" class="space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <h2 class="text-xl font-bold mb-3 flex items-center gap-2"><span class="text-violet-500">&#128202;</span> Executive Summary</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    This section presents the high-level metrics of the transition from traditional e-commerce to quick commerce (Q-Comm). Users can interact with the region toggles in the navigation bar to see how these baseline figures shift between global averages and hyper-urban centers, highlighting the core thesis of the report: Q-Comm is redefining retail convenience.
+                </p>
             </div>
 
-            <!-- Rapid Rides -->
-            <div id="booking-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-8 border-t border-slate-200">
-                <div onclick="emergencyBooking('Ambulance')" class="bg-white p-8 rounded-[3.5rem] border-4 border-red-100 flex items-center justify-between group emergency-pulse cursor-pointer">
-                    <div class="flex items-center gap-6">
-                        <div class="w-20 h-20 bg-red-600 text-white rounded-full flex items-center justify-center text-3xl"><i class="fas fa-ambulance"></i></div>
-                        <div><h3 id="txt-sos-title" class="text-2xl font-900 text-red-600">AMBULANCE</h3><p id="txt-sos-sub" class="text-slate-500 font-800 text-sm">Emergency SOS</p></div>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="stat-card bg-white rounded-xl p-6 border-l-4 border-violet-500 shadow-sm">
+                    <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Market Volume (Q-Comm)</p>
+                    <h3 id="stat-volume" class="text-3xl font-extrabold text-slate-800">$110B</h3>
+                    <p id="stat-volume-sub" class="text-sm text-emerald-600 font-medium mt-2">&#9650; 57% YoY Growth</p>
                 </div>
-                <div onclick="emergencyBooking('Toto Ride')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-300">
-                    <div class="flex items-center gap-6"><div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-motorcycle"></i></div><div><h3 id="txt-toto-title" class="text-2xl font-900 text-slate-900">TOTO RIDE</h3><p id="txt-toto-sub" class="text-slate-500 font-800 text-sm">Local E-Rickshaw</p></div></div>
+                <div class="stat-card bg-white rounded-xl p-6 border-l-4 border-orange-400 shadow-sm">
+                    <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Avg. Delivery Time</p>
+                    <h3 id="stat-time" class="text-3xl font-extrabold text-slate-800">15 Mins</h3>
+                    <p id="stat-time-sub" class="text-sm text-emerald-600 font-medium mt-2">&#9660; 40% Reduction</p>
                 </div>
-                <div onclick="emergencyBooking('Private Car')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-300">
-                    <div class="flex items-center gap-6"><div class="w-20 h-20 bg-slate-50 text-slate-800 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-car"></i></div><div><h3 id="txt-car-title" class="text-2xl font-900 text-slate-900">PRIVATE CAR</h3><p id="txt-car-sub" class="text-slate-500 font-800 text-sm">Fast Car Booking</p></div></div>
+                <div class="stat-card bg-white rounded-xl p-6 border-l-4 border-blue-500 shadow-sm">
+                    <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">Primary Demographic</p>
+                    <h3 id="stat-demo" class="text-3xl font-extrabold text-slate-800">Gen Z</h3>
+                    <p id="stat-demo-sub" class="text-sm text-slate-600 font-medium mt-2">Accounts for 40% of orders</p>
                 </div>
-            </div>
-
-            <!-- Feed -->
-            <div id="feed-container" class="space-y-10 pt-10">
-                <div class="flex items-center justify-between border-b border-slate-200 pb-8">
-                    <h3 id="txt-feed-title" class="text-3xl font-900 text-slate-900">Recommended for You</h3>
-                    <div class="flex items-center gap-3"><span class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></span><span id="txt-live" class="text-[10px] font-900 text-blue-600 uppercase tracking-widest">Live from Village</span></div>
-                </div>
-                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-10"></div>
             </div>
         </section>
 
-        <!-- PARTNER HUB -->
-        <section id="adminPage" class="hidden animate-in fade-in duration-500">
-            <div id="riderInterface" class="hidden space-y-6">
-                <div class="rider-gradient p-8 rounded-[3rem] text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-2xl">
-                    <div class="flex items-center gap-6">
-                        <div class="w-20 h-20 bg-yellow-400 rounded-full flex items-center justify-center text-slate-900 text-3xl shadow-xl"><i class="fas fa-motorcycle"></i></div>
-                        <div>
-                            <h2 class="text-3xl font-800 leading-tight" id="riderNameDisplay">Rider Dashboard</h2>
-                            <p class="text-yellow-400 font-800 uppercase text-xs tracking-widest mt-1">Village Partner - Ride Provider</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4 bg-slate-800/50 p-4 rounded-3xl border border-white/10">
-                        <span id="dutyLabel" class="text-xs font-900 uppercase">Off Duty</span>
-                        <button onclick="toggleRiderDuty()" id="dutyBtn" class="w-16 h-8 bg-slate-600 rounded-full relative transition-all">
-                            <div id="dutySlider" class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition-all"></div>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-2 bg-white rounded-[3rem] border p-4 shadow-xl min-h-[400px] relative">
-                        <div class="absolute inset-0 bg-slate-100 flex items-center justify-center opacity-50"><i class="fas fa-map-marked-alt text-9xl text-slate-300"></i></div>
-                        <div class="relative z-10 p-6">
-                            <div class="bg-white/80 backdrop-blur p-4 rounded-2xl inline-flex items-center gap-3 border shadow-sm"><i class="fas fa-location-crosshairs text-blue-600"></i><span id="riderCoords" class="text-xs font-800 text-slate-600 uppercase">GPS: Tracking disabled</span></div>
-                        </div>
-                    </div>
-                    <div class="space-y-6">
-                        <div class="bg-white p-8 rounded-[3rem] border shadow-xl"><h4 class="text-xs font-900 text-slate-400 uppercase tracking-widest mb-6">Today's Earnings</h4><div class="text-5xl font-900 text-slate-900">$0.00</div></div>
-                        <div class="bg-white p-8 rounded-[3.5rem] border shadow-xl flex-1"><h4 class="text-xs font-900 text-slate-400 uppercase tracking-widest mb-6">Nearby Requests</h4><div id="nearbyRequests" class="text-center py-10 text-slate-300 italic text-sm">Go Online to see requests</div></div>
-                        <button onclick="logout()" class="w-full bg-red-50 text-red-500 p-6 rounded-3xl font-800 flex items-center justify-center gap-4 transition-all hover:bg-red-500 hover:text-white"><i class="fas fa-power-off"></i> LOG OUT</button>
-                    </div>
-                </div>
+        <section id="growth-analysis" class="space-y-6 bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100">
+            <div>
+                <h2 class="text-xl font-bold mb-3 flex items-center gap-2"><span class="text-orange-500">&#128200;</span> Market Share Trajectory</h2>
+                <p class="text-slate-600 leading-relaxed mb-6">
+                    Visualizing the trajectory of market share over the last five years. This interactive line chart allows you to track the exponential rise of quick commerce relative to the steady plateau of traditional models. Hover over data points for precise financial figures, and click the legend items to isolate specific datasets for deeper analysis.
+                </p>
             </div>
-
-            <div id="merchantInterface" class="hidden flex flex-col lg:flex-row gap-12">
-                <div class="w-full lg:w-96 space-y-8">
-                    <div class="bg-white p-10 rounded-[4rem] border text-center shadow-2xl">
-                        <div class="w-24 h-24 bg-blue-600 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-white text-5xl font-800 shadow-xl"><span id="shopInitial">P</span></div>
-                        <h4 id="shopNameDisplay" class="font-800 text-2xl text-slate-900">Partner Hub</h4>
-                        <div id="partnerTypeLabel" class="mt-4 px-6 py-2 bg-blue-50 text-blue-600 text-[10px] font-900 uppercase rounded-full inline-block">Partner</div>
-                    </div>
-                    <div class="bg-white rounded-[3rem] border p-3 shadow-2xl">
-                        <button onclick="toggleAdminTab('inventory')" class="w-full text-left p-6 rounded-[2.5rem] bg-blue-50 text-blue-600 font-800 flex items-center gap-5" id="tab-inventory"><i class="fas fa-boxes"></i> Dashboard</button>
-                        <button onclick="toggleAdminTab('add')" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-slate-50 font-800 flex items-center gap-5 text-slate-400" id="tab-add"><i class="fas fa-plus-circle"></i> New Listing</button>
-                        <hr class="my-6 mx-6 border-slate-100">
-                        <button onclick="logout()" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-red-50 text-red-500 font-800 flex items-center gap-5"><i class="fas fa-power-off"></i> Logout</button>
-                    </div>
-                </div>
-                <div class="flex-1 bg-white p-10 md:p-14 rounded-[5rem] border shadow-2xl min-h-[700px]">
-                    <div id="inventorySection">
-                        <h3 class="text-4xl font-900 text-slate-900 mb-12">Active Listings</h3>
-                        <div class="overflow-x-auto hide-scrollbar"><table class="w-full text-left"><thead class="text-slate-400 text-[10px] font-900 uppercase border-b"><tr><th class="pb-8">Name</th><th class="pb-8">Category</th><th class="pb-8">Price</th><th class="pb-8 text-right">Delete</th></tr></thead><tbody id="adminProductTable" class="divide-y divide-slate-100"></tbody></table></div>
-                    </div>
-                    <div id="addProductSection" class="hidden">
-                        <h3 class="text-4xl font-900 text-slate-900 mb-12">New Entry</h3>
-                        <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                            <input type="text" id="pTitle" required placeholder="Name" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800">
-                            <select id="pCategory" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 outline-none"><option>Grocery</option><option>Food</option><option>Transport</option></select>
-                            <input type="number" id="pPrice" required placeholder="Price" class="bg-slate-50 border p-5 rounded-[1.5rem] font-800">
-                            <input type="number" id="pStock" required value="100" class="bg-slate-50 border p-5 rounded-[1.5rem] font-800">
-                            <textarea id="pDesc" rows="3" placeholder="Brief description..." class="w-full bg-slate-50 border p-5 rounded-[1.5rem] md:col-span-2"></textarea>
-                            <input type="text" id="pImageKeyword" placeholder="Visual Key" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] md:col-span-2">
-                            <button type="submit" class="w-full bg-blue-grade text-white py-6 rounded-[1.5rem] font-900 shadow-2xl md:col-span-2">Publish</button>
-                        </form>
-                    </div>
-                </div>
+            <div class="chart-container w-full">
+                <canvas id="growthChart"></canvas>
             </div>
         </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <section id="demographics" class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 flex flex-col">
+                <div>
+                    <h2 class="text-xl font-bold mb-3 flex items-center gap-2"><span class="text-blue-500">&#128101;</span> Consumer Demographics</h2>
+                    <p class="text-slate-600 leading-relaxed mb-6 text-sm">
+                        An analysis of the consumer base driving Q-Comm adoption. This doughnut chart breaks down the audience by generational cohorts. The visualization demonstrates that while younger demographics are the primary drivers, adoption is spreading upward.
+                    </p>
+                </div>
+                <div class="chart-container flex-grow flex items-center justify-center">
+                    <canvas id="demoChart"></canvas>
+                </div>
+            </section>
+
+            <section id="delivery-metrics" class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 flex flex-col">
+                <div>
+                    <h2 class="text-xl font-bold mb-3 flex items-center gap-2"><span class="text-emerald-500">&#9201;</span> Delivery Time Comparison</h2>
+                    <p class="text-slate-600 leading-relaxed mb-6 text-sm">
+                        Contrasting the core value proposition: speed. This bar chart compares the average fulfillment times across different e-commerce models. It clearly illustrates the massive gap between standard delivery logistics and micro-fulfillment centers.
+                    </p>
+                </div>
+                <div class="chart-container flex-grow">
+                    <canvas id="deliveryChart"></canvas>
+                </div>
+            </section>
+        </div>
+
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-white py-20 px-4 mt-20 rounded-t-[5rem]">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-            <div class="space-y-6">
-                <h1 class="text-3xl font-normal logo-font text-blue-400">VillageKart</h1>
-                <p class="text-slate-400 text-sm leading-relaxed tracking-tight">Direct Delivery & Essential Village Services.</p>
-            </div>
-            <div class="space-y-6">
-                <h4 class="font-900 uppercase text-xs text-blue-400">Services</h4>
-                <ul class="space-y-4 text-slate-400 text-sm"><li>Groceries</li><li>Hot Meals</li><li>Doctor Consult</li></ul>
-            </div>
-            <div class="space-y-6">
-                <h4 class="font-900 uppercase text-xs text-blue-400">Business</h4>
-                <button onclick="openAuthModal('register', 'partner')" class="w-full bg-blue-600 p-4 rounded-2xl font-800">Become a Partner</button>
-            </div>
-            <div class="space-y-6">
-                <h4 class="font-900 uppercase text-xs text-blue-400">Platform Control</h4>
-                <button onclick="openAuthModal('login', 'admin')" class="w-full bg-slate-800 p-4 rounded-2xl font-800">Admin Login</button>
-            </div>
-        </div>
+    <footer class="bg-white border-t border-slate-200 mt-12 py-8 text-center text-slate-500 text-sm">
+        <p>Interactive SPA Report Generated via JavaScript & Canvas. Data is illustrative based on 2025 market projections.</p>
     </footer>
 
-    <!-- AUTH MODAL -->
-    <div id="authModal" class="fixed inset-0 modal-overlay z-[100] flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-[4rem] shadow-2xl flex flex-col md:flex-row max-w-4xl w-full overflow-hidden animate-in zoom-in duration-300">
-            <button onclick="closeAuthModal()" class="absolute right-10 top-10 text-slate-300 hover:text-slate-600 z-[110] bg-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center"><i class="fas fa-times"></i></button>
-            <div class="bg-blue-grade text-white p-14 md:w-5/12 flex flex-col justify-between">
-                <div><h2 id="authModalTitle" class="text-4xl font-800 logo-font leading-tight uppercase">Login</h2><p id="authModalSubtitle" class="text-lg opacity-80 mt-4 font-500">Access orders and village services.</p></div>
-                <div class="pt-20 opacity-20"><i class="fas fa-shipping-fast text-[160px]"></i></div>
-            </div>
-            <div class="p-14 md:w-7/12 bg-white flex flex-col justify-center relative pt-20">
-                <div class="flex bg-slate-100 p-1 rounded-2xl mb-8 self-start">
-                    <button onclick="setAuthRole('user')" id="role-user" class="px-6 py-2 rounded-xl text-xs font-900 transition-all lang-active">USER</button>
-                    <button onclick="setAuthRole('partner')" id="role-partner" class="px-6 py-2 rounded-xl text-xs font-900 transition-all">PARTNER</button>
-                    <button onclick="setAuthRole('admin')" id="role-admin" class="px-6 py-2 rounded-xl text-xs font-900 transition-all">ADMIN</button>
-                </div>
-                <div id="authContent" class="space-y-6">
-                    <div id="field-business-name" class="hidden">
-                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Business/Partner Name</label>
-                        <input type="text" id="authName" placeholder="e.g., Green Village Mart" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
-                    </div>
-                    <div id="field-partner-type" class="hidden">
-                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">I am a...</label>
-                        <select id="authPartnerType" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
-                            <option value="seller">Merchant (Grocery/Food)</option>
-                            <option value="rider">Rider (Toto/Car/Ambulance)</option>
-                            <option value="doctor">Doctor / Specialist</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Mobile Number</label>
-                        <div class="flex gap-2">
-                            <span class="bg-slate-100 border p-4 rounded-2xl font-800">+91</span>
-                            <input type="tel" id="authPhone" placeholder="9876543210" class="flex-1 bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2">Password (Min 6 chars)</label>
-                        <input type="password" id="authPass" placeholder="Password" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none">
-                    </div>
-                    <button id="authSubmitBtn" onclick="handleAuthSubmit()" class="w-full bg-blue-grade text-white py-5 rounded-2xl font-900 shadow-xl uppercase tracking-widest transition-transform active:scale-95">Proceed</button>
-                    <div class="text-center" id="authToggleContainer"><button onclick="toggleAuthMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase tracking-widest">New here? Create account</button></div>
-                </div>
-                <div id="authLoading" class="hidden text-center py-10"><div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast -->
-    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-10 py-5 rounded-[2rem] shadow-2xl opacity-0 transition-all z-[200] font-800 text-sm flex items-center gap-4 border border-white/10">
-        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div><span>Message</span>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, query, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // FIREBASE CONFIG
-        const firebaseConfig = {
-            apiKey: "AIzaSyALzu7TNODHkSnb0P-AEaqWWkY83xlKRqs",
-            authDomain: "villagekart-live.firebaseapp.com",
-            projectId: "villagekart-live",
-            storageBucket: "villagekart-live.firebasestorage.app",
-            messagingSenderId: "737831986342",
-            appId: "1:737831986342:web:a5efd1e5d85be25d770067",
-            measurementId: "G-K58E0DDYDJ"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = 'villagekart-live';
-
-        let currentUser = null, isPartner = false, isAdmin = false, userData = null, unsubscribeProducts = null, cartCount = 0;
-        let currentAuthMode = 'login', currentAuthRole = 'user';
-        let isRiderOnDuty = false, riderWatchId = null;
-
-        // --- AUTH ---
-        window.openAuthModal = (mode = 'login', role = 'user') => {
-            currentAuthMode = mode; currentAuthRole = role;
-            document.getElementById('authModal').classList.remove('hidden');
-            setAuthRole(role); updateAuthUI();
-        };
-        window.closeAuthModal = () => document.getElementById('authModal').classList.add('hidden');
-        window.toggleAuthMode = () => { currentAuthMode = currentAuthMode === 'login' ? 'register' : 'login'; updateAuthUI(); };
-        window.setAuthRole = (role) => {
-            currentAuthRole = role;
-            ['user', 'partner', 'admin'].forEach(r => {
-                const btn = document.getElementById(`role-${r}`);
-                if(btn) btn.classList.toggle('lang-active', r === role);
-            });
-            updateAuthUI();
-        };
-
-        const updateAuthUI = () => {
-            const title = document.getElementById('authModalTitle'), sub = document.getElementById('authModalSubtitle');
-            const toggleContainer = document.getElementById('authToggleContainer'), nameField = document.getElementById('field-business-name'), typeField = document.getElementById('field-partner-type');
-            
-            title.innerText = currentAuthMode === 'login' ? 'LOG IN' : 'JOIN US';
-            sub.innerText = currentAuthRole === 'user' ? 'Sign in with your mobile number.' : 'Join as a Village Partner.';
-            toggleContainer.classList.toggle('hidden', currentAuthRole === 'admin');
-            nameField.classList.toggle('hidden', !(currentAuthMode === 'register' && currentAuthRole === 'partner'));
-            typeField.classList.toggle('hidden', !(currentAuthMode === 'register' && currentAuthRole === 'partner'));
-        };
-
-        window.handleAuthSubmit = async () => {
-            const phone = document.getElementById('authPhone').value, pass = document.getElementById('authPass').value;
-            const name = document.getElementById('authName').value, partnerType = document.getElementById('authPartnerType').value;
-            
-            if(!phone || !pass || phone.length < 10) return showToast("Valid mobile number required");
-            if(pass.length < 6) return showToast("Password must be at least 6 characters");
-            
-            const email = `${phone}@villagekart.com`;
-
-            document.getElementById('authContent').classList.add('hidden');
-            document.getElementById('authLoading').classList.remove('hidden');
-
-            try {
-                if(currentAuthMode === 'login') {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                    showToast("Logged in!");
-                } else {
-                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                    const profileData = { uid: cred.user.uid, phone, role: currentAuthRole, shopName: name || `User ${phone.slice(-4)}`, partnerType: currentAuthRole === 'partner' ? partnerType : 'none', joinedAt: new Date().toISOString() };
-                    await setDoc(doc(db, 'artifacts', appId, 'users', cred.user.uid, 'profile', 'data'), profileData);
-                    if(currentAuthRole === 'partner') await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', cred.user.uid), profileData);
-                    showToast("Registration Success!");
+    <script>
+        const reportData = {
+            global: {
+                stats: { vol: '$110B', volSub: '&#9650; 57% YoY Growth', time: '15 Mins', timeSub: '&#9660; 40% Reduction', demo: 'Gen Z', demoSub: 'Accounts for 40% of orders' },
+                growth: {
+                    labels: ['2021', '2022', '2023', '2024', '2025'],
+                    qComm: [10, 25, 45, 70, 110],
+                    eComm: [100, 105, 108, 112, 115]
+                },
+                demographics: {
+                    labels: ['Gen Z', 'Millennials', 'Gen X', 'Boomers'],
+                    data: [40, 35, 15, 10]
+                },
+                delivery: {
+                    labels: ['Q-Comm', 'Same-Day', 'Standard'],
+                    data: [15, 720, 2880]
                 }
-                closeAuthModal();
-            } catch (e) { 
-                console.error(e.code);
-                let msg = "Authentication failed";
-                if(e.code === 'auth/email-already-in-use') msg = "Mobile already registered";
-                if(e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found') msg = "Invalid credentials";
-                if(e.code === 'auth/network-request-failed') msg = "Network error";
-                showToast(msg);
-            }
-            finally { document.getElementById('authContent').classList.remove('hidden'); document.getElementById('authLoading').classList.add('hidden'); }
-        };
-
-        window.logout = async () => { await signOut(auth); showPage('home'); showToast("Signed Out"); };
-
-        onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
-            const loginBtnLabel = document.getElementById('userDisplayName');
-            const statusDot = document.getElementById('user-status-dot');
-
-            if (user) {
-                statusDot.className = "w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full";
-                const profileDoc = await getDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data'));
-                if (profileDoc.exists()) {
-                    userData = profileDoc.data();
-                    isPartner = userData.role === 'partner'; isAdmin = userData.role === 'admin';
-                    loginBtnLabel.innerText = userData.shopName.split(' ')[0];
+            },
+            urban: {
+                stats: { vol: '$85B', volSub: '&#9650; 82% YoY Growth', time: '9 Mins', timeSub: '&#9660; 60% Reduction', demo: 'Gen Z', demoSub: 'Accounts for 55% of orders' },
+                growth: {
+                    labels: ['2021', '2022', '2023', '2024', '2025'],
+                    qComm: [20, 50, 90, 140, 200],
+                    eComm: [80, 82, 80, 78, 75]
+                },
+                demographics: {
+                    labels: ['Gen Z', 'Millennials', 'Gen X', 'Boomers'],
+                    data: [55, 30, 10, 5]
+                },
+                delivery: {
+                    labels: ['Q-Comm', 'Same-Day', 'Standard'],
+                    data: [9, 360, 1440]
                 }
-                syncData();
-            } else {
-                statusDot.className = "w-2.5 h-2.5 bg-slate-300 border-2 border-white rounded-full";
-                userData = null; isPartner = false; isAdmin = false; 
-                loginBtnLabel.innerText = "Sign In";
-                syncData();
-            }
-        });
-
-        // --- RIDER LOGIC ---
-        window.toggleRiderDuty = () => {
-            isRiderOnDuty = !isRiderOnDuty;
-            const slider = document.getElementById('dutySlider'), label = document.getElementById('dutyLabel'), btn = document.getElementById('dutyBtn');
-            const coordsTxt = document.getElementById('riderCoords'), requests = document.getElementById('nearbyRequests');
-
-            if(isRiderOnDuty) {
-                slider.style.transform = 'translateX(32px)'; btn.classList.replace('bg-slate-600', 'bg-emerald-500'); label.innerText = 'On Duty';
-                startGpsTracking();
-                requests.innerHTML = `<div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 animate-pulse"><div class="flex justify-between font-900 text-xs"><span>NEW REQUEST</span> <span>$12.50</span></div><div class="text-[10px] text-slate-500 mt-1">Village Crossing → Market</div><button class="w-full bg-slate-900 text-white py-2 rounded-xl mt-3 text-[10px] font-900">ACCEPT</button></div>`;
-            } else {
-                slider.style.transform = 'translateX(0)'; btn.classList.replace('bg-emerald-500', 'bg-slate-600'); label.innerText = 'Off Duty';
-                stopGpsTracking(); coordsTxt.innerText = 'GPS: Tracking disabled'; requests.innerHTML = `<div class="text-center py-10 text-slate-300 italic text-sm">Go Online</div>`;
             }
         };
 
-        const startGpsTracking = () => {
-            if ("geolocation" in navigator) {
-                riderWatchId = navigator.geolocation.watchPosition((pos) => {
-                    const { latitude, longitude } = pos.coords;
-                    document.getElementById('riderCoords').innerText = `GPS: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-                    if(currentUser) updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', currentUser.uid), { lat: latitude, lng: longitude, status: 'online' });
-                });
-            }
-        };
+        let currentView = 'global';
+        let charts = {};
 
-        const stopGpsTracking = () => { if(riderWatchId) navigator.geolocation.clearWatch(riderWatchId); };
+        function updateStats(data) {
+            document.getElementById('stat-volume').innerHTML = data.stats.vol;
+            document.getElementById('stat-volume-sub').innerHTML = data.stats.volSub;
+            document.getElementById('stat-time').innerHTML = data.stats.time;
+            document.getElementById('stat-time-sub').innerHTML = data.stats.timeSub;
+            document.getElementById('stat-demo').innerHTML = data.stats.demo;
+            document.getElementById('stat-demo-sub').innerHTML = data.stats.demoSub;
+        }
 
-        // --- NAVIGATION ---
-        window.showPage = (p) => { document.getElementById('homePage').classList.toggle('hidden', p !== 'home'); document.getElementById('adminPage').classList.toggle('hidden', p !== 'admin'); };
-        window.toggleAdminView = () => { if (!isPartner && !isAdmin) openAuthModal('register', 'partner'); else { showPage('admin'); const isRider = userData?.partnerType === 'rider'; document.getElementById('riderInterface').classList.toggle('hidden', !isRider); document.getElementById('merchantInterface').classList.toggle('hidden', isRider); if(isRider) document.getElementById('riderNameDisplay').innerText = userData.shopName; else if (userData) { document.getElementById('shopNameDisplay').innerText = userData.shopName; document.getElementById('partnerTypeLabel').innerText = userData.role.toUpperCase(); } } };
+        function initCharts() {
+            Chart.defaults.font.family = "system-ui, -apple-system, sans-serif";
+            Chart.defaults.color = '#64748b';
 
-        const syncData = () => {
-            if (unsubscribeProducts) unsubscribeProducts();
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), (sn) => {
-                const list = []; sn.forEach(d => list.push({ id: d.id, ...d.data() }));
-                renderFeed(list);
-                if(currentUser && (isPartner || isAdmin)) renderAdminList(isAdmin ? list : list.filter(p => p.sellerId === currentUser.uid));
+            const growthCtx = document.getElementById('growthChart').getContext('2d');
+            charts.growth = new Chart(growthCtx, {
+                type: 'line',
+                data: {
+                    labels: reportData[currentView].growth.labels,
+                    datasets: [
+                        { label: 'Quick Commerce ($B)', data: reportData[currentView].growth.qComm, borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)', borderWidth: 3, fill: true, tension: 0.4, pointBackgroundColor: '#8b5cf6' },
+                        { label: 'Traditional E-Comm ($B)', data: reportData[currentView].growth.eComm, borderColor: '#cbd5e1', backgroundColor: 'transparent', borderWidth: 2, borderDash: [5, 5], tension: 0.4, pointBackgroundColor: '#cbd5e1' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { tooltip: { mode: 'index', intersect: false, padding: 12, backgroundColor: 'rgba(15, 23, 42, 0.9)' }, legend: { position: 'top', labels: { usePointStyle: true, padding: 20 } } },
+                    scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } },
+                    interaction: { mode: 'nearest', axis: 'x', intersect: false }
+                }
             });
-        };
 
-        // --- RENDERERS ---
-        const renderFeed = (products) => {
-            const grid = document.getElementById('productGrid');
-            if (products.length === 0) { grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-300">Market empty</div>`; return; }
-            grid.innerHTML = products.map(p => `
-                <div class="bg-white p-6 rounded-[3rem] border border-slate-200 transition-all hover:shadow-2xl group">
-                    <div class="aspect-square rounded-[2.5rem] bg-slate-50 mb-6 overflow-hidden flex items-center justify-center border border-slate-100 p-6">
-                        <img src="https://source.unsplash.com/featured/?${p.keyword}" class="w-full h-full object-contain">
-                    </div>
-                    <div class="space-y-2">
-                        <p class="text-[10px] font-900 text-blue-600 uppercase">${p.category}</p>
-                        <h4 class="text-base font-900 text-slate-900 line-clamp-1">${p.title}</h4>
-                        <div class="flex items-center justify-between pt-6 border-t border-slate-50 mt-4">
-                            <div class="text-2xl font-900">$${p.price}</div>
-                            <button onclick="addToBasket()" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-xl active:scale-90 hover:bg-blue-600"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        };
+            const demoCtx = document.getElementById('demoChart').getContext('2d');
+            charts.demo = new Chart(demoCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: reportData[currentView].demographics.labels,
+                    datasets: [{ data: reportData[currentView].demographics.data, backgroundColor: ['#8b5cf6', '#3b82f6', '#f59e0b', '#cbd5e1'], borderWidth: 0, hoverOffset: 4 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.raw + '%'; } }, padding: 12, backgroundColor: 'rgba(15, 23, 42, 0.9)' }, legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }
+                }
+            });
 
-        const renderAdminList = (products) => {
-            document.getElementById('adminProductTable').innerHTML = products.map(p => `
-                <tr class="hover:bg-blue-50 transition-all">
-                    <td class="py-8 font-800 text-base text-slate-900">${p.title}</td>
-                    <td class="py-8 font-800 text-[10px] text-slate-400 uppercase">${p.category}</td>
-                    <td class="py-8 font-900 text-base">$${p.price}</td>
-                    <td class="py-8 text-right"><button onclick="deleteItem('${p.id}')" class="w-10 h-10 rounded-xl bg-red-50 text-red-500 ml-auto"><i class="fas fa-trash-alt"></i></button></td>
-                </tr>
-            `).join('');
-        };
+            const deliveryCtx = document.getElementById('deliveryChart').getContext('2d');
+            charts.delivery = new Chart(deliveryCtx, {
+                type: 'bar',
+                data: {
+                    labels: reportData[currentView].delivery.labels,
+                    datasets: [{ label: 'Average Delivery Time (Minutes)', data: reportData[currentView].delivery.data, backgroundColor: ['#8b5cf6', '#f59e0b', '#94a3b8'], borderRadius: 6 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { padding: 12, backgroundColor: 'rgba(15, 23, 42, 0.9)' } },
+                    scales: { y: { type: 'logarithmic', title: { display: true, text: 'Minutes (Log Scale)' }, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
+                }
+            });
+        }
 
-        document.getElementById('addProductForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const payload = { title: document.getElementById('pTitle').value, category: document.getElementById('pCategory').value, price: parseFloat(document.getElementById('pPrice').value), stock: parseInt(document.getElementById('pStock').value), desc: document.getElementById('pDesc').value, keyword: document.getElementById('pImageKeyword').value || 'item', sellerId: currentUser.uid, sellerName: userData.shopName, createdAt: new Date().toISOString() };
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), payload);
-            showToast("Published!"); e.target.reset(); toggleAdminTab('inventory');
-        };
+        function updateView(viewName) {
+            currentView = viewName;
+            const data = reportData[viewName];
 
-        window.deleteItem = async (id) => { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id)); showToast("Deleted"); };
-        window.addToBasket = () => { cartCount++; document.getElementById('cartCount').innerText = cartCount; showToast("Added to Cart"); };
-        window.emergencyBooking = (t) => { if ("geolocation" in navigator) { navigator.geolocation.getCurrentPosition((pos) => { showToast(`Booking ${t}... Location sent.`); setTimeout(() => showToast(`${t} confirmed!`), 2000); }); } else showToast(`Searching ${t} partners.`); };
-        window.initiateConsult = () => { showToast("Connecting to Doctor..."); setTimeout(() => showToast("Doctor available! Connecting video..."), 2500); };
-        window.scrollToSection = (id) => { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); };
-        window.toggleAdminTab = (tab) => { document.getElementById('inventorySection').classList.toggle('hidden', tab !== 'inventory'); document.getElementById('addProductSection').classList.toggle('hidden', tab !== 'add'); };
-        const showToast = (msg) => { const t = document.getElementById('toast'); t.querySelector('span').innerText = msg; t.style.opacity = '1'; t.style.transform = 'translate(-50%, -20px)'; setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, 0)'; }, 3000); };
+            updateStats(data);
 
-        const i18n = {
-            en: { tagline: "Delivery Direct to your doorstep", grocery: "Grocery Store", subGrocery: "Fresh Harvest", food: "Hot Meals", subFood: "Village Kitchens", booking: "Book Rides", subBooking: "Toto & Cars", doctor: "Doctor Consult", subDoctor: "Live Help", sosTitle: "AMBULANCE", sosSub: "Tap for SOS Emergency", totoTitle: "TOTO RIDE", totoSub: "Local E-Rickshaw", carTitle: "PRIVATE CAR", carSub: "Fast Car Booking", feedTitle: "Recommended for You", live: "Live from Village" },
-            bn: { tagline: "সরাসরি আপনার দরজায় ডেলিভারি", grocery: "মুদি বাজার", subGrocery: "টাটকা ফসল", food: "গরম খাবার", subFood: "গ্রামের রান্নাঘর", booking: "গাড়ি বুকিং", subBooking: "টোটো এবং কার", doctor: "ডাক্তার দেখান", subDoctor: "সরাসরি সাহায্য", sosTitle: "অ্যাম্বুলেন্স", sosSub: "জরুরী ব্যবস্থা", totoTitle: "টোটো রাইড", totoSub: "লোকাল ই-রিকশা", carTitle: "প্রাইভেট কার", carSub: "দ্রুত গাড়ি বুকিং", feedTitle: "আপনার জন্য সেরা", live: "সরাসরি গ্রাম থেকে" },
-            hi: { tagline: "सीधे आपके द्वार पर डिलीवरी", grocery: "किराना स्टोर", subGrocery: "ताज़ी फसल", food: "गरम भोजन", subFood: "गांव की रसोई", booking: "सवारी बुकिंग", subBooking: "टोटो और कार", doctor: "डॉक्टर परामर्श", subDoctor: "लाइव सहायता", sosTitle: "एम्बुलेंस", sosSub: "आपातकालीन सेवा", totoTitle: "टोटो सवारी", totoSub: "स्थानीय ई-रिक्शा", carTitle: "प्राइवेट कार", carSub: "फास्ट कार बुकिंग", feedTitle: "आपके लिए अनुशंसित", live: "सीधे गांव से" },
-            st: { tagline: "ᱥᱚᱡᱷᱮ ᱟᱢᱟᱜ ᱫᱩᱣᱟᱹᱨ ᱨᱮ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ", grocery: "ᱠᱤᱨᱟᱱᱟ ᱫᱩᱠᱟᱱ", subGrocery: "ᱵᱟᱹᱫᱽ ᱠᱷᱚᱱ ᱛᱟᱡᱟ", food: "ᱞᱚᱞᱚ ᱡᱚᱢᱟᱜ", subFood: "ᱟᱹᱛᱩ ᱨᱮᱭᱟᱜ ᱪᱩᱞᱦᱟᱹ", booking: "ᱜᱟᱹᱰᱤ ᱵᱩᱠᱤᱝ", subBooking: "ᱴᱳᱴᱳ ᱟᱨ ᱠᱟᱨ", doctor: "ᱰᱟᱠᱴᱚᱨ ᱥᱚᱞᱦᱟ", subDoctor: "ᱞᱟᱭᱤᱵᱷ ᱜᱚᱲᱚ", sosTitle: "ᱮᱢᱵᱩᱞᱮᱱᱥ", sosSub: "ᱟᱹᱰᱤ ᱞᱟᱹᱠᱛᱤᱭᱟᱱ", totoTitle: "ᱴᱳᱴᱳ ᱫᱮᱡᱚᱜ", totoSub: "ᱟᱹᱛᱩ ᱨᱮᱱᱟᱜ ᱜᱟᱹᱰᱤ", carTitle: "ᱯᱨᱟᱭᱵᱷᱮᱴ ᱠᱟᱨ", carSub: "ᱞᱚᱜᱚᱱ ᱜᱟᱹᱰᱤ ᱵᱩᱠᱤᱝ", feedTitle: "ᱟᱢ ᱞᱟᱹᱜᱤᱫ ᱱᱟᱯᱟᱭᱟᱜ", live: "ᱟᱹᱛᱩ ᱠᱷᱚᱱ ᱥᱚᱡᱷᱮ" }
-        };
-        window.setLanguage = (lang) => {
-            const t = i18n[lang];
-            document.getElementById('nav-tagline').innerText = t.tagline;
-            document.getElementById('cat-grocery').innerHTML = t.grocery;
-            document.getElementById('sub-grocery').innerText = t.subGrocery;
-            document.getElementById('cat-food').innerHTML = t.food;
-            document.getElementById('sub-food').innerText = t.subFood;
-            document.getElementById('cat-booking').innerHTML = t.booking;
-            document.getElementById('sub-booking').innerText = t.subBooking;
-            document.getElementById('cat-doctor').innerHTML = t.doctor;
-            document.getElementById('sub-doctor').innerText = t.subDoctor;
-            document.getElementById('txt-sos-title').innerText = t.sosTitle;
-            document.getElementById('txt-sos-sub').innerText = t.sosSub;
-            document.getElementById('txt-toto-title').innerText = t.totoTitle;
-            document.getElementById('txt-toto-sub').innerText = t.totoSub;
-            document.getElementById('txt-car-title').innerText = t.carTitle;
-            document.getElementById('txt-car-sub').innerText = t.carSub;
-            document.getElementById('txt-feed-title').innerText = t.feedTitle;
-            document.getElementById('txt-live').innerText = t.live;
-            ['en', 'bn', 'hi', 'st'].forEach(l => document.getElementById(`btn-${l}`)?.classList.toggle('lang-active', l === lang));
-        };
+            charts.growth.data.datasets[0].data = data.growth.qComm;
+            charts.growth.data.datasets[1].data = data.growth.eComm;
+            charts.growth.update();
 
-        window.onload = () => { setLanguage('en'); };
+            charts.demo.data.datasets[0].data = data.demographics.data;
+            charts.demo.update();
+
+            charts.delivery.data.datasets[0].data = data.delivery.data;
+            charts.delivery.update();
+
+            document.getElementById('btn-global').className = viewName === 'global' ? 'nav-btn active px-4 py-2 rounded-md text-sm font-semibold text-slate-600 border border-transparent' : 'nav-btn px-4 py-2 rounded-md text-sm font-semibold text-slate-600 border border-transparent hover:bg-slate-200';
+            document.getElementById('btn-urban').className = viewName === 'urban' ? 'nav-btn active px-4 py-2 rounded-md text-sm font-semibold text-slate-600 border border-transparent' : 'nav-btn px-4 py-2 rounded-md text-sm font-semibold text-slate-600 border border-transparent hover:bg-slate-200';
+        }
+
+        document.getElementById('btn-global').addEventListener('click', function() { updateView('global'); });
+        document.getElementById('btn-urban').addEventListener('click', function() { updateView('urban'); });
+
+        window.onload = function() {
+            initCharts();
+            updateStats(reportData.global);
+        };
     </script>
 </body>
 </html>
