@@ -124,6 +124,7 @@
         
         <!-- CUSTOMER VIEW -->
         <section id="homePage" class="space-y-12 pb-24">
+            <!-- MAJOR CATEGORY TABS -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <button id="tab-grocery" onclick="switchCategory('Grocery')" class="super-card bg-white p-8 rounded-[3rem] border-2 border-emerald-100 flex flex-col items-center justify-center text-emerald-600 shadow-xl group">
                     <div class="w-16 h-16 bg-emerald-50 rounded-3xl flex items-center justify-center mb-4 transition-colors group-hover:bg-emerald-100"><i class="fas fa-leaf text-3xl"></i></div>
@@ -147,27 +148,38 @@
                 <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-10"></div>
             </div>
 
-            <div id="ride-section" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4">
+            <div id="ride-section" class="hidden grid grid-cols-1 lg:grid-cols-4 gap-8 pt-4">
                 <div class="col-span-full mb-4"><h3 class="text-2xl font-900 text-slate-800 uppercase tracking-tighter">Ride Services</h3></div>
-                <div onclick="emergencyBooking('Ambulance')" class="bg-white p-8 rounded-[3.5rem] border-4 border-red-100 flex items-center justify-between group emergency-pulse cursor-pointer">
-                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-ambulance"></i></div><div><h3 class="text-xl font-900 text-red-600 uppercase">Ambulance</h3><p class="text-slate-500 font-800 text-xs">Emergency SOS</p></div></div>
-                </div>
+                
+                <!-- 1. TOTO -->
                 <div onclick="emergencyBooking('Toto')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-400">
                     <div class="flex items-center gap-6"><div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-motorcycle"></i></div><div><h3 class="text-xl font-900 text-slate-900 uppercase">Toto Ride</h3><p class="text-slate-500 font-800 text-xs">Local E-Rickshaw</p></div></div>
                 </div>
+                
+                <!-- 2. BIKE -->
+                <div onclick="emergencyBooking('Bike')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-400">
+                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-bicycle"></i></div><div><h3 class="text-xl font-900 text-slate-900 uppercase">Bike Taxi</h3><p class="text-slate-500 font-800 text-xs">Quick Solo Travel</p></div></div>
+                </div>
+
+                <!-- 3. CAR -->
                 <div onclick="emergencyBooking('Car')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-400">
-                    <div class="flex items-center gap-6"><div class="w-20 h-20 bg-slate-50 text-slate-800 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-car"></i></div><div><h3 id="car-title" class="text-xl font-900 text-slate-900 uppercase">Private Car</h3><p class="text-slate-500 font-800 text-xs">Comfort travel</p></div></div>
+                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-slate-50 text-slate-800 rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-car"></i></div><div><h3 class="text-xl font-900 text-slate-900 uppercase">Private Car</h3><p class="text-slate-500 font-800 text-xs">Comfort travel</p></div></div>
+                </div>
+
+                <!-- 4. AMBULANCE -->
+                <div onclick="emergencyBooking('Ambulance')" class="bg-white p-8 rounded-[3.5rem] border-4 border-red-100 flex items-center justify-between group emergency-pulse cursor-pointer">
+                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-ambulance"></i></div><div><h3 class="text-xl font-900 text-red-600 uppercase">Ambulance</h3><p class="text-slate-500 font-800 text-xs">Emergency SOS</p></div></div>
                 </div>
             </div>
         </section>
 
-        <!-- ADMIN/PARTNER DASHBOARD -->
+        <!-- PARTNER DASHBOARD -->
         <section id="adminPage" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div id="merchantView" class="flex flex-col lg:flex-row gap-12">
                 <div class="w-full lg:w-96 space-y-8">
                     <div class="bg-white p-10 rounded-[4rem] border text-center shadow-2xl border-slate-100">
                         <div id="shopInitialContainer" class="w-24 h-24 bg-blue-grade rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-white text-5xl font-800 shadow-xl"><span id="shopInitial">P</span></div>
-                        <h4 id="shopNameDisplaySidebar" class="font-900 text-2xl text-slate-900 tracking-tight uppercase truncate">Shop Name</h4>
+                        <h4 id="shopNameDisplaySidebar" class="font-900 text-2xl text-slate-900 tracking-tight uppercase truncate font-900">Partner Store</h4>
                         <div class="mt-4 px-6 py-2 bg-blue-50 text-blue-600 text-[10px] font-900 uppercase rounded-full inline-block">Service Partner</div>
                     </div>
                     <div class="bg-white rounded-[3rem] border p-3 shadow-2xl border-slate-100">
@@ -184,9 +196,13 @@
                     </div>
                 </div>
                 <div class="flex-1 bg-white p-10 md:p-14 rounded-[5rem] border shadow-2xl min-h-[700px] border-slate-100">
+                    
                     <!-- ADD PRODUCT SHEET -->
                     <div id="addProductSection">
-                        <div class="mb-10"><h3 class="text-4xl font-900 text-slate-900 uppercase tracking-tighter">Add to Store</h3><p class="text-slate-400 font-700 mt-2 uppercase tracking-widest text-[10px]">Your products will be listed for all village users instantly.</p></div>
+                        <div class="mb-10">
+                            <h3 class="text-4xl font-900 text-slate-900 uppercase tracking-tighter">Add to Store</h3>
+                            <p class="text-slate-400 font-700 mt-2 uppercase tracking-widest text-[10px]">Your products will be listed for all village users instantly.</p>
+                        </div>
                         <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-2 gap-10">
                             <div class="space-y-6">
                                 <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Item Name</label><input type="text" id="pTitle" required placeholder="e.g. Fresh Potato (1kg)" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"></div>
@@ -213,6 +229,17 @@
         </section>
     </main>
 
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-16 px-8 mt-20 rounded-t-[5rem]">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
+            <div class="space-y-6"><h1 class="text-4xl logo-font text-blue-400 leading-none">VillageKart</h1><p class="text-slate-400 text-sm tracking-tight leading-relaxed uppercase font-700">Direct community marketplace for essential village life.</p></div>
+            <div class="flex flex-col md:items-end justify-center">
+                <button onclick="openAuthModal('register', 'admin')" class="bg-blue-600 text-white px-10 py-5 rounded-2xl font-900 shadow-xl hover:bg-blue-700 transition-all uppercase tracking-widest">Partner Portal</button>
+            </div>
+        </div>
+        <p class="text-center pt-16 text-slate-600 text-[10px] font-900 uppercase tracking-[0.3em]">© 2024 VillageKart Super App</p>
+    </footer>
+
     <!-- AUTH MODAL -->
     <div id="authModal" class="fixed inset-0 modal-overlay z-[100] flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-[4rem] shadow-2xl flex flex-col md:flex-row max-w-4xl w-full overflow-hidden animate-in zoom-in duration-300 relative">
@@ -230,6 +257,7 @@
                 </div>
 
                 <div id="authContent" class="space-y-4">
+                    <!-- Login View -->
                     <div id="loginView">
                         <div class="space-y-4">
                             <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1.5 ml-1">10-Digit ID (Mobile)</label><input type="text" id="loginId" maxlength="10" placeholder="9876543210" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none border-slate-200 focus:ring-2 focus:ring-blue-500"></div>
@@ -238,24 +266,39 @@
                         </div>
                     </div>
 
+                    <!-- Registration View -->
                     <div id="registerView" class="hidden h-[450px] overflow-y-auto pr-4 hide-scrollbar space-y-4">
-                        <div class="grid grid-cols-1 gap-4">
+                        <div id="reg-fields-container" class="grid grid-cols-1 gap-4">
+                            <!-- COMMON FIELDS -->
                             <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Full Name</label><input type="text" id="regName" placeholder="Your Name" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
-                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Mobile Number (Becomes your ID)</label><input type="tel" id="regPhone" maxlength="10" placeholder="10 Digit Number" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
-                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Email ID</label><input type="email" id="regEmail" placeholder="email@example.com" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Pin Code</label><input type="text" id="regPin" placeholder="700001" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
-                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Password</label><input type="password" id="regPass" value="12345" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Mobile Number (Becomes ID)</label><input type="tel" id="regPhone" maxlength="10" placeholder="10 Digit Number" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
+                            
+                            <!-- USER SPECIFIC -->
+                            <div id="userFieldsOnly">
+                                <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Full Address</label>
+                                <textarea id="regAddress" placeholder="Village, Landmark, District" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none h-24"></textarea>
                             </div>
-                            <div>
-                                <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Register As</label>
-                                <select id="regType" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none">
-                                    <option value="shop">Shop (Grocery/General)</option>
-                                    <option value="food">Restaurant / Hotel</option>
-                                    <option value="rider">Rider (Bike, Toto, Car)</option>
-                                </select>
+
+                            <!-- PARTNER SPECIFIC -->
+                            <div id="partnerFieldsOnly" class="hidden space-y-4">
+                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Email ID</label><input type="email" id="regEmail" placeholder="email@example.com" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Pin Code</label><input type="text" id="regPin" placeholder="700001" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
+                                    <div>
+                                        <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Register As</label>
+                                        <select id="regType" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none">
+                                            <option value="shop">Shop (Grocery/General)</option>
+                                            <option value="food">Restaurant / Hotel</option>
+                                            <option value="rider">Rider (Bike, Toto, Car)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Store / Vehicle Details</label><input type="text" id="regStore" placeholder="Store Name or Vehicle Details" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
                             </div>
-                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Store / Vehicle Details</label><input type="text" id="regStore" placeholder="Store Name or Vehicle Details" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
+
+                            <!-- PASSWORD -->
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Create Password</label><input type="password" id="regPass" value="12345" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
+                            
                             <button onclick="processRegister()" class="w-full bg-blue-grade text-white py-5 rounded-[1.5rem] font-900 shadow-2xl uppercase tracking-widest transition-all active:scale-95 mt-2">Submit Registration</button>
                         </div>
                     </div>
@@ -263,13 +306,15 @@
                 </div>
 
                 <div id="authLoading" class="hidden text-center py-10"><div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p class="text-[10px] font-900 uppercase tracking-widest text-slate-400 uppercase">Authenticating...</p></div>
+                
                 <div id="authSuccessMsg" class="hidden text-center py-10 space-y-4">
                     <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl"><i class="fas fa-check"></i></div>
-                    <h3 class="text-2xl font-900 text-slate-900 uppercase tracking-tighter">Success!</h3>
+                    <h3 class="text-2xl font-900 text-slate-900 uppercase tracking-tighter">Successfully Registered!</h3>
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                         <p class="text-slate-400 text-[10px] font-900 uppercase tracking-widest mb-1">Your Login ID</p>
                         <p id="successId" class="text-3xl font-900 text-blue-600 tracking-widest font-mono">9876543210</p>
                     </div>
+                    <p class="text-slate-500 font-700 uppercase tracking-widest text-[10px]">Now please log in with your ID and password.</p>
                     <button onclick="toggleAuthMode()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-800 text-sm uppercase tracking-widest">Go to Login</button>
                 </div>
             </div>
@@ -299,76 +344,115 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = 'villagekart-final-v1';
+        const appId = 'villagekart-v4';
 
         let currentUser = null, userData = null, productUnsub = null, cartCount = 0;
         let cMode = 'login', cRole = 'user', currentActiveCategory = 'Grocery';
 
+        // --- AUTH UI ---
         window.openAuthModal = (m, r) => { cMode = m; cRole = r; document.getElementById('authModal').classList.remove('hidden'); updateAuthUI(); setAuthRole(r); };
         window.closeAuthModal = () => { document.getElementById('authModal').classList.add('hidden'); document.getElementById('authSuccessMsg').classList.add('hidden'); document.getElementById('authContent').classList.remove('hidden'); };
         window.toggleAuthMode = () => { cMode = (cMode === 'login' ? 'register' : 'login'); document.getElementById('authSuccessMsg').classList.add('hidden'); document.getElementById('authContent').classList.remove('hidden'); updateAuthUI(); };
-        window.setAuthRole = (r) => { cRole = r; ['user', 'admin'].forEach(x => { const btn = document.getElementById(`role-${x}`); if(btn) btn.classList.toggle('lang-active', x === r); }); updateAuthUI(); };
+        window.setAuthRole = (r) => { 
+            cRole = r; 
+            ['user', 'admin'].forEach(x => { 
+                const btn = document.getElementById(`role-${x}`); 
+                if(btn) btn.classList.toggle('lang-active', x === r); 
+            }); 
+            updateAuthUI(); 
+        };
 
         function updateAuthUI() {
             document.getElementById('authTitle').innerText = cMode.toUpperCase();
             document.getElementById('loginView').classList.toggle('hidden', cMode !== 'login');
             document.getElementById('registerView').classList.toggle('hidden', cMode !== 'register');
             document.getElementById('authToggleBtn').innerText = cMode === 'login' ? 'New here? Register' : 'Have ID? Login';
+            
+            // Toggle form fields based on role during registration
+            if(cMode === 'register') {
+                document.getElementById('userFieldsOnly').classList.toggle('hidden', cRole !== 'user');
+                document.getElementById('partnerFieldsOnly').classList.toggle('hidden', cRole !== 'admin');
+            }
         }
 
-        const pseudoEmail = (id) => `${id.trim().replace(/\D/g, '')}@villagekart.app`;
+        const getPseudoEmail = (id) => `${id.trim().replace(/\D/g, '')}@village.app`;
 
+        // --- LOGIN LOGIC ---
         window.processLogin = async () => {
-            const id = document.getElementById('loginId').value.trim();
+            const idRaw = document.getElementById('loginId').value;
             const pass = document.getElementById('loginPass').value;
+            const id = idRaw.replace(/\D/g, '');
+
             if(id.length !== 10) return showToast("Enter 10-Digit ID");
-            const email = pseudoEmail(id);
+            const pseudoEmail = getPseudoEmail(id);
+
             document.getElementById('authContent').classList.add('hidden');
             document.getElementById('authLoading').classList.remove('hidden');
             try {
-                await signInWithEmailAndPassword(auth, email, pass);
-                showToast("Login Success!"); closeAuthModal();
+                await signInWithEmailAndPassword(auth, pseudoEmail, pass);
+                showToast("Login Successful!"); closeAuthModal();
             } catch (e) {
-                console.error(e.code);
-                showToast("Invalid ID or Password.");
-                document.getElementById('authContent').classList.remove('hidden');
-                document.getElementById('authLoading').classList.add('hidden');
-            }
-        };
-
-        window.processRegister = async () => {
-            const name = document.getElementById('regName').value;
-            const phone = document.getElementById('regPhone').value.trim();
-            const emailAddr = document.getElementById('regEmail').value;
-            const pin = document.getElementById('regPin').value;
-            const pass = document.getElementById('regPass').value;
-            const store = document.getElementById('regStore').value;
-            const type = document.getElementById('regType').value;
-
-            if(!name || phone.length !== 10 || !emailAddr || !pin || !store) return showToast("Fill all boxes");
-
-            const email = pseudoEmail(phone);
-            document.getElementById('authContent').classList.add('hidden');
-            document.getElementById('authLoading').classList.remove('hidden');
-
-            try {
-                const cr = await createUserWithEmailAndPassword(auth, email, pass);
-                const profile = { uid: cr.user.uid, id: phone, fullName: name, email: emailAddr, pinCode: pin, shopName: store, role: cRole, partnerType: type, joined: new Date().toISOString() };
-                await setDoc(doc(db, 'artifacts', appId, 'users', cr.user.uid, 'profile', 'data'), profile);
-                if(cRole === 'admin') await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', cr.user.uid), profile);
-                await signOut(auth);
-                document.getElementById('successId').innerText = phone;
-                document.getElementById('authLoading').classList.add('hidden');
-                document.getElementById('authSuccessMsg').classList.remove('hidden');
-            } catch (e) {
-                console.error(e.code);
-                let msg = "ID already registered.";
-                if(e.code === 'auth/operation-not-allowed') msg = "Enable Email provider in Console!";
+                console.error("Login Error:", e.code);
+                let msg = "Invalid ID or Password.";
+                if(e.code === 'auth/user-not-found') msg = "ID not registered.";
                 showToast(msg);
                 document.getElementById('authContent').classList.remove('hidden');
                 document.getElementById('authLoading').classList.add('hidden');
             }
         };
+
+        // --- REGISTER LOGIC ---
+        window.processRegister = async () => {
+            const name = document.getElementById('regName').value;
+            const phoneRaw = document.getElementById('regPhone').value;
+            const pass = document.getElementById('regPass').value;
+            const phone = phoneRaw.replace(/\D/g, '');
+
+            if(!name || phone.length !== 10 || !pass) return showToast("Name, ID and Password required");
+
+            const pseudoEmail = getPseudoEmail(phone);
+            document.getElementById('authContent').classList.add('hidden');
+            document.getElementById('authLoading').classList.remove('hidden');
+
+            try {
+                const cr = await createUserWithEmailAndPassword(auth, pseudoEmail, pass);
+                
+                let profile = { 
+                    uid: cr.user.uid, 
+                    id: phone,
+                    fullName: name, 
+                    role: cRole, 
+                    joined: new Date().toISOString() 
+                };
+
+                // Role specific data
+                if(cRole === 'user') {
+                    profile.address = document.getElementById('regAddress').value;
+                } else {
+                    profile.email = document.getElementById('regEmail').value;
+                    profile.pinCode = document.getElementById('regPin').value;
+                    profile.partnerType = document.getElementById('regType').value;
+                    profile.shopName = document.getElementById('regStore').value;
+                }
+
+                await setDoc(doc(db, 'artifacts', appId, 'users', cr.user.uid, 'profile', 'data'), profile);
+                if(cRole === 'admin') await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', cr.user.uid), profile);
+                
+                await signOut(auth);
+                document.getElementById('successId').innerText = phone;
+                document.getElementById('authLoading').classList.add('hidden');
+                document.getElementById('authSuccessMsg').classList.remove('hidden');
+            } catch (e) {
+                console.error("Register Error:", e.code);
+                let msg = "Registration failed.";
+                if(e.code === 'auth/email-already-in-use') msg = "ID already registered.";
+                showToast(msg);
+                document.getElementById('authContent').classList.remove('hidden');
+                document.getElementById('authLoading').classList.add('hidden');
+            }
+        };
+
+        window.logout = () => { signOut(auth).then(() => { showPage('home'); showToast("Logged Out"); location.reload(); }); };
 
         onAuthStateChanged(auth, async (u) => {
             currentUser = u;
@@ -378,7 +462,7 @@
                 const p = await getDoc(doc(db, 'artifacts', appId, 'users', u.uid, 'profile', 'data'));
                 if(p.exists()) { 
                     userData = p.data(); 
-                    btn.innerText = `Welcome ${userData.shopName}`; 
+                    btn.innerText = `Welcome ${userData.shopName || userData.fullName}`; 
                     btn.classList.add('welcome-badge');
                     if(userData.role === 'admin') toggleAdminView();
                 }
@@ -389,6 +473,7 @@
             }
         });
 
+        // --- DASHBOARD ACTIONS ---
         window.toggleTab = (tab) => { 
             document.getElementById('inventorySection').classList.toggle('hidden', tab !== 'list'); 
             document.getElementById('addProductSection').classList.toggle('hidden', tab !== 'add'); 
@@ -399,20 +484,24 @@
         window.toggleAdminView = () => {
             if(!userData) return;
             showPage('admin');
-            document.getElementById('shopNameDisplaySidebar').innerText = userData.shopName;
-            document.getElementById('shopInitial').innerText = userData.shopName[0].toUpperCase();
+            document.getElementById('shopNameDisplaySidebar').innerText = userData.shopName || userData.fullName;
+            document.getElementById('shopInitial').innerText = (userData.shopName || userData.fullName)[0].toUpperCase();
             toggleTab('add'); 
         };
 
+        // --- MARKETPLACE LOGIC ---
         window.switchCategory = (cat) => {
             currentActiveCategory = cat;
             ['grocery', 'food', 'ride'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
-                if(el) { el.className = el.className.replace(/tab-active-\w+/g, "").trim(); if(t === cat.toLowerCase()) el.classList.add(`tab-active-${t}`); }
+                if(el) {
+                  el.className = el.className.replace(/tab-active-\w+/g, "").trim();
+                  if(t === cat.toLowerCase()) el.classList.add(`tab-active-${t}`);
+                }
             });
-            document.getElementById('ride-section').classList.toggle('hidden', cat !== 'Ride');
-            document.getElementById('marketplace-section').classList.toggle('hidden', cat === 'Ride');
-            syncData();
+            const rideSec = document.getElementById('ride-section'), marketSec = document.getElementById('marketplace-section');
+            if(cat === 'Ride') { rideSec.classList.remove('hidden'); marketSec.classList.add('hidden'); } 
+            else { rideSec.classList.add('hidden'); marketSec.classList.remove('hidden'); syncData(); }
         };
 
         function syncData() {
@@ -420,12 +509,13 @@
             productUnsub = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), sn => {
                 const list = []; sn.forEach(d => { const data = d.data(); if(data.category === currentActiveCategory) list.push({ id: d.id, ...data }); });
                 const grid = document.getElementById('productGrid');
-                if(list.length === 0) grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-300 font-900 italic text-2xl uppercase tracking-tighter">Market opening soon...</div>`;
+                if(list.length === 0) grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-300 font-900 italic text-2xl tracking-tighter uppercase">Market loading...</div>`;
                 else grid.innerHTML = list.map(p => `<div class="bg-white p-6 rounded-[3.5rem] border border-slate-200 transition-all hover:shadow-2xl hover:-translate-y-2 group"><div class="aspect-square rounded-[2.5rem] bg-slate-50 mb-6 overflow-hidden flex items-center justify-center p-6 border border-slate-100"><img src="https://source.unsplash.com/featured/?${p.keyword}" class="w-full h-full object-contain group-hover:scale-110 transition-all"></div><div class="space-y-2"><p class="text-[10px] font-900 text-blue-600 uppercase tracking-widest font-800">${p.category}</p><h4 class="text-base font-900 text-slate-900 line-clamp-1">${p.title}</h4><div class="flex items-center justify-between pt-6 border-t mt-4 border-slate-50"><div class="text-2xl font-900 tracking-tighter">$${p.price}</div><button onclick="addToCart()" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-xl active:scale-90 hover:bg-blue-600 transition-all"><i class="fas fa-plus text-sm"></i></button></div></div></div>`).join('');
-                if(currentUser && userData?.role === 'admin') {
+                
+                if(currentUser && (userData?.role === 'admin')) {
                     const adminList = []; sn.forEach(d => adminList.push({id: d.id, ...d.data()}));
                     const filtered = adminList.filter(x => x.sellerId === currentUser.uid);
-                    document.getElementById('adminProductTable').innerHTML = filtered.map(x => `<tr class="hover:bg-blue-50 transition-all"><td class="py-8 font-800 text-slate-900 px-4">${x.title}</td><td class="py-8 font-900 text-slate-400 px-4 text-xs uppercase tracking-widest">${x.category}</td><td class="py-8 font-900 text-slate-900 px-4 text-center">$${x.price}</td><td class="py-8 text-right px-4"><button onclick="delItem('${x.id}')" class="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center ml-auto font-800">DEL</button></td></tr>`).join('');
+                    document.getElementById('adminProductTable').innerHTML = filtered.map(x => `<tr class="hover:bg-blue-50 transition-all"><td class="py-8 font-800 text-slate-900 px-4">${x.title}</td><td class="py-8 font-900 text-slate-400 px-4 text-xs uppercase tracking-widest">${x.category}</td><td class="py-8 font-900 text-slate-900 px-4 text-center">$${x.price}</td><td class="py-8 text-right px-4"><button onclick="delItem('${x.id}')" class="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center ml-auto"><i class="fas fa-trash-alt text-xs"></i></button></td></tr>`).join('');
                 }
             });
         }
@@ -433,19 +523,23 @@
         document.getElementById('addProductForm').onsubmit = async (e) => {
             e.preventDefault();
             if(!currentUser || !userData) return showToast("Not Authenticated");
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), { title: document.getElementById('pTitle').value, category: document.getElementById('pCategory').value, price: parseFloat(document.getElementById('pPrice').value), stock: parseInt(document.getElementById('pStock').value), desc: document.getElementById('pDesc').value, keyword: document.getElementById('pImageKeyword').value || 'item', sellerId: currentUser.uid, sellerName: userData.shopName, createdAt: new Date().toISOString() });
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), { title: document.getElementById('pTitle').value, category: document.getElementById('pCategory').value, price: parseFloat(document.getElementById('pPrice').value), stock: parseInt(document.getElementById('pStock').value), desc: document.getElementById('pDesc').value, keyword: document.getElementById('pImageKeyword').value || 'item', sellerId: currentUser.uid, sellerName: userData.shopName || userData.fullName, createdAt: new Date().toISOString() });
             showToast("Published Successfully!"); e.target.reset(); toggleTab('list');
         };
 
         window.delItem = async (id) => { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id)); showToast("Deleted"); };
-        window.addToCart = () => { cartCount++; document.getElementById('cartCount').innerText = cartCount; showToast("Added!"); };
-        window.emergencyBooking = async (type) => { if(!currentUser) return openAuthModal('login', 'user'); showToast(`Requesting ${type}...`); };
+        window.addToCart = () => { cartCount++; document.getElementById('cartCount').innerText = cartCount; showToast("Added to Cart!"); };
+        window.emergencyBooking = (type) => { if(!currentUser) return openAuthModal('login', 'user'); showToast(`Requesting ${type}...`); };
         window.showPage = (p) => { document.getElementById('homePage').classList.toggle('hidden', p !== 'home'); document.getElementById('adminPage').classList.toggle('hidden', p !== 'admin'); if(p === 'home') window.scrollTo({top: 0, behavior: 'smooth'}); };
-        window.logout = () => { signOut(auth).then(() => { showPage('home'); showToast("Logged Out"); location.reload(); }); };
         const showToast = (m) => { const t = document.getElementById('toast'); t.querySelector('span').innerText = m; t.style.opacity = '1'; t.style.transform = 'translate(-50%, -20px)'; setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, 0)'; }, 3000); };
 
-        window.onload = () => { switchCategory('Grocery'); };
-        window.setLanguage = (l) => { ['en', 'bn', 'hi', 'st'].forEach(x => { const el = document.getElementById(`btn-${x}`); if(el) el.classList.toggle('lang-active', x === l); }); };
+        window.onload = () => { setLanguage('en'); switchCategory('Grocery'); };
+        window.setLanguage = (l) => {
+            ['en', 'bn', 'hi', 'st'].forEach(x => {
+              const el = document.getElementById(`btn-${x}`);
+              if(el) el.classList.toggle('lang-active', x === l);
+            });
+        };
     </script>
 </body>
 </html>
