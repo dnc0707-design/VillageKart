@@ -63,6 +63,15 @@
             border-color: var(--primary-blue);
             font-weight: 900 !important;
         }
+
+        .admin-footer-btn {
+            color: #475569;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .admin-footer-btn:hover { color: white; }
     </style>
 </head>
 <body>
@@ -142,7 +151,7 @@
                 <div class="w-full lg:w-80 space-y-4">
                     <div class="bg-white p-8 rounded-[3rem] border text-center shadow-lg">
                         <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4 font-bold">A</div>
-                        <h3 class="font-900 uppercase">System Admin</h3>
+                        <h3 class="font-900 uppercase tracking-tighter">System Admin</h3>
                     </div>
                     <div class="bg-white p-3 rounded-[2rem] border shadow-lg flex flex-col gap-1">
                         <button onclick="toggleAdminTab('signup')" id="admin-tab-signup" class="w-full text-left p-4 rounded-xl bg-blue-50 text-blue-600 font-800">Sign Up Partners</button>
@@ -154,86 +163,68 @@
                 <div class="flex-1 bg-white p-8 md:p-12 rounded-[4rem] shadow-xl border">
                     <!-- Sign Up Partners Tab -->
                     <div id="admin-signup">
-                        <h2 class="text-3xl font-900 mb-8 uppercase tracking-tighter">Create Partner Login</h2>
+                        <h2 class="text-3xl font-900 mb-8 uppercase tracking-tighter">Partner Registration</h2>
                         <form id="adminRegisterPartnerForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <input type="text" id="apName" required placeholder="Owner Name" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
-                            <input type="tel" id="apPhone" required maxlength="10" placeholder="Partner Mobile (User ID)" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
-                            <input type="text" id="apStore" required placeholder="Store Name / Vehicle Info" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
-                            <select id="apType" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
-                                <option value="merchant">Merchant (Store/Hotel)</option>
-                                <option value="rider">Rider (Transport)</option>
-                            </select>
-                            <input type="password" id="apPass" required placeholder="Set Password" class="w-full bg-slate-50 border p-4 rounded-xl font-800 col-span-full">
-                            <button type="submit" class="bg-blue-600 text-white py-5 rounded-2xl font-900 uppercase col-span-full shadow-lg">Confirm Registration</button>
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Owner Name</label><input type="text" id="apName" required class="w-full bg-slate-50 border p-4 rounded-xl font-800"></div>
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Mobile (Login ID)</label><input type="tel" id="apPhone" required maxlength="10" class="w-full bg-slate-50 border p-4 rounded-xl font-800"></div>
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Store / Vehicle Info</label><input type="text" id="apStore" required class="w-full bg-slate-50 border p-4 rounded-xl font-800"></div>
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Type</label>
+                                <select id="apType" class="w-full bg-slate-50 border p-4 rounded-xl font-800"><option value="merchant">Merchant (Store)</option><option value="rider">Rider (Vehicle)</option></select>
+                            </div>
+                            <div class="col-span-full"><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Set Password</label><input type="password" id="apPass" required placeholder="Min 6 chars" class="w-full bg-slate-50 border p-4 rounded-xl font-800"></div>
+                            <button type="submit" id="confirmPartnerBtn" class="bg-blue-600 text-white py-5 rounded-2xl font-900 uppercase col-span-full shadow-lg transition-all active:scale-95">Confirm Registration</button>
                         </form>
                     </div>
                     <!-- Partner List Tab -->
                     <div id="admin-list" class="hidden">
-                        <h2 class="text-3xl font-900 mb-8 uppercase tracking-tighter">Select Partner to Manage</h2>
+                        <h2 class="text-3xl font-900 mb-8 uppercase tracking-tighter">Partner List</h2>
                         <div id="admin-partner-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                     </div>
-                    <!-- Detailed Partner Management (Add Product) -->
+                    <!-- Management Tab -->
                     <div id="admin-partner-details" class="hidden">
                         <div class="flex items-center gap-4 mb-8">
                             <button onclick="toggleAdminTab('list')" class="text-blue-600 font-900 text-sm">← Back to List</button>
-                            <h2 id="managing-partner-name" class="text-2xl font-900 uppercase">Managing Partner</h2>
+                            <h2 id="managing-partner-name" class="text-2xl font-900 uppercase">Partner</h2>
                         </div>
                         <form id="adminAddProductForm" class="space-y-6 bg-slate-50 p-8 rounded-[3rem] border">
-                            <h4 class="font-900 uppercase text-xs text-slate-400">Add Item/Service for this Partner</h4>
-                            <input type="text" id="addPTitle" required placeholder="Product or Vehicle Name" class="w-full bg-white border p-4 rounded-xl font-800">
+                            <input type="text" id="addPTitle" required placeholder="Product or Service Name" class="w-full bg-white border p-4 rounded-xl font-800">
                             <div class="grid grid-cols-2 gap-4">
-                                <input type="number" step="0.01" id="addPPrice" required placeholder="Price/Fare ($)" class="w-full bg-white border p-4 rounded-xl font-800">
+                                <input type="number" step="0.01" id="addPPrice" required placeholder="Price ($)" class="w-full bg-white border p-4 rounded-xl font-800">
                                 <input type="number" id="addPStock" required placeholder="Stock Qty" class="w-full bg-white border p-4 rounded-xl font-800">
                             </div>
-                            <select id="addPCategory" class="w-full bg-white border p-4 rounded-xl font-800">
-                                <option>Grocery</option><option>Food</option><option>Ride</option>
-                            </select>
-                            <input type="text" id="addPKeyword" placeholder="Image Keyword (e.g. Pizza)" class="w-full bg-white border p-4 rounded-xl font-800">
-                            <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-900 uppercase">Publish to Homepage</button>
+                            <select id="addPCategory" class="w-full bg-white border p-4 rounded-xl font-800"><option>Grocery</option><option>Food</option><option>Ride</option></select>
+                            <input type="text" id="addPKeyword" placeholder="Image Keyword (e.g. Apple)" class="w-full bg-white border p-4 rounded-xl font-800">
+                            <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-900 uppercase">Add to Marketplace</button>
                         </form>
-                    </div>
-                    <!-- Reports Tab -->
-                    <div id="admin-reports" class="hidden">
-                        <h2 class="text-3xl font-900 mb-8 uppercase tracking-tighter">Orders & Reports</h2>
-                        <div class="p-20 text-center italic text-slate-400">No report data generated yet.</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- PARTNER DASHBOARD (Login from Footer) -->
-        <section id="partnerPage" class="hidden space-y-8 animate-in fade-in duration-500">
+        <!-- PARTNER DASHBOARD (Login via Footer) -->
+        <section id="partnerPage" class="hidden animate-in fade-in duration-500">
             <div class="flex flex-col lg:flex-row gap-8">
                 <div class="w-full lg:w-80 space-y-4">
                     <div class="bg-white p-8 rounded-[3rem] border text-center shadow-lg">
                         <div id="pInitial" class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4 font-bold">P</div>
                         <h3 id="pShopName" class="font-900 text-lg uppercase truncate">Partner</h3>
-                        <div id="pRiderStatus" class="hidden mt-4 pt-4 border-t">
-                            <div class="flex items-center justify-between">
-                                <span id="dutyLabel" class="text-xs font-900">OFFLINE</span>
-                                <button onclick="toggleDuty()" id="dutyBtn" class="w-12 h-6 bg-slate-300 rounded-full relative"><div id="dutySlider" class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full"></div></button>
-                            </div>
-                        </div>
                     </div>
-                    <div class="bg-white p-4 rounded-[2rem] border shadow-lg flex flex-col gap-1">
-                        <button onclick="togglePartnerTab('add')" id="p-tab-add" class="w-full text-left p-4 rounded-xl bg-blue-50 text-blue-600 font-800">Add Items/Vehicle</button>
+                    <div class="bg-white p-3 rounded-[2rem] border shadow-lg flex flex-col gap-1">
+                        <button onclick="togglePartnerTab('add')" class="w-full text-left p-4 rounded-xl bg-blue-50 text-blue-600 font-800">My Inventory</button>
                         <button onclick="logout()" class="w-full text-left p-4 rounded-xl text-red-500 font-800 mt-4">Logout</button>
                     </div>
                 </div>
                 <div class="flex-1 bg-white p-10 rounded-[4rem] shadow-xl border">
                     <div id="p-add-form">
-                        <h2 class="text-3xl font-900 mb-8 uppercase tracking-tighter">Store Management</h2>
+                        <h2 class="text-3xl font-900 mb-8 uppercase tracking-tighter">Inventory Control</h2>
                         <form id="partnerSelfAddForm" class="space-y-6 max-w-xl">
-                            <input type="text" id="psTitle" required placeholder="Name" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
+                            <input type="text" id="psTitle" required placeholder="Item Name" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
                             <div class="grid grid-cols-2 gap-4">
                                 <input type="number" step="0.01" id="psPrice" required placeholder="Price ($)" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
-                                <input type="number" id="psStock" required placeholder="Qty" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
+                                <input type="number" id="psStock" required placeholder="Stock" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
                             </div>
-                            <select id="psCategory" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
-                                <option>Grocery</option><option>Food</option><option>Ride</option>
-                            </select>
-                            <input type="text" id="psKeyword" placeholder="Image keyword" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
-                            <button type="submit" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-900 uppercase">List Item</button>
+                            <select id="psCategory" class="w-full bg-slate-50 border p-4 rounded-xl font-800"><option>Grocery</option><option>Food</option></select>
+                            <button type="submit" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-900 uppercase">Add Item</button>
                         </form>
                     </div>
                 </div>
@@ -242,22 +233,22 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-900 text-white py-12 px-8 mt-20 rounded-t-[5rem]">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+    <footer class="bg-slate-900 text-white py-10 px-8 mt-20 rounded-t-[5rem]">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <h1 class="text-2xl logo-font text-blue-400">VillageKart</h1>
-            <div class="flex gap-8">
-                <button onclick="openAuthModal('login', 'admin')" class="text-slate-500 hover:text-white uppercase font-900 text-xs">Admin Access</button>
-                <button onclick="openAuthModal('login', 'partner')" class="text-slate-500 hover:text-white uppercase font-900 text-xs">Partner Login</button>
+            <div class="flex gap-10">
+                <button onclick="openAuthModal('login', 'admin')" class="admin-footer-btn">Admin Portal</button>
+                <button onclick="openAuthModal('login', 'partner')" class="admin-footer-btn">Partner Sign In</button>
             </div>
         </div>
     </footer>
 
     <!-- AUTH MODAL -->
     <div id="authModal" class="fixed inset-0 modal-overlay z-[100] flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-[4rem] shadow-2xl flex flex-col md:flex-row max-w-4xl w-full overflow-hidden relative">
-            <button onclick="closeAuthModal()" class="absolute right-8 top-8 text-slate-300 font-900">X</button>
+        <div class="bg-white rounded-[4rem] shadow-2xl flex flex-col md:flex-row max-w-4xl w-full overflow-hidden relative animate-in zoom-in duration-300">
+            <button onclick="closeAuthModal()" class="absolute right-8 top-8 text-slate-300 hover:text-slate-900 font-900">X</button>
             <div class="bg-blue-grade text-white p-12 md:w-5/12 flex flex-col justify-between">
-                <div><h2 id="authTitle" class="text-4xl font-800 logo-font uppercase">Access</h2></div>
+                <div><h2 id="authTitle" class="text-4xl font-800 logo-font uppercase tracking-tighter">Sign In</h2></div>
                 <div class="opacity-20"><i class="fas fa-truck-fast text-[120px]"></i></div>
             </div>
             <div class="p-12 md:w-7/12 bg-white">
@@ -266,23 +257,23 @@
                         <div class="space-y-4">
                             <input type="text" id="loginId" placeholder="Mobile Number" class="w-full bg-slate-50 border p-4 rounded-xl font-800 outline-none">
                             <input type="password" id="loginPass" placeholder="Password" class="w-full bg-slate-50 border p-4 rounded-xl font-800 outline-none">
-                            <button onclick="processLogin()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-900 uppercase mt-2">Sign In</button>
+                            <button onclick="processLogin()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-900 uppercase mt-2 shadow-lg">Access Portal</button>
                         </div>
                     </div>
-                    <div id="registerView" class="hidden space-y-4">
-                        <input type="text" id="regName" placeholder="Full Name" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
-                        <input type="tel" id="regPhone" placeholder="Mobile Number" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
-                        <input type="text" id="regVillage" placeholder="Village Name" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
-                        <input type="text" id="regPin" placeholder="Pin Number" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
-                        <input type="password" id="regPass" placeholder="Set Password" class="w-full bg-slate-50 border p-4 rounded-xl font-800">
+                    <div id="registerView" class="hidden space-y-4 text-left">
+                        <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Full Name</label><input type="text" id="regName" class="w-full bg-slate-50 border p-4 rounded-xl font-800"></div>
+                        <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Mobile Number</label><input type="tel" id="regPhone" maxlength="10" class="w-full bg-slate-50 border p-4 rounded-xl font-800"></div>
+                        <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Village & Pincode</label><textarea id="regAddress" class="w-full bg-slate-50 border p-4 rounded-xl font-800 h-20"></textarea></div>
+                        <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Set Password</label><input type="password" id="regPass" class="w-full bg-slate-50 border p-4 rounded-xl font-800"></div>
                         <button onclick="processRegister()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-900 uppercase">Submit Registration</button>
                     </div>
-                    <div id="authToggle" class="text-center pt-2"><button onclick="toggleAuthMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase">Create Account</button></div>
+                    <div id="authToggle" class="text-center pt-2"><button onclick="toggleAuthMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase">New User? Create Account</button></div>
                 </div>
                 <div id="authSuccessMsg" class="hidden text-center py-10 space-y-4">
                     <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl"><i class="fas fa-check"></i></div>
                     <h3 class="text-2xl font-900 uppercase">Registration Successful!</h3>
-                    <button onclick="toggleAuthMode()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-800 text-sm uppercase">Go to Login</button>
+                    <p class="text-slate-400 text-xs font-800 uppercase">Now sign in with your mobile and password.</p>
+                    <button onclick="toggleAuthMode()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-800 text-sm uppercase mt-4">Go to Login</button>
                 </div>
             </div>
         </div>
@@ -309,9 +300,13 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const fbId = 'villagekart-v12';
 
-        let currentUser = null, userData = null, productUnsub = null, currentPartnerId = null, cartCount = 0;
+        // Secondary Auth instance for Admin to create users without being signed out
+        const secondaryApp = initializeApp(firebaseConfig, "SecondaryAuth");
+        const secondaryAuth = getAuth(secondaryApp);
+
+        const fbId = 'villagekart-v15';
+        let userData = null, productUnsub = null, currentPartnerId = null, cartCount = 0;
         let cMode = 'login', cRole = 'user';
 
         const getEmail = (id, role) => `${id}@${role}.villagekart.app`;
@@ -331,44 +326,60 @@
             const id = document.getElementById('loginId').value.trim();
             const pass = document.getElementById('loginPass').value;
 
-            if(cRole === 'admin') {
-                if(id === '7980230656' && pass === '123456') {
-                    userData = { role: 'admin', shopName: 'System Admin' };
-                    showPage('admin'); closeAuthModal(); updateHeader();
-                    return;
-                } else return showToast("Admin Auth Failed");
+            if(cRole === 'admin' && id === '7980230656' && pass === '123456') {
+                showToast("Admin access granted");
+                userData = { role: 'admin', shopName: 'System Admin' };
+                showPage('admin'); closeAuthModal(); updateHeader();
+                return;
             }
 
             try {
                 await signInWithEmailAndPassword(auth, getEmail(id, cRole), pass);
                 closeAuthModal();
-            } catch (e) { showToast("Check ID/Password"); }
+            } catch (e) { showToast("Invalid ID or Password"); }
         };
 
         window.processRegister = async () => {
-            const name = document.getElementById('regName').value, id = document.getElementById('regPhone').value.trim(), village = document.getElementById('regVillage').value, pin = document.getElementById('regPin').value, pass = document.getElementById('regPass').value;
+            const name = document.getElementById('regName').value, id = document.getElementById('regPhone').value.trim(), address = document.getElementById('regAddress').value, pass = document.getElementById('regPass').value;
             if(!name || id.length !== 10) return showToast("Enter correct data");
             try {
                 const cr = await createUserWithEmailAndPassword(auth, getEmail(id, 'user'), pass);
-                await setDoc(doc(db, 'artifacts', fbId, 'users', cr.user.uid, 'profile', 'data'), { uid: cr.user.uid, id, fullName: name, village, pin, role: 'user' });
+                await setDoc(doc(db, 'artifacts', fbId, 'users', cr.user.uid, 'profile', 'data'), { uid: cr.user.uid, id, fullName: name, address, role: 'user' });
                 await signOut(auth);
                 document.getElementById('authContent').classList.add('hidden');
                 document.getElementById('authSuccessMsg').classList.remove('hidden');
-            } catch (e) { showToast("Error: ID may exist"); }
+            } catch (e) { showToast("ID already exists"); }
         };
 
-        // --- ADMIN ACTIONS ---
+        // --- ADMIN: REGISTER PARTNER (FIXED) ---
         document.getElementById('adminRegisterPartnerForm').onsubmit = async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('confirmPartnerBtn');
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+
             const name = document.getElementById('apName').value, id = document.getElementById('apPhone').value.trim(), store = document.getElementById('apStore').value, type = document.getElementById('apType').value, pass = document.getElementById('apPass').value;
+            
             try {
-                const cr = await createUserWithEmailAndPassword(auth, getEmail(id, 'partner'), pass);
+                // Use secondaryAuth to avoid signing out Admin
+                const cr = await createUserWithEmailAndPassword(secondaryAuth, getEmail(id, 'partner'), pass);
                 const prof = { uid: cr.user.uid, id, fullName: name, shopName: store, role: 'partner', partnerType: type, joined: new Date().toISOString() };
                 await setDoc(doc(db, 'artifacts', fbId, 'users', cr.user.uid, 'profile', 'data'), prof);
                 await setDoc(doc(db, 'artifacts', fbId, 'public', 'data', 'partners', cr.user.uid), prof);
+                
+                // Sign out the newly created partner on secondary instance
+                await signOut(secondaryAuth);
+                
                 showToast("Partner Registered Successfully!");
-                location.reload();
-            } catch (e) { showToast("Failed to create Partner"); }
+                e.target.reset();
+                toggleAdminTab('list');
+            } catch (e) { 
+                console.error(e);
+                showToast(e.code === 'auth/email-already-in-use' ? "Partner ID already exists" : "Registration Failed"); 
+            } finally {
+                btn.innerText = "Confirm Registration";
+                btn.disabled = false;
+            }
         };
 
         window.toggleAdminTab = (t) => {
@@ -376,6 +387,11 @@
             document.getElementById(`admin-${t}`).classList.remove('hidden');
             document.getElementById('admin-partner-details').classList.add('hidden');
             if(t === 'list') loadPartnerList();
+            
+            ['signup', 'list', 'reports'].forEach(id => {
+                const btn = document.getElementById(`admin-tab-${id}`);
+                btn.className = `w-full text-left p-4 rounded-xl font-800 ${t === id ? 'bg-blue-50 text-blue-600' : 'text-slate-400'}`;
+            });
         };
 
         async function loadPartnerList() {
@@ -385,8 +401,8 @@
                 sn.forEach(d => {
                     const p = d.data();
                     const card = document.createElement('div');
-                    card.className = "p-6 bg-slate-50 border rounded-3xl cursor-pointer hover:border-blue-500 transition-all";
-                    card.innerHTML = `<div class='font-900 uppercase'>${p.shopName}</div><div class='text-xs text-slate-400'>${p.partnerType}</div>`;
+                    card.className = "p-6 bg-white border rounded-3xl cursor-pointer hover:border-blue-500 transition-all shadow-sm flex justify-between items-center";
+                    card.innerHTML = `<div><div class='font-900 uppercase text-slate-800'>${p.shopName}</div><div class='text-[10px] font-900 text-slate-400 uppercase'>${p.partnerType} • ID: ${p.id}</div></div><i class='fas fa-chevron-right text-slate-200'></i>`;
                     card.onclick = () => managePartner(p);
                     grid.appendChild(card);
                 });
@@ -411,20 +427,18 @@
                 sellerId: currentPartnerId,
                 sellerName: document.getElementById('managing-partner-name').innerText
             });
-            showToast("Item Published!"); e.target.reset();
+            showToast("Published to Marketplace!"); e.target.reset();
         };
 
-        // --- DASHBOARD ROUTING ---
         onAuthStateChanged(auth, async (u) => {
-            if(u && u.uid !== 'system_admin') {
+            if(u) {
                 const p = await getDoc(doc(db, 'artifacts', fbId, 'users', u.uid, 'profile', 'data'));
                 if(p.exists()) {
                     userData = p.data(); updateHeader();
                     if(userData.role === 'partner') {
                         showPage('partner');
                         document.getElementById('pShopName').innerText = userData.shopName;
-                        document.getElementById('pRiderStatus').classList.toggle('hidden', userData.partnerType !== 'rider');
-                        document.getElementById('btn-vehicle').classList.toggle('hidden', userData.partnerType !== 'rider');
+                        togglePartnerTab('add');
                     }
                 }
             } else { updateHeader(); }
@@ -439,33 +453,42 @@
         }
 
         window.togglePartnerTab = (t) => {
-            document.getElementById('p-add-form').classList.toggle('hidden', t !== 'add');
-            document.getElementById('partner-vehicle').classList.toggle('hidden', t !== 'vehicle');
+            document.getElementById('partner-add-product').classList.toggle('hidden', t !== 'add');
         };
 
         window.switchCategory = (cat) => {
             document.getElementById('ride-section').classList.toggle('hidden', cat !== 'Ride');
             document.getElementById('marketplace-section').classList.toggle('hidden', cat === 'Ride');
+            
+            ['Grocery', 'Food', 'Ride'].forEach(c => {
+                const btn = document.getElementById(`tab-${c.toLowerCase()}`);
+                btn.classList.toggle(`tab-active-${c.toLowerCase()}`, cat === c);
+            });
+            
             if(cat !== 'Ride') syncMarket(cat);
         };
 
         function syncMarket(cat) {
             onSnapshot(collection(db, 'artifacts', fbId, 'public', 'data', 'products'), sn => {
                 const list = []; sn.forEach(d => { if(d.data().category === cat) list.push(d.data()); });
-                document.getElementById('productGrid').innerHTML = list.map(p => `
-                    <div class="bg-white p-6 rounded-[2.5rem] border shadow-sm">
+                const grid = document.getElementById('productGrid');
+                if(list.length === 0) grid.innerHTML = `<div class="col-span-full py-20 text-center italic text-slate-300 font-900 uppercase">No products listed in this village.</div>`;
+                else grid.innerHTML = list.map(p => `
+                    <div class="bg-white p-6 rounded-[2.5rem] border shadow-sm hover:shadow-xl transition-all">
                         <img src="https://source.unsplash.com/featured/?${p.keyword}" class="w-full h-32 object-cover rounded-2xl mb-4">
-                        <p class="text-[10px] font-900 text-blue-600 uppercase">${p.category} | ${p.sellerName}</p>
-                        <h4 class="font-900 text-slate-900">${p.title}</h4>
+                        <p class="text-[9px] font-900 text-blue-600 uppercase mb-1">${p.sellerName}</p>
+                        <h4 class="font-900 text-slate-800 line-clamp-1">${p.title}</h4>
                         <div class="flex justify-between items-center mt-4 pt-4 border-t">
                             <span class="text-xl font-900">$${p.price}</span>
-                            <button class="w-10 h-10 bg-slate-900 text-white rounded-xl">+</button>
+                            <button onclick="addToCart()" class="w-10 h-10 bg-slate-900 text-white rounded-xl active:scale-90 transition-transform">+</button>
                         </div>
                     </div>
                 `).join('');
             });
         }
 
+        window.addToCart = () => { cartCount++; document.getElementById('cartCount').innerText = cartCount; showToast("Added to Cart!"); };
+        window.emergencyBooking = (type) => { if(!auth.currentUser) return openAuthModal('login', 'user'); showToast(`Requesting ${type}...`); };
         window.showPage = (p) => {
             document.getElementById('homePage').classList.toggle('hidden', p !== 'home');
             document.getElementById('adminPage').classList.toggle('hidden', p !== 'admin');
