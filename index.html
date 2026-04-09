@@ -1,21 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  ShoppingCart, Utensils, Car, Bike, User, Shield, MapPin, 
-  Store, Plus, Home, Menu, LogOut, ChevronRight, Package, 
-  Clock, CheckCircle, Navigation, Phone
-} from 'lucide-react';
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
-
-// --- FIREBASE SETUP ---
-// We define your custom config, but carefully check the environment first to prevent compiler crashes.
-const customFirebaseConfig = {
-  apiKey: "AIzaSyALzu7TNODHkSnb0P-AEaqWWkY83xlKRqs",
-  authDomain: "villagekart-live.firebaseapp.com",
-  projectId: "villagekart-live",
-  storageBucket: "villagekart-live.firebasestorage.app",
-  messagingSenderId: "737831986342",<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -23,8 +6,12 @@ const customFirebaseConfig = {
     <title>VillageKart | Super App - Delivery & Services</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/d3697e687e.js" crossorigin="anonymous"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js" type="module"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Zen+Dots&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Zen+Dots&display=swap');
         
         :root {
             --primary-blue: #1d4ed8;
@@ -51,9 +38,9 @@ const customFirebaseConfig = {
             border: 2px solid transparent;
         }
         
-        .tab-active-Grocery { background-color: var(--grocery-green) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(5, 150, 105, 0.4); border-color: transparent !important; }
-        .tab-active-Food { background-color: var(--food-orange) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(234, 88, 12, 0.4); border-color: transparent !important; }
-        .tab-active-Ride { background-color: var(--primary-blue) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(29, 78, 216, 0.4); border-color: transparent !important; }
+        .tab-active-grocery { background-color: var(--grocery-green) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(5, 150, 105, 0.4); }
+        .tab-active-food { background-color: var(--food-orange) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(234, 88, 12, 0.4); }
+        .tab-active-ride { background-color: var(--primary-blue) !important; color: white !important; transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(29, 78, 216, 0.4); }
 
         .super-card:active { transform: scale(0.96); }
 
@@ -71,6 +58,7 @@ const customFirebaseConfig = {
         }
 
         .bg-blue-grade { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); }
+
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .modal-overlay { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); }
 
@@ -90,7 +78,7 @@ const customFirebaseConfig = {
             font-weight: 900 !important;
         }
 
-        input::placeholder, textarea::placeholder { font-weight: 500; opacity: 0.5; }
+        input::placeholder { font-weight: 500; opacity: 0.5; }
     </style>
 </head>
 <body>
@@ -99,35 +87,34 @@ const customFirebaseConfig = {
     <header class="glass sticky top-0 z-50 border-b border-blue-100/50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 md:px-8 h-24 flex items-center justify-between gap-4">
             <!-- Brand -->
-            <div class="flex items-center gap-4 cursor-pointer group" onclick="goHome()">
+            <div class="flex items-center gap-4 cursor-pointer group" onclick="showPage('home')">
                 <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-200 transition-transform group-hover:rotate-6">
                     <i class="fas fa-rocket text-2xl"></i>
                 </div>
                 <div class="flex flex-col">
                     <h1 class="text-3xl font-normal logo-font text-blue-700 leading-none tracking-tighter">VillageKart</h1>
-                    <p class="text-[10px] font-black uppercase tracking-widest text-blue-400 mt-2">Delivery Direct to your doorstep</p>
+                    <p id="nav-tagline" class="text-[10px] font-900 uppercase tracking-widest text-blue-400 mt-2">Delivery Direct to your doorstep</p>
                 </div>
             </div>
 
             <!-- Language Switcher -->
             <div class="hidden lg:flex items-center bg-blue-50/80 p-1.5 rounded-2xl border border-blue-100 shadow-inner">
-                <button onclick="setLanguage('en')" id="btn-en" class="px-4 py-2 rounded-xl text-xs font-black transition-all lang-active">EN</button>
-                <button onclick="setLanguage('bn')" id="btn-bn" class="px-4 py-2 rounded-xl text-xs font-black transition-all">বাংলা</button>
-                <button onclick="setLanguage('hi')" id="btn-hi" class="px-4 py-2 rounded-xl text-xs font-black transition-all">हिन्दी</button>
-                <button onclick="setLanguage('st')" id="btn-st" class="px-4 py-2 rounded-xl text-xs font-black transition-all">ᱥᱟᱱᱛᱟᱲᱤ</button>
+                <button onclick="setLanguage('en')" id="btn-en" class="px-4 py-2 rounded-xl text-xs font-900 transition-all lang-active">EN</button>
+                <button onclick="setLanguage('bn')" id="btn-bn" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">বাংলা</button>
+                <button onclick="setLanguage('hi')" id="btn-hi" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">हिन्दी</button>
+                <button onclick="setLanguage('st')" id="btn-st" class="px-4 py-2 rounded-xl text-xs font-900 transition-all">ᱥᱟᱱᱛᱟᱲᱤ</button>
             </div>
 
-            <!-- Action Buttons -->
             <div class="flex items-center gap-4">
-                <button id="mainLoginBtn" onclick="handleAuthClick()" class="header-login-btn px-6 py-3 rounded-full flex items-center gap-3 shadow-md max-w-[200px] md:max-w-[420px]">
+                <button id="mainLoginBtn" onclick="openAuthModal('login', 'user')" class="header-login-btn px-6 py-3 rounded-full flex items-center gap-3 shadow-md max-w-[420px]">
                     <i class="fas fa-user-circle text-xl flex-shrink-0"></i>
-                    <span id="userDisplayName" class="truncate hidden sm:block">Sign In / Register</span>
+                    <span id="userDisplayName" class="truncate">Sign In / Register</span>
                     <div id="user-status-dot" class="w-3 h-3 bg-slate-300 border-2 border-white rounded-full flex-shrink-0"></div>
                 </button>
 
                 <button class="relative bg-slate-900 text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
                     <i class="fas fa-shopping-basket"></i>
-                    <span id="cartCount" class="absolute -top-2 -right-2 bg-blue-600 text-[10px] rounded-full w-6 h-6 flex items-center justify-center border-2 border-white font-black">0</span>
+                    <span id="cartCount" class="absolute -top-2 -right-2 bg-blue-600 text-[10px] rounded-full w-6 h-6 flex items-center justify-center border-2 border-white font-900">0</span>
                 </button>
             </div>
         </div>
@@ -135,203 +122,169 @@ const customFirebaseConfig = {
 
     <main class="max-w-7xl mx-auto p-4 md:p-8 min-h-screen">
         
-        <!-- CUSTOMER VIEW (HOME) -->
-        <section id="homePage" class="space-y-12 pb-24 transition-opacity duration-500">
-            <!-- Tabs -->
+        <!-- CUSTOMER VIEW -->
+        <section id="homePage" class="space-y-12 pb-24">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <button id="tab-Grocery" onclick="switchCategory('Grocery')" class="super-card bg-white p-8 rounded-[3rem] border-2 border-emerald-100 flex flex-col items-center justify-center text-emerald-600 shadow-xl group tab-active-Grocery">
-                    <div id="icon-Grocery" class="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-4 transition-colors"><i class="fas fa-leaf text-3xl"></i></div>
-                    <span class="text-xl font-black uppercase tracking-tighter">Book Grocery</span>
+                <button id="tab-grocery" onclick="switchCategory('Grocery')" class="super-card bg-white p-8 rounded-[3rem] border-2 border-emerald-100 flex flex-col items-center justify-center text-emerald-600 shadow-xl group">
+                    <div class="w-16 h-16 bg-emerald-50 rounded-3xl flex items-center justify-center mb-4 transition-colors group-hover:bg-emerald-100"><i class="fas fa-leaf text-3xl"></i></div>
+                    <span class="text-xl font-900 uppercase tracking-tighter" id="btn-txt-grocery">Book Grocery</span>
                 </button>
-                <button id="tab-Food" onclick="switchCategory('Food')" class="super-card bg-white p-8 rounded-[3rem] border-2 border-orange-100 flex flex-col items-center justify-center text-orange-600 shadow-xl group">
-                    <div id="icon-Food" class="w-16 h-16 bg-orange-50 rounded-3xl flex items-center justify-center mb-4 transition-colors group-hover:bg-orange-100"><i class="fas fa-utensils text-3xl"></i></div>
-                    <span class="text-xl font-black uppercase tracking-tighter">Order Food</span>
+                <button id="tab-food" onclick="switchCategory('Food')" class="super-card bg-white p-8 rounded-[3rem] border-2 border-orange-100 flex flex-col items-center justify-center text-orange-600 shadow-xl group">
+                    <div class="w-16 h-16 bg-orange-50 rounded-3xl flex items-center justify-center mb-4 transition-colors group-hover:bg-orange-100"><i class="fas fa-utensils text-3xl"></i></div>
+                    <span class="text-xl font-900 uppercase tracking-tighter" id="btn-txt-food">Order Food</span>
                 </button>
-                <button id="tab-Ride" onclick="switchCategory('Ride')" class="super-card bg-white p-8 rounded-[3rem] border-2 border-blue-100 flex flex-col items-center justify-center text-blue-600 shadow-xl group">
-                    <div id="icon-Ride" class="w-16 h-16 bg-blue-50 rounded-3xl flex items-center justify-center mb-4 transition-colors group-hover:bg-blue-100"><i class="fas fa-taxi text-3xl"></i></div>
-                    <span class="text-xl font-black uppercase tracking-tighter">Book Ride</span>
+                <button id="tab-ride" onclick="switchCategory('Ride')" class="super-card bg-white p-8 rounded-[3rem] border-2 border-blue-100 flex flex-col items-center justify-center text-blue-600 shadow-xl group">
+                    <div class="w-16 h-16 bg-blue-50 rounded-3xl flex items-center justify-center mb-4 transition-colors group-hover:bg-blue-100"><i class="fas fa-taxi text-3xl"></i></div>
+                    <span class="text-xl font-900 uppercase tracking-tighter" id="btn-txt-ride">Book Ride</span>
                 </button>
             </div>
 
-            <!-- Marketplace Section (Grocery / Food) -->
             <div id="marketplace-section" class="space-y-10 pt-4">
                 <div class="flex items-center justify-between border-b border-slate-200 pb-8">
-                    <h3 class="text-3xl font-black text-slate-800 tracking-tight uppercase tracking-widest">Village Market</h3>
-                    <div class="flex items-center gap-3"><span class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></span><span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Live Marketplace</span></div>
+                    <h3 id="feed-title" class="text-3xl font-900 text-slate-800 tracking-tight uppercase tracking-widest">Village Market</h3>
+                    <div class="flex items-center gap-3"><span class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></span><span id="live-txt" class="text-[10px] font-900 text-blue-600 uppercase tracking-widest">Live Marketplace</span></div>
                 </div>
-                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-10">
-                    <!-- Products injected here via JS -->
-                </div>
+                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-10"></div>
             </div>
 
-            <!-- Ride Section -->
             <div id="ride-section" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4">
-                <div class="col-span-full mb-4"><h3 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Ride Services</h3></div>
-                
+                <div class="col-span-full mb-4"><h3 class="text-2xl font-900 text-slate-800 uppercase tracking-tighter">Ride Services</h3></div>
                 <div onclick="emergencyBooking('Ambulance')" class="bg-white p-8 rounded-[3.5rem] border-4 border-red-100 flex items-center justify-between group emergency-pulse cursor-pointer">
-                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-ambulance"></i></div><div><h3 class="text-xl font-black text-red-600 uppercase">Ambulance</h3><p class="text-slate-500 font-bold text-xs">Emergency SOS</p></div></div>
+                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-ambulance"></i></div><div><h3 class="text-xl font-900 text-red-600 uppercase">Ambulance</h3><p class="text-slate-500 font-800 text-xs">Emergency SOS</p></div></div>
                 </div>
                 <div onclick="emergencyBooking('Toto')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-400">
-                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-motorcycle"></i></div><div><h3 class="text-xl font-black text-slate-900 uppercase">Toto Ride</h3><p class="text-slate-500 font-bold text-xs">Local E-Rickshaw</p></div></div>
+                    <div class="flex items-center gap-6"><div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl shadow-xl"><i class="fas fa-motorcycle"></i></div><div><h3 class="text-xl font-900 text-slate-900 uppercase">Toto Ride</h3><p class="text-slate-500 font-800 text-xs">Local E-Rickshaw</p></div></div>
                 </div>
                 <div onclick="emergencyBooking('Car')" class="bg-white p-8 rounded-[3.5rem] border border-slate-200 flex items-center justify-between group cursor-pointer hover:border-blue-400">
-                    <div class="flex items-center gap-6"><div class="w-20 h-20 bg-slate-50 text-slate-800 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-car"></i></div><div><h3 class="text-xl font-black text-slate-900 uppercase">Private Car</h3><p class="text-slate-500 font-bold text-xs">Comfort travel</p></div></div>
+                    <div class="flex items-center gap-6"><div class="w-20 h-20 bg-slate-50 text-slate-800 rounded-full flex items-center justify-center text-3xl"><i class="fas fa-car"></i></div><div><h3 id="car-title" class="text-xl font-900 text-slate-900 uppercase">Private Car</h3><p class="text-slate-500 font-800 text-xs">Comfort travel</p></div></div>
                 </div>
             </div>
         </section>
 
         <!-- ADMIN/PARTNER DASHBOARD -->
-        <section id="adminPage" class="hidden transition-opacity duration-500">
-            <div class="flex flex-col lg:flex-row gap-12">
-                <!-- Sidebar -->
+        <section id="adminPage" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div id="merchantView" class="flex flex-col lg:flex-row gap-12">
                 <div class="w-full lg:w-96 space-y-8">
                     <div class="bg-white p-10 rounded-[4rem] border text-center shadow-2xl border-slate-100">
-                        <div class="w-24 h-24 bg-blue-grade rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-white text-5xl font-black shadow-xl"><span id="shopInitial">P</span></div>
-                        <h4 id="shopNameDisplaySidebar" class="font-black text-2xl text-slate-900 tracking-tight uppercase truncate">Shop Name</h4>
-                        <div class="mt-4 px-6 py-2 bg-blue-50 text-blue-600 text-[10px] font-black uppercase rounded-full inline-block">Service Partner</div>
+                        <div id="shopInitialContainer" class="w-24 h-24 bg-blue-grade rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-white text-5xl font-800 shadow-xl"><span id="shopInitial">P</span></div>
+                        <h4 id="shopNameDisplaySidebar" class="font-900 text-2xl text-slate-900 tracking-tight uppercase truncate">Shop Name</h4>
+                        <div class="mt-4 px-6 py-2 bg-blue-50 text-blue-600 text-[10px] font-900 uppercase rounded-full inline-block">Service Partner</div>
                     </div>
-                    
                     <div class="bg-white rounded-[3rem] border p-3 shadow-2xl border-slate-100">
-                        <button id="tab-btn-add" onclick="toggleAdminTab('add')" class="w-full text-left p-6 rounded-[2.5rem] font-bold flex items-center gap-5 transition-all bg-blue-50 text-blue-600">
+                        <button id="tab-btn-add" onclick="toggleTab('add')" class="w-full text-left p-6 rounded-[2.5rem] font-800 flex items-center gap-5 transition-all bg-blue-50 text-blue-600">
                             <i class="fas fa-plus-circle text-lg"></i> Add Product
                         </button>
-                        <button id="tab-btn-list" onclick="toggleAdminTab('list')" class="w-full text-left p-6 rounded-[2.5rem] font-bold flex items-center gap-5 transition-all text-slate-400 hover:bg-slate-50">
+                        <button id="tab-btn-list" onclick="toggleTab('list')" class="w-full text-left p-6 rounded-[2.5rem] font-800 flex items-center gap-5 transition-all text-slate-400 hover:bg-slate-50">
                             <i class="fas fa-boxes text-lg"></i> My Inventory
                         </button>
                         <hr class="my-6 mx-6 border-slate-100">
-                        <button onclick="logout()" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-red-50 text-red-500 font-bold flex items-center gap-5 uppercase tracking-widest">
+                        <button onclick="logout()" class="w-full text-left p-6 rounded-[2.5rem] hover:bg-red-50 text-red-500 font-800 flex items-center gap-5 uppercase tracking-widest">
                             <i class="fas fa-power-off"></i> Logout
                         </button>
                     </div>
                 </div>
-
-                <!-- Main Panel -->
                 <div class="flex-1 bg-white p-10 md:p-14 rounded-[5rem] border shadow-2xl min-h-[700px] border-slate-100">
-                    
                     <!-- ADD PRODUCT SHEET -->
                     <div id="addProductSection">
-                        <div class="mb-10"><h3 class="text-4xl font-black text-slate-900 uppercase tracking-tighter">Add to Store</h3><p class="text-slate-400 font-bold mt-2 uppercase tracking-widest text-[10px]">Your products will be listed for all village users instantly.</p></div>
+                        <div class="mb-10"><h3 class="text-4xl font-900 text-slate-900 uppercase tracking-tighter">Add to Store</h3><p class="text-slate-400 font-700 mt-2 uppercase tracking-widest text-[10px]">Your products will be listed for all village users instantly.</p></div>
                         <form id="addProductForm" class="grid grid-cols-1 md:grid-cols-2 gap-10">
                             <div class="space-y-6">
-                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 ml-1">Item Name</label><input type="text" id="pTitle" required placeholder="e.g. Fresh Potato (1kg)" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-bold border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"></div>
-                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 ml-1">Select Category</label><select id="pCategory" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-bold border-slate-200 outline-none"><option value="Grocery">Grocery</option><option value="Food">Hot Meals</option></select></div>
+                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Item Name</label><input type="text" id="pTitle" required placeholder="e.g. Fresh Potato (1kg)" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"></div>
+                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Select Category</label><select id="pCategory" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200"><option value="Grocery">Grocery</option><option value="Food">Hot Meals</option></select></div>
                                 <div class="grid grid-cols-2 gap-4">
-                                    <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 ml-1">Price (₹)</label><input type="number" step="0.01" id="pPrice" required placeholder="0.00" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-bold border-slate-200 outline-none"></div>
-                                    <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 ml-1">Qty in Stock</label><input type="number" id="pStock" required value="100" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-bold border-slate-200 outline-none"></div>
+                                    <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Price ($)</label><input type="number" step="0.01" id="pPrice" required placeholder="0.00" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200"></div>
+                                    <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Qty in Stock</label><input type="number" id="pStock" required value="100" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200"></div>
                                 </div>
                             </div>
                             <div class="space-y-6">
-                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 ml-1">Short Description</label><textarea id="pDesc" rows="4" placeholder="Brief details about the product..." class="w-full bg-slate-50 border p-5 rounded-[1.5rem] border-slate-200 outline-none focus:ring-2 focus:ring-blue-500 font-bold"></textarea></div>
-                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 ml-1">Image Keyword</label><input type="text" id="pImageKeyword" placeholder="e.g. Honey, Milk, Burger" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-bold border-slate-200 outline-none"></div>
-                                <button type="submit" class="w-full bg-blue-grade text-white py-6 rounded-[1.5rem] font-black shadow-xl uppercase tracking-widest hover:scale-[1.02] transition-transform">Publish live now</button>
+                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Short Description</label><textarea id="pDesc" rows="4" placeholder="Brief details about the product..." class="w-full bg-slate-50 border p-5 rounded-[1.5rem] border-slate-200 outline-none focus:ring-2 focus:ring-blue-500"></textarea></div>
+                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-2 ml-1 uppercase">Image Keyword</label><input type="text" id="pImageKeyword" placeholder="e.g. Honey, Milk, Burger" class="w-full bg-slate-50 border p-5 rounded-[1.5rem] font-800 border-slate-200"></div>
+                                <button type="submit" class="w-full bg-blue-grade text-white py-6 rounded-[1.5rem] font-900 shadow-xl uppercase tracking-widest hover:scale-[1.02] transition-transform">Publish live now</button>
                             </div>
                         </form>
                     </div>
 
-                    <!-- INVENTORY SECTION -->
                     <div id="inventorySection" class="hidden">
-                        <div class="flex justify-between items-center mb-12"><h3 class="text-4xl font-black text-slate-900 uppercase tracking-tighter text-center">My Listings</h3><button onclick="toggleAdminTab('add')" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm shadow-xl">+ New Item</button></div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="text-slate-400 text-[10px] font-black uppercase border-b border-slate-100">
-                                    <tr><th class="pb-8 px-4">Item</th><th class="pb-8 px-4">Category</th><th class="pb-8 px-4 text-center">Price</th><th class="pb-8 px-4 text-right">Delete</th></tr>
-                                </thead>
-                                <tbody id="adminProductTable" class="divide-y divide-slate-100">
-                                    <!-- Inventory injected here -->
-                                </tbody>
-                            </table>
-                        </div>
+                        <div class="flex justify-between items-center mb-12"><h3 class="text-4xl font-900 text-slate-900 uppercase tracking-tighter text-center">My Listings</h3><button onclick="toggleTab('add')" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-900 text-sm shadow-xl">+ New Item</button></div>
+                        <div class="overflow-x-auto"><table class="w-full text-left"><thead class="text-slate-400 text-[10px] font-900 uppercase border-b border-slate-100"><tr><th class="pb-8 px-4">Item</th><th class="pb-8 px-4">Category</th><th class="pb-8 px-4 text-center">Price</th><th class="pb-8 px-4 text-right">Delete</th></tr></thead><tbody id="adminProductTable" class="divide-y divide-slate-100"></tbody></table></div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- AUTH MODAL (MOCK AUTH FLOW) -->
+    <!-- AUTH MODAL -->
     <div id="authModal" class="fixed inset-0 modal-overlay z-[100] flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-[4rem] shadow-2xl flex flex-col md:flex-row max-w-4xl w-full overflow-hidden relative">
-            <button onclick="closeAuthModal()" class="absolute right-8 top-8 text-slate-300 hover:text-slate-600 z-[110] bg-white w-12 h-12 rounded-full shadow-2xl flex items-center justify-center border border-slate-100 active:scale-90 transition-transform font-black">X</button>
+        <div class="bg-white rounded-[4rem] shadow-2xl flex flex-col md:flex-row max-w-4xl w-full overflow-hidden animate-in zoom-in duration-300 relative">
+            <button onclick="closeAuthModal()" class="absolute right-8 top-8 text-slate-300 hover:text-slate-600 z-[110] bg-white w-12 h-12 rounded-full shadow-2xl flex items-center justify-center border border-slate-100 active:scale-90 transition-transform font-800">X</button>
             
-            <div class="bg-blue-grade text-white p-14 md:w-5/12 flex flex-col justify-between hidden md:flex">
-                <div>
-                    <h2 id="authTitle" class="text-5xl font-black logo-font leading-tight uppercase tracking-tighter">Login</h2>
-                    <p class="text-lg opacity-80 mt-6 font-medium leading-relaxed uppercase">Welcome to the Village Portal.</p>
-                </div>
-                <div class="pt-20 opacity-20"><i class="fas fa-truck-fast text-[180px]"></i></div>
+            <div class="bg-blue-grade text-white p-14 md:w-5/12 flex flex-col justify-between">
+                <div><h2 id="authTitle" class="text-5xl font-800 logo-font leading-tight uppercase tracking-tighter">Login</h2><p id="authSub" class="text-lg opacity-80 mt-6 font-500 leading-relaxed uppercase">Welcome to the Village Portal.</p></div>
+                <div class="pt-20 opacity-20"><i class="fas fa-shipping-fast text-[180px]"></i></div>
             </div>
 
-            <div class="p-10 md:p-14 md:w-7/12 bg-white flex flex-col justify-center min-h-[500px]">
-                
-                <div id="roleSelector" class="flex bg-slate-100 p-1 rounded-2xl mb-8 self-start border border-slate-200/50 shadow-inner">
-                    <button onclick="setAuthRole('user')" id="role-user" class="px-10 py-3 rounded-xl text-xs font-black transition-all lang-active uppercase">USER</button>
-                    <button onclick="setAuthRole('admin')" id="role-admin" class="px-10 py-3 rounded-xl text-xs font-black transition-all uppercase text-slate-500 hover:text-slate-800">PARTNER</button>
+            <div class="p-14 md:w-7/12 bg-white flex flex-col justify-center pt-24 md:pt-14">
+                <div class="flex bg-slate-100 p-1 rounded-2xl mb-8 self-start border border-slate-200/50 shadow-inner">
+                    <button onclick="setAuthRole('user')" id="role-user" class="px-10 py-3 rounded-xl text-xs font-900 transition-all lang-active">USER</button>
+                    <button onclick="setAuthRole('admin')" id="role-admin" class="px-10 py-3 rounded-xl text-xs font-900 transition-all">PARTNER</button>
                 </div>
 
                 <div id="authContent" class="space-y-4">
-                    
-                    <!-- LOGIN VIEW -->
                     <div id="loginView">
-                        <form onsubmit="processLogin(event)" class="space-y-4">
-                            <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5 ml-1">10-Digit ID (Mobile)</label><input type="text" id="loginId" maxlength="10" required placeholder="9876543210" class="w-full bg-slate-50 border p-4 rounded-2xl font-bold outline-none border-slate-200 focus:ring-2 focus:ring-blue-500"></div>
-                            <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1.5 ml-1">Password</label><input type="password" id="loginPass" required placeholder="Enter Password" class="w-full bg-slate-50 border p-4 rounded-2xl font-bold outline-none border-slate-200 focus:ring-2 focus:ring-blue-500"></div>
-                            <button type="submit" class="w-full bg-blue-grade text-white py-5 rounded-[1.5rem] font-black shadow-xl uppercase tracking-widest transition-all active:scale-95 mt-2">Sign In</button>
-                        </form>
-                        <div class="text-center pt-4"><button onclick="toggleAuthMode()" id="authToggleBtn" class="text-blue-600 font-black text-xs hover:underline uppercase tracking-widest">New here? Register</button></div>
+                        <div class="space-y-4">
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1.5 ml-1">10-Digit ID (Mobile)</label><input type="text" id="loginId" maxlength="10" placeholder="9876543210" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none border-slate-200 focus:ring-2 focus:ring-blue-500"></div>
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1.5 ml-1">Password</label><input type="password" id="loginPass" placeholder="Enter Password" class="w-full bg-slate-50 border p-4 rounded-2xl font-800 outline-none border-slate-200 focus:ring-2 focus:ring-blue-500"></div>
+                            <button onclick="processLogin()" class="w-full bg-blue-grade text-white py-5 rounded-[1.5rem] font-900 shadow-2xl uppercase tracking-widest transition-all active:scale-95 mt-2">Sign In</button>
+                        </div>
                     </div>
 
-                    <!-- REGISTER VIEW -->
-                    <div id="registerView" class="hidden h-[450px] overflow-y-auto pr-4 hide-scrollbar">
-                        <form onsubmit="processRegister(event)" class="grid grid-cols-1 gap-4">
-                            <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Full Name</label><input type="text" id="regName" required placeholder="Your Name" class="w-full bg-slate-50 border p-4 rounded-xl font-bold border-slate-200 outline-none focus:ring-1 focus:ring-blue-500"></div>
-                            <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Mobile Number (Becomes your ID)</label><input type="tel" id="regPhone" maxlength="10" required placeholder="10 Digit Number" class="w-full bg-slate-50 border p-4 rounded-xl font-bold border-slate-200 outline-none focus:ring-1 focus:ring-blue-500"></div>
+                    <div id="registerView" class="hidden h-[450px] overflow-y-auto pr-4 hide-scrollbar space-y-4">
+                        <div class="grid grid-cols-1 gap-4">
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Full Name</label><input type="text" id="regName" placeholder="Your Name" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Mobile Number (Becomes your ID)</label><input type="tel" id="regPhone" maxlength="10" placeholder="10 Digit Number" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Email ID</label><input type="email" id="regEmail" placeholder="email@example.com" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
                             <div class="grid grid-cols-2 gap-4">
-                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Pin Code</label><input type="text" id="regPin" required placeholder="700001" class="w-full bg-slate-50 border p-4 rounded-xl font-bold border-slate-200 outline-none focus:ring-1 focus:ring-blue-500"></div>
-                                <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Password</label><input type="password" id="regPass" required value="12345" class="w-full bg-slate-50 border p-4 rounded-xl font-bold border-slate-200 outline-none focus:ring-1 focus:ring-blue-500"></div>
+                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Pin Code</label><input type="text" id="regPin" placeholder="700001" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
+                                <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Password</label><input type="password" id="regPass" value="12345" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
                             </div>
                             <div>
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Register As</label>
-                                <select id="regType" class="w-full bg-slate-50 border p-4 rounded-xl font-bold border-slate-200 outline-none focus:ring-1 focus:ring-blue-500">
+                                <label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Register As</label>
+                                <select id="regType" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none">
                                     <option value="shop">Shop (Grocery/General)</option>
                                     <option value="food">Restaurant / Hotel</option>
                                     <option value="rider">Rider (Bike, Toto, Car)</option>
                                 </select>
                             </div>
-                            <div><label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Store / Vehicle Details</label><input type="text" id="regStore" required placeholder="Store Name or Vehicle Details" class="w-full bg-slate-50 border p-4 rounded-xl font-bold border-slate-200 outline-none focus:ring-1 focus:ring-blue-500"></div>
-                            <button type="submit" class="w-full bg-blue-grade text-white py-5 rounded-[1.5rem] font-black shadow-xl uppercase tracking-widest transition-all active:scale-95 mt-2">Submit Registration</button>
-                        </form>
-                        <div class="text-center pt-2"><button onclick="toggleAuthMode()" class="text-blue-600 font-black text-xs hover:underline uppercase tracking-widest">Have ID? Login</button></div>
+                            <div><label class="text-[10px] font-900 text-slate-400 uppercase tracking-widest block mb-1">Store / Vehicle Details</label><input type="text" id="regStore" placeholder="Store Name or Vehicle Details" class="w-full bg-slate-50 border p-4 rounded-xl font-800 border-slate-200 outline-none"></div>
+                            <button onclick="processRegister()" class="w-full bg-blue-grade text-white py-5 rounded-[1.5rem] font-900 shadow-2xl uppercase tracking-widest transition-all active:scale-95 mt-2">Submit Registration</button>
+                        </div>
                     </div>
+                    <div class="text-center pt-2"><button onclick="toggleAuthMode()" id="authToggleBtn" class="text-blue-600 font-900 text-xs hover:underline uppercase tracking-widest">New here? Register</button></div>
                 </div>
 
-                <div id="authLoading" class="hidden text-center py-10">
-                    <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Authenticating...</p>
-                </div>
-                
+                <div id="authLoading" class="hidden text-center py-10"><div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div><p class="text-[10px] font-900 uppercase tracking-widest text-slate-400 uppercase">Authenticating...</p></div>
                 <div id="authSuccessMsg" class="hidden text-center py-10 space-y-4">
                     <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl"><i class="fas fa-check"></i></div>
-                    <h3 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">Success!</h3>
+                    <h3 class="text-2xl font-900 text-slate-900 uppercase tracking-tighter">Success!</h3>
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                        <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">Your Login ID</p>
-                        <p id="successId" class="text-3xl font-black text-blue-600 tracking-widest font-mono">9876543210</p>
+                        <p class="text-slate-400 text-[10px] font-900 uppercase tracking-widest mb-1">Your Login ID</p>
+                        <p id="successId" class="text-3xl font-900 text-blue-600 tracking-widest font-mono">9876543210</p>
                     </div>
-                    <button onclick="toggleAuthMode()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold text-sm uppercase tracking-widest mt-4">Go to Login</button>
+                    <button onclick="toggleAuthMode()" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-800 text-sm uppercase tracking-widest">Go to Login</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-10 py-5 rounded-[2rem] shadow-2xl opacity-0 transition-all z-[200] font-bold text-sm flex items-center gap-4 border border-white/10 pointer-events-none translate-y-8 duration-300">
-        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div>
-        <span id="toastMsg">Message</span>
+    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-10 py-5 rounded-[2rem] shadow-2xl opacity-0 transition-all z-[200] font-800 text-sm flex items-center gap-4 border border-white/10">
+        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div><span>Message</span>
     </div>
 
-    <!-- FIREBASE & LOGIC SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, query, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyALzu7TNODHkSnb0P-AEaqWWkY83xlKRqs",
@@ -346,1050 +299,153 @@ const customFirebaseConfig = {
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'villagekart-final-v1';
+        const appId = 'villagekart-final-v1';
 
-        // --- GLOBAL STATE ---
-        let currentProfile = null; // Holds the logged-in user's mock profile
-        let products = [];
-        let currentCategory = 'Grocery';
-        let cartCount = 0;
-        let cMode = 'login';
-        let cRole = 'user';
-        let view = 'home';
-        let unsubProducts = null;
+        let currentUser = null, userData = null, productUnsub = null, cartCount = 0;
+        let cMode = 'login', cRole = 'user', currentActiveCategory = 'Grocery';
 
-        // --- INIT FIREBASE (Anonymous for DB Access) ---
-        async function initFirebase() {
-            try {
-                await signInAnonymously(auth);
-                startProductListener();
-            } catch (err) {
-                console.error("Firebase Auth Error", err);
-            }
-        }
-
-        // --- DATA FETCHING ---
-        function startProductListener() {
-            if (unsubProducts) unsubProducts();
-            const q = collection(db, 'artifacts', appId, 'public', 'data', 'products');
-            unsubProducts = onSnapshot(q, (snapshot) => {
-                products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-                renderProducts();
-                renderInventory();
-            }, err => console.error(err));
-        }
-
-        // --- MOCK AUTH LOGIC (No Email/Password) ---
-        window.processRegister = async (e) => {
-            e.preventDefault();
-            const phone = document.getElementById('regPhone').value.trim();
-            const name = document.getElementById('regName').value.trim();
-            const pin = document.getElementById('regPin').value.trim();
-            const pass = document.getElementById('regPass').value;
-            const type = document.getElementById('regType').value;
-            const store = document.getElementById('regStore').value.trim();
-
-            if(phone.length !== 10 || !name || !store) return showToast("Fill required fields correctly.");
-
-            toggleAuthLoading(true);
-
-            // Construct Profile
-            const profile = {
-                phone: phone,
-                fullName: name,
-                pinCode: pin,
-                password: pass, // Storing raw for Mock Auth purposes
-                role: cRole,
-                partnerType: type,
-                shopName: store,
-                joined: new Date().toISOString()
-            };
-
-            try {
-                // Save profile directly to a public collection mapped by phone number
-                const profileRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', phone);
-                const existing = await getDoc(profileRef);
-                if (existing.exists()) {
-                    showToast("Phone number already registered.");
-                    toggleAuthLoading(false);
-                    return;
-                }
-                
-                await setDoc(profileRef, profile);
-                document.getElementById('successId').innerText = phone;
-                
-                // Show Success UI
-                document.getElementById('authLoading').classList.add('hidden');
-                document.getElementById('authSuccessMsg').classList.remove('hidden');
-            } catch (err) {
-                console.error(err);
-                showToast("Error during registration");
-                toggleAuthLoading(false);
-            }
-        };
-
-        window.processLogin = async (e) => {
-            e.preventDefault();
-            const phone = document.getElementById('loginId').value.trim();
-            const pass = document.getElementById('loginPass').value;
-
-            if(phone.length !== 10) return showToast("Enter 10-Digit ID");
-            
-            toggleAuthLoading(true);
-
-            try {
-                // Fetch profile directly using phone number
-                const profileRef = doc(db, 'artifacts', appId, 'public', 'data', 'profiles', phone);
-                const snap = await getDoc(profileRef);
-
-                if (snap.exists() && snap.data().password === pass) {
-                    currentProfile = snap.data();
-                    showToast("Login Success!");
-                    updateHeaderUI();
-                    closeAuthModal();
-                    
-                    if(currentProfile.role === 'admin') {
-                        showPage('admin');
-                    }
-                    renderInventory();
-                } else {
-                    showToast("Invalid ID or Password");
-                }
-            } catch (err) {
-                console.error(err);
-                showToast("Login Error");
-            }
-            toggleAuthLoading(false);
-        };
-
-        window.logout = () => {
-            currentProfile = null;
-            updateHeaderUI();
-            showPage('home');
-            showToast("Logged out");
-        };
-
-        // --- PRODUCT ACTIONS ---
-        document.getElementById('addProductForm').onsubmit = async (e) => {
-            e.preventDefault();
-            if (!currentProfile || currentProfile.role !== 'admin') return showToast("Not Authorized");
-            
-            const prod = {
-                title: document.getElementById('pTitle').value,
-                category: document.getElementById('pCategory').value,
-                price: parseFloat(document.getElementById('pPrice').value),
-                stock: parseInt(document.getElementById('pStock').value),
-                desc: document.getElementById('pDesc').value,
-                keyword: document.getElementById('pImageKeyword').value || 'item',
-                sellerPhone: currentProfile.phone,
-                sellerName: currentProfile.shopName,
-                createdAt: new Date().toISOString()
-            };
-
-            try {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), prod);
-                showToast("Published Successfully!");
-                e.target.reset();
-                toggleAdminTab('list');
-            } catch (err) { showToast("Error adding product"); }
-        };
-
-        window.delItem = async (id) => {
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id));
-                showToast("Deleted");
-            } catch (err) { showToast("Error deleting"); }
-        };
-
-        // --- RENDERERS ---
-        function renderProducts() {
-            const grid = document.getElementById('productGrid');
-            const filtered = products.filter(p => p.category === currentCategory);
-            
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-300 font-black italic text-2xl uppercase tracking-tighter">Market opening soon...</div>`;
-                return;
-            }
-
-            grid.innerHTML = filtered.map(p => `
-                <div class="bg-white p-6 rounded-[3.5rem] border border-slate-200 transition-all hover:shadow-2xl hover:-translate-y-2 group">
-                    <div class="aspect-square rounded-[2.5rem] bg-slate-50 mb-6 overflow-hidden flex items-center justify-center p-6 border border-slate-100 relative">
-                        <img src="https://source.unsplash.com/featured/?${p.keyword}" class="w-full h-full object-cover rounded-2xl group-hover:scale-110 transition-all" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                        <div class="hidden absolute inset-0 text-slate-300 flex items-center justify-center bg-slate-100 rounded-2xl"><i class="fas fa-box text-4xl"></i></div>
-                    </div>
-                    <div class="space-y-2">
-                        <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest">${p.category}</p>
-                        <h4 class="text-base font-black text-slate-900 line-clamp-1">${p.title}</h4>
-                        <p class="text-xs text-slate-500 font-bold truncate">By: ${p.sellerName}</p>
-                        <div class="flex items-center justify-between pt-6 border-t mt-4 border-slate-50">
-                            <div class="text-2xl font-black tracking-tighter">₹${p.price}</div>
-                            <button onclick="addToCart()" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-xl active:scale-90 hover:bg-blue-600 transition-all">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderInventory() {
-            if (!currentProfile || currentProfile.role !== 'admin') return;
-            const table = document.getElementById('adminProductTable');
-            const myProducts = products.filter(p => p.sellerPhone === currentProfile.phone);
-
-            if(myProducts.length === 0) {
-                table.innerHTML = `<tr><td colspan="4" class="text-center py-10 font-bold text-slate-400">No inventory found</td></tr>`;
-                return;
-            }
-
-            table.innerHTML = myProducts.map(p => `
-                <tr class="hover:bg-blue-50 transition-all">
-                    <td class="py-8 font-bold text-slate-900 px-4">${p.title}</td>
-                    <td class="py-8 font-black text-slate-400 px-4 text-xs uppercase tracking-widest">${p.category}</td>
-                    <td class="py-8 font-black text-slate-900 px-4 text-center">₹${p.price}</td>
-                    <td class="py-8 text-right px-4">
-                        <button onclick="delItem('${p.id}')" class="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center ml-auto font-bold">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // --- UI INTERACTION FUNCTIONS ---
-        window.switchCategory = (cat) => {
-            currentCategory = cat;
-            
-            // Manage Tab Classes
-            ['Grocery', 'Food', 'Ride'].forEach(t => {
-                const btn = document.getElementById(`tab-${t}`);
-                const icon = document.getElementById(`icon-${t}`);
-                
-                // Reset styling
-                btn.className = `super-card bg-white p-8 rounded-[3rem] border-2 border-slate-100 flex flex-col items-center justify-center shadow-xl group hover:border-blue-200 transition-all`;
-                
-                // Specific resets
-                if(t==='Grocery') { btn.classList.add('text-emerald-600'); icon.className='w-16 h-16 bg-emerald-50 rounded-3xl flex items-center justify-center mb-4 transition-colors group-hover:bg-emerald-100'; }
-                if(t==='Food') { btn.classList.add('text-orange-600'); icon.className='w-16 h-16 bg-orange-50 rounded-3xl flex items-center justify-center mb-4 transition-colors group-hover:bg-orange-100'; }
-                if(t==='Ride') { btn.classList.add('text-blue-600'); icon.className='w-16 h-16 bg-blue-50 rounded-3xl flex items-center justify-center mb-4 transition-colors group-hover:bg-blue-100'; }
-
-                // Apply Active state
-                if (t === cat) {
-                    btn.className = `super-card bg-white p-8 rounded-[3rem] border-2 flex flex-col items-center justify-center shadow-xl group tab-active-${t}`;
-                    icon.className = `w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-4 transition-colors`;
-                }
-            });
-
-            // Toggle Sections
-            document.getElementById('marketplace-section').classList.toggle('hidden', cat === 'Ride');
-            document.getElementById('ride-section').classList.toggle('hidden', cat !== 'Ride');
-            renderProducts();
-        };
-
-        window.showPage = (p) => {
-            view = p;
-            document.getElementById('homePage').classList.toggle('hidden', p !== 'home');
-            document.getElementById('adminPage').classList.toggle('hidden', p !== 'admin');
-            
-            if (p === 'admin' && currentProfile) {
-                document.getElementById('shopNameDisplaySidebar').innerText = currentProfile.shopName;
-                document.getElementById('shopInitial').innerText = currentProfile.shopName.charAt(0).toUpperCase();
-                toggleAdminTab('add');
-            }
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        };
-
-        window.goHome = () => {
-            if(currentProfile && currentProfile.role === 'admin') showPage('admin');
-            else showPage('home');
-        };
-
-        window.toggleAdminTab = (tab) => {
-            document.getElementById('addProductSection').classList.toggle('hidden', tab !== 'add');
-            document.getElementById('inventorySection').classList.toggle('hidden', tab !== 'list');
-            
-            document.getElementById('tab-btn-add').className = `w-full text-left p-6 rounded-[2.5rem] font-bold flex items-center gap-5 transition-all ${tab === 'add' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50'}`;
-            document.getElementById('tab-btn-list').className = `w-full text-left p-6 rounded-[2.5rem] font-bold flex items-center gap-5 transition-all ${tab === 'list' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50'}`;
-        };
-
-        function updateHeaderUI() {
-            const btn = document.getElementById('userDisplayName');
-            const dot = document.getElementById('user-status-dot');
-            const mainBtn = document.getElementById('mainLoginBtn');
-
-            if (currentProfile) {
-                btn.innerText = `Welcome ${currentProfile.shopName || currentProfile.fullName}`;
-                dot.className = "w-3 h-3 bg-emerald-500 border-2 border-white rounded-full flex-shrink-0";
-                mainBtn.className = "header-login-btn px-6 py-3 rounded-full flex items-center gap-3 shadow-md max-w-[200px] md:max-w-[420px] bg-blue-50 border-blue-600 text-blue-700 font-black";
-            } else {
-                btn.innerText = "Sign In / Register";
-                dot.className = "w-3 h-3 bg-slate-300 border-2 border-white rounded-full flex-shrink-0";
-                mainBtn.className = "header-login-btn px-6 py-3 rounded-full flex items-center gap-3 shadow-md max-w-[200px] md:max-w-[420px] bg-white text-blue-600 border-blue-600 font-bold";
-            }
-        }
-
-        window.handleAuthClick = () => {
-            if (currentProfile) {
-                if (currentProfile.role === 'admin') showPage('admin');
-            } else {
-                openAuthModal();
-            }
-        };
-
-        window.addToCart = () => {
-            cartCount++;
-            document.getElementById('cartCount').innerText = cartCount;
-            showToast("Added to Cart!");
-        };
-
-        window.emergencyBooking = (type) => {
-            if (!currentProfile) {
-                showToast("Please Login to Book");
-                openAuthModal();
-                return;
-            }
-            showToast(`Requesting ${type}...`);
-        };
-
-        const showToast = (msg) => {
-            const t = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = msg;
-            t.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
-            t.classList.add('opacity-100', 'translate-y-0');
-            setTimeout(() => {
-                t.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
-                t.classList.remove('opacity-100', 'translate-y-0');
-            }, 3000);
-        };
-
-        // --- AUTH MODAL CONTROLS ---
-        window.openAuthModal = () => {
-            cMode = 'login';
-            cRole = 'user';
-            document.getElementById('authModal').classList.remove('hidden');
-            updateAuthUI();
-        };
-        
-        window.closeAuthModal = () => {
-            document.getElementById('authModal').classList.add('hidden');
-            document.getElementById('authSuccessMsg').classList.add('hidden');
-            document.getElementById('authContent').classList.remove('hidden');
-        };
-
-        window.toggleAuthMode = () => {
-            cMode = cMode === 'login' ? 'register' : 'login';
-            document.getElementById('authSuccessMsg').classList.add('hidden');
-            document.getElementById('authContent').classList.remove('hidden');
-            updateAuthUI();
-        };
-
-        window.setAuthRole = (r) => {
-            cRole = r;
-            document.getElementById('role-user').className = `px-10 py-3 rounded-xl text-xs font-black transition-all uppercase ${r === 'user' ? 'lang-active' : 'text-slate-500 hover:text-slate-800'}`;
-            document.getElementById('role-admin').className = `px-10 py-3 rounded-xl text-xs font-black transition-all uppercase ${r === 'admin' ? 'lang-active' : 'text-slate-500 hover:text-slate-800'}`;
-        };
+        window.openAuthModal = (m, r) => { cMode = m; cRole = r; document.getElementById('authModal').classList.remove('hidden'); updateAuthUI(); setAuthRole(r); };
+        window.closeAuthModal = () => { document.getElementById('authModal').classList.add('hidden'); document.getElementById('authSuccessMsg').classList.add('hidden'); document.getElementById('authContent').classList.remove('hidden'); };
+        window.toggleAuthMode = () => { cMode = (cMode === 'login' ? 'register' : 'login'); document.getElementById('authSuccessMsg').classList.add('hidden'); document.getElementById('authContent').classList.remove('hidden'); updateAuthUI(); };
+        window.setAuthRole = (r) => { cRole = r; ['user', 'admin'].forEach(x => { const btn = document.getElementById(`role-${x}`); if(btn) btn.classList.toggle('lang-active', x === r); }); updateAuthUI(); };
 
         function updateAuthUI() {
             document.getElementById('authTitle').innerText = cMode.toUpperCase();
             document.getElementById('loginView').classList.toggle('hidden', cMode !== 'login');
             document.getElementById('registerView').classList.toggle('hidden', cMode !== 'register');
-            document.getElementById('roleSelector').classList.toggle('hidden', cMode === 'success');
+            document.getElementById('authToggleBtn').innerText = cMode === 'login' ? 'New here? Register' : 'Have ID? Login';
         }
 
-        function toggleAuthLoading(show) {
-            document.getElementById('authContent').classList.toggle('hidden', show);
-            document.getElementById('roleSelector').classList.toggle('hidden', show);
-            document.getElementById('authLoading').classList.toggle('hidden', !show);
-        }
+        const pseudoEmail = (id) => `${id.trim().replace(/\D/g, '')}@villagekart.app`;
 
-        window.setLanguage = (l) => {
-            ['en', 'bn', 'hi', 'st'].forEach(x => {
-                const el = document.getElementById(`btn-${x}`);
-                if(el) el.className = `px-4 py-2 rounded-xl text-xs font-black transition-all ${x === l ? 'lang-active' : ''}`;
-            });
+        window.processLogin = async () => {
+            const id = document.getElementById('loginId').value.trim();
+            const pass = document.getElementById('loginPass').value;
+            if(id.length !== 10) return showToast("Enter 10-Digit ID");
+            const email = pseudoEmail(id);
+            document.getElementById('authContent').classList.add('hidden');
+            document.getElementById('authLoading').classList.remove('hidden');
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                showToast("Login Success!"); closeAuthModal();
+            } catch (e) {
+                console.error(e.code);
+                showToast("Invalid ID or Password.");
+                document.getElementById('authContent').classList.remove('hidden');
+                document.getElementById('authLoading').classList.add('hidden');
+            }
         };
 
-        // Initialize on load
-        initFirebase();
-        switchCategory('Grocery');
-        updateHeaderUI();
+        window.processRegister = async () => {
+            const name = document.getElementById('regName').value;
+            const phone = document.getElementById('regPhone').value.trim();
+            const emailAddr = document.getElementById('regEmail').value;
+            const pin = document.getElementById('regPin').value;
+            const pass = document.getElementById('regPass').value;
+            const store = document.getElementById('regStore').value;
+            const type = document.getElementById('regType').value;
 
+            if(!name || phone.length !== 10 || !emailAddr || !pin || !store) return showToast("Fill all boxes");
+
+            const email = pseudoEmail(phone);
+            document.getElementById('authContent').classList.add('hidden');
+            document.getElementById('authLoading').classList.remove('hidden');
+
+            try {
+                const cr = await createUserWithEmailAndPassword(auth, email, pass);
+                const profile = { uid: cr.user.uid, id: phone, fullName: name, email: emailAddr, pinCode: pin, shopName: store, role: cRole, partnerType: type, joined: new Date().toISOString() };
+                await setDoc(doc(db, 'artifacts', appId, 'users', cr.user.uid, 'profile', 'data'), profile);
+                if(cRole === 'admin') await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'sellers', cr.user.uid), profile);
+                await signOut(auth);
+                document.getElementById('successId').innerText = phone;
+                document.getElementById('authLoading').classList.add('hidden');
+                document.getElementById('authSuccessMsg').classList.remove('hidden');
+            } catch (e) {
+                console.error(e.code);
+                let msg = "ID already registered.";
+                if(e.code === 'auth/operation-not-allowed') msg = "Enable Email provider in Console!";
+                showToast(msg);
+                document.getElementById('authContent').classList.remove('hidden');
+                document.getElementById('authLoading').classList.add('hidden');
+            }
+        };
+
+        onAuthStateChanged(auth, async (u) => {
+            currentUser = u;
+            const btn = document.getElementById('userDisplayName'), dot = document.getElementById('user-status-dot');
+            if(u) {
+                dot.className = "w-3 h-3 bg-emerald-500 border-2 border-white rounded-full";
+                const p = await getDoc(doc(db, 'artifacts', appId, 'users', u.uid, 'profile', 'data'));
+                if(p.exists()) { 
+                    userData = p.data(); 
+                    btn.innerText = `Welcome ${userData.shopName}`; 
+                    btn.classList.add('welcome-badge');
+                    if(userData.role === 'admin') toggleAdminView();
+                }
+                syncData();
+            } else {
+                dot.className = "w-3 h-3 bg-slate-300 border-2 border-white rounded-full";
+                userData = null; btn.innerText = "Sign In / Register"; btn.classList.remove('welcome-badge'); syncData();
+            }
+        });
+
+        window.toggleTab = (tab) => { 
+            document.getElementById('inventorySection').classList.toggle('hidden', tab !== 'list'); 
+            document.getElementById('addProductSection').classList.toggle('hidden', tab !== 'add'); 
+            document.getElementById('tab-btn-list').className = `w-full text-left p-6 rounded-[2.5rem] font-800 flex items-center gap-5 transition-all ${tab === 'list' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50'}`;
+            document.getElementById('tab-btn-add').className = `w-full text-left p-6 rounded-[2.5rem] font-800 flex items-center gap-5 transition-all ${tab === 'add' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50'}`;
+        };
+
+        window.toggleAdminView = () => {
+            if(!userData) return;
+            showPage('admin');
+            document.getElementById('shopNameDisplaySidebar').innerText = userData.shopName;
+            document.getElementById('shopInitial').innerText = userData.shopName[0].toUpperCase();
+            toggleTab('add'); 
+        };
+
+        window.switchCategory = (cat) => {
+            currentActiveCategory = cat;
+            ['grocery', 'food', 'ride'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if(el) { el.className = el.className.replace(/tab-active-\w+/g, "").trim(); if(t === cat.toLowerCase()) el.classList.add(`tab-active-${t}`); }
+            });
+            document.getElementById('ride-section').classList.toggle('hidden', cat !== 'Ride');
+            document.getElementById('marketplace-section').classList.toggle('hidden', cat === 'Ride');
+            syncData();
+        };
+
+        function syncData() {
+            if(productUnsub) productUnsub();
+            productUnsub = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'products'), sn => {
+                const list = []; sn.forEach(d => { const data = d.data(); if(data.category === currentActiveCategory) list.push({ id: d.id, ...data }); });
+                const grid = document.getElementById('productGrid');
+                if(list.length === 0) grid.innerHTML = `<div class="col-span-full py-20 text-center text-slate-300 font-900 italic text-2xl uppercase tracking-tighter">Market opening soon...</div>`;
+                else grid.innerHTML = list.map(p => `<div class="bg-white p-6 rounded-[3.5rem] border border-slate-200 transition-all hover:shadow-2xl hover:-translate-y-2 group"><div class="aspect-square rounded-[2.5rem] bg-slate-50 mb-6 overflow-hidden flex items-center justify-center p-6 border border-slate-100"><img src="https://source.unsplash.com/featured/?${p.keyword}" class="w-full h-full object-contain group-hover:scale-110 transition-all"></div><div class="space-y-2"><p class="text-[10px] font-900 text-blue-600 uppercase tracking-widest font-800">${p.category}</p><h4 class="text-base font-900 text-slate-900 line-clamp-1">${p.title}</h4><div class="flex items-center justify-between pt-6 border-t mt-4 border-slate-50"><div class="text-2xl font-900 tracking-tighter">$${p.price}</div><button onclick="addToCart()" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shadow-xl active:scale-90 hover:bg-blue-600 transition-all"><i class="fas fa-plus text-sm"></i></button></div></div></div>`).join('');
+                if(currentUser && userData?.role === 'admin') {
+                    const adminList = []; sn.forEach(d => adminList.push({id: d.id, ...d.data()}));
+                    const filtered = adminList.filter(x => x.sellerId === currentUser.uid);
+                    document.getElementById('adminProductTable').innerHTML = filtered.map(x => `<tr class="hover:bg-blue-50 transition-all"><td class="py-8 font-800 text-slate-900 px-4">${x.title}</td><td class="py-8 font-900 text-slate-400 px-4 text-xs uppercase tracking-widest">${x.category}</td><td class="py-8 font-900 text-slate-900 px-4 text-center">$${x.price}</td><td class="py-8 text-right px-4"><button onclick="delItem('${x.id}')" class="w-10 h-10 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center ml-auto font-800">DEL</button></td></tr>`).join('');
+                }
+            });
+        }
+
+        document.getElementById('addProductForm').onsubmit = async (e) => {
+            e.preventDefault();
+            if(!currentUser || !userData) return showToast("Not Authenticated");
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), { title: document.getElementById('pTitle').value, category: document.getElementById('pCategory').value, price: parseFloat(document.getElementById('pPrice').value), stock: parseInt(document.getElementById('pStock').value), desc: document.getElementById('pDesc').value, keyword: document.getElementById('pImageKeyword').value || 'item', sellerId: currentUser.uid, sellerName: userData.shopName, createdAt: new Date().toISOString() });
+            showToast("Published Successfully!"); e.target.reset(); toggleTab('list');
+        };
+
+        window.delItem = async (id) => { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id)); showToast("Deleted"); };
+        window.addToCart = () => { cartCount++; document.getElementById('cartCount').innerText = cartCount; showToast("Added!"); };
+        window.emergencyBooking = async (type) => { if(!currentUser) return openAuthModal('login', 'user'); showToast(`Requesting ${type}...`); };
+        window.showPage = (p) => { document.getElementById('homePage').classList.toggle('hidden', p !== 'home'); document.getElementById('adminPage').classList.toggle('hidden', p !== 'admin'); if(p === 'home') window.scrollTo({top: 0, behavior: 'smooth'}); };
+        window.logout = () => { signOut(auth).then(() => { showPage('home'); showToast("Logged Out"); location.reload(); }); };
+        const showToast = (m) => { const t = document.getElementById('toast'); t.querySelector('span').innerText = m; t.style.opacity = '1'; t.style.transform = 'translate(-50%, -20px)'; setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%, 0)'; }, 3000); };
+
+        window.onload = () => { switchCategory('Grocery'); };
+        window.setLanguage = (l) => { ['en', 'bn', 'hi', 'st'].forEach(x => { const el = document.getElementById(`btn-${x}`); if(el) el.classList.toggle('lang-active', x === l); }); };
     </script>
 </body>
 </html>
-  appId: "1:737831986342:web:a5efd1e5d85be25d770067",
-  measurementId: "G-K58E0DDYDJ"
-};
-
-// MANDATORY Canvas Pattern: safely parse environment config or fallback to custom config
-let firebaseConfig;
-try {
-  firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : customFirebaseConfig;
-} catch (e) {
-  firebaseConfig = customFirebaseConfig;
-}
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'villagekart-live';
-
-// --- TRANSLATIONS DICTIONARY ---
-const translations = {
-  en: {
-    appName: "VillageKart",
-    tagline: "Your Village Super App",
-    login: "Login",
-    register: "Register",
-    user: "User",
-    partner: "Partner",
-    admin: "Admin",
-    food: "Food Delivery",
-    grocery: "Grocery / Quick Comm",
-    rides: "Book TOTO / Ride",
-    home: "Home",
-    logout: "Logout",
-    name: "Full Name",
-    village: "Village / Block",
-    pincode: "PIN Code",
-    phone: "Phone Number",
-    submit: "Submit",
-    registerAs: "Register As",
-    shopName: "Shop Name",
-    vehicleType: "Vehicle Type",
-    vehicleNo: "Vehicle Reg. Number",
-    license: "Driving License / ID",
-    foodPartner: "Food Partner",
-    groceryPartner: "Grocery Partner",
-    riderPartner: "Rider (TOTO/Car/Bike)",
-    dashboard: "Dashboard",
-    addProducts: "Add Products",
-    myOrders: "My Orders",
-    totalUsers: "Total Users",
-    activePartners: "Active Partners",
-    welcome: "Welcome to VillageKart",
-    orderNow: "Order Now",
-    bookNow: "Book Ride",
-    source: "Pickup Location",
-    destination: "Drop Location",
-    price: "Price",
-    add: "Add"
-  },
-  bn: {
-    appName: "ভিলেজকার্ট",
-    tagline: "আপনার গ্রামের সুপার অ্যাপ",
-    login: "লগইন",
-    register: "নিবন্ধন করুন",
-    user: "ব্যবহারকারী",
-    partner: "অংশীদার",
-    admin: "অ্যাডমিন",
-    food: "খাবার ডেলিভারি",
-    grocery: "মুদি / দ্রুত ডেলিভারি",
-    rides: "টোটো / রাইড বুক করুন",
-    home: "হোম",
-    logout: "লগআউট",
-    name: "পুরো নাম",
-    village: "গ্রাম / ব্লক",
-    pincode: "পিন কোড",
-    phone: "ফোন নম্বর",
-    submit: "জমা দিন",
-    registerAs: "হিসাবে নিবন্ধন করুন",
-    shopName: "দোকানের নাম",
-    vehicleType: "গাড়ির ধরন",
-    vehicleNo: "গাড়ির নম্বর",
-    license: "ড্রাইভিং লাইসেন্স",
-    foodPartner: "খাবার অংশীদার",
-    groceryPartner: "মুদি অংশীদার",
-    riderPartner: "চালক (টোটো/গাড়ি/বাইক)",
-    dashboard: "ড্যাশবোর্ড",
-    addProducts: "পণ্য যোগ করুন",
-    myOrders: "আমার অর্ডার",
-    totalUsers: "মোট ব্যবহারকারী",
-    activePartners: "সক্রিয় অংশীদার",
-    welcome: "ভিলেজকার্ট এ স্বাগতম",
-    orderNow: "অর্ডার করুন",
-    bookNow: "রাইড বুক করুন",
-    source: "পিকআপ লোকেশন",
-    destination: "ড্রপ লোকেশন",
-    price: "দাম",
-    add: "যোগ"
-  },
-  hi: {
-    appName: "विलेजकार्ट",
-    tagline: "आपका गांव सुपर ऐप",
-    login: "लॉग इन",
-    register: "रजिस्टर",
-    user: "यूज़र",
-    partner: "पार्टनर",
-    admin: "एडमिन",
-    food: "फूड डिलीवरी",
-    grocery: "किराना / झटपट डिलीवरी",
-    rides: "टोटो / राइड बुक करें",
-    home: "होम",
-    logout: "लॉग आउट",
-    name: "पूरा नाम",
-    village: "गांव / ब्लॉक",
-    pincode: "पिन कोड",
-    phone: "फ़ोन नंबर",
-    submit: "जमा करें",
-    registerAs: "इस रूप में रजिस्टर करें",
-    shopName: "दुकान का नाम",
-    vehicleType: "वाहन का प्रकार",
-    vehicleNo: "वाहन नंबर",
-    license: "ड्राइविंग लाइसेंस",
-    foodPartner: "फूड पार्टनर",
-    groceryPartner: "किराना पार्टनर",
-    riderPartner: "राइडर (टोटो/कार/बाइक)",
-    dashboard: "डैशबोर्ड",
-    addProducts: "उत्पाद जोड़ें",
-    myOrders: "मेरे ऑर्डर्स",
-    totalUsers: "कुल उपयोगकर्ता",
-    activePartners: "सक्रिय पार्टनर्स",
-    welcome: "विलेजकार्ट में आपका स्वागत है",
-    orderNow: "अभी ऑर्डर करें",
-    bookNow: "राइड बुक करें",
-    source: "पिकअप स्थान",
-    destination: "ड्रॉप स्थान",
-    price: "कीमत",
-    add: "जोड़ें"
-  },
-  sat: { // Ol Chiki (Santali) Approximations / Standard Unicode
-    appName: "ᱟᱛᱳᱠᱟᱨᱴ (VillageKart)",
-    tagline: "ᱟᱢᱟᱜ ᱟᱛᱳ ᱥᱩᱯᱟᱨ ᱮᱯ",
-    login: "ᱵᱚᱞᱚᱱ (Login)",
-    register: "ᱨᱮᱡᱤᱥᱴᱟᱨ (Register)",
-    user: "ᱵᱮᱵᱷᱟᱨᱤᱭᱟᱹ (User)",
-    partner: "ᱜᱟᱛᱮ (Partner)",
-    admin: "ᱮᱰᱢᱤᱱ (Admin)",
-    food: "ᱡᱚᱢᱟᱜ (Food)",
-    grocery: "ᱠᱤᱨᱟᱱᱟ (Grocery)",
-    rides: "ᱜᱟᱹᱰᱤ ᱵᱩᱠ (Ride)",
-    home: "ᱚᱲᱟᱜ (Home)",
-    logout: "ᱚᱰᱚᱠ (Logout)",
-    name: "ᱧᱩᱛᱩᱢ (Name)",
-    village: "ᱟᱛᱳ (Village)",
-    pincode: "ᱯᱤᱱ ᱠᱳᱰ (PIN)",
-    phone: "ᱯᱷᱚᱱ ᱱᱚᱢᱵᱚᱨ (Phone)",
-    submit: "ᱮᱢ (Submit)",
-    registerAs: "ᱞᱮᱠᱟᱛᱮ ᱨᱮᱡᱤᱥᱴᱟᱨ",
-    shopName: "ᱫᱚᱠᱟᱱ ᱧᱩᱛᱩᱢ",
-    vehicleType: "ᱜᱟᱹᱰᱤ ᱨᱮᱭᱟᱜ ᱞᱮᱠᱟ",
-    vehicleNo: "ᱜᱟᱹᱰᱤ ᱱᱚᱢᱵᱚᱨ",
-    license: "ᱞᱟᱭᱥᱮᱱᱥ (License)",
-    foodPartner: "ᱡᱚᱢᱟᱜ ᱜᱟᱛᱮ",
-    groceryPartner: "ᱠᱤᱨᱟᱱᱟ ᱜᱟᱛᱮ",
-    riderPartner: "ᱪᱟᱞᱟᱣᱤᱡ (Rider)",
-    dashboard: "ᱰᱮᱥᱵᱳᱨᱰ (Dashboard)",
-    addProducts: "ᱥᱟᱢᱟᱱ ᱥᱮᱞᱮᱫ",
-    myOrders: "ᱤᱧᱟᱜ ᱚᱨᱰᱟᱨ",
-    totalUsers: "ᱡᱚᱛᱚ ᱵᱮᱵᱷᱟᱨᱤᱭᱟᱹ",
-    activePartners: "ᱠᱟᱹᱢᱤ ᱜᱟᱛᱮ",
-    welcome: "ᱟᱛᱳᱠᱟᱨᱴ ᱨᱮ ᱥᱟᱹᱜᱩᱱ ᱫᱟᱨᱟᱢ",
-    orderNow: "ᱚᱨᱰᱟᱨ (Order)",
-    bookNow: "ᱵᱩᱠ (Book)",
-    source: "ᱨᱟᱠᱟᱵ ᱴᱷᱟᱶ",
-    destination: "ᱟᱬᱜᱚ ᱴᱷᱟᱶ",
-    price: "ᱫᱟᱢ (Price)",
-    add: "ᱥᱮᱞᱮᱫ (Add)"
-  }
-};
-
-export default function App() {
-  const [lang, setLang] = useState('en');
-  const t = (key) => translations[lang][key] || key;
-
-  // Firebase Auth State
-  const [authUser, setAuthUser] = useState(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
-
-  // View States
-  const [view, setView] = useState('landing');
-  const [role, setRole] = useState(null); 
-  const [partnerType, setPartnerType] = useState('food'); 
-
-  const [cartCount, setCartCount] = useState(0);
-
-  // --- FIREBASE AUTH EFFECT ---
-  useEffect(() => {
-    const initAuth = async () => {
-      try {
-        // First, attempt to sign in anonymously. This prevents the custom token error 
-        // from crashing the app when using your specific custom Firebase project credentials.
-        await signInAnonymously(auth);
-      } catch (error) {
-        console.warn("Anonymous auth failed, trying environment token...", error);
-        try {
-          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            await signInWithCustomToken(auth, __initial_auth_token);
-          }
-        } catch (innerError) {
-           console.error("Auth init completely failed:", innerError);
-           setIsAuthLoading(false);
-        }
-      }
-    };
-    
-    initAuth();
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setAuthUser(user);
-      setIsAuthLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  // --- FIREBASE PROFILE FETCH EFFECT ---
-  useEffect(() => {
-    if (!authUser) return;
-    
-    const profileRef = doc(db, 'artifacts', appId, 'users', authUser.uid, 'profile', 'data');
-    
-    const unsubscribe = onSnapshot(profileRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (data.role && role === null) {
-          setRole(data.role);
-          setView(`${data.role}Dash`);
-        }
-      }
-    }, (error) => {
-      console.error("Profile fetch error:", error);
-    });
-
-    return () => unsubscribe();
-  }, [authUser, role]);
-
-  // Handlers
-  const handleLoginSubmit = async (e, selectedRole) => {
-    e.preventDefault();
-    if (authUser) {
-      try {
-        const profileRef = doc(db, 'artifacts', appId, 'users', authUser.uid, 'profile', 'data');
-        await setDoc(profileRef, { role: selectedRole }, { merge: true });
-      } catch (err) {
-        console.error("Failed to save role to Firestore", err);
-      }
-    }
-    setRole(selectedRole);
-    if (selectedRole === 'user') setView('userDash');
-    if (selectedRole === 'partner') setView('partnerDash');
-    if (selectedRole === 'admin') setView('adminDash');
-  };
-
-  const handleLogout = async () => {
-    setRole(null);
-    setView('landing');
-    setCartCount(0);
-    if (authUser) {
-       try {
-         const profileRef = doc(db, 'artifacts', appId, 'users', authUser.uid, 'profile', 'data');
-         await setDoc(profileRef, { role: null }, { merge: true });
-       } catch (err) {
-         console.error("Failed to clear role", err);
-       }
-    }
-  };
-
-  // --- REUSABLE UI COMPONENTS ---
-  const Header = () => (
-    <header className="bg-emerald-600 text-white p-4 sticky top-0 z-50 shadow-md flex justify-between items-center">
-      <div className="flex items-center gap-2 cursor-pointer" onClick={() => role ? setView(`${role}Dash`) : setView('landing')}>
-        <Home className="w-6 h-6" />
-        <h1 className="text-xl font-bold">{t('appName')}</h1>
-      </div>
-      <div className="flex items-center gap-4">
-        <select 
-          className="bg-emerald-700 text-white border-none rounded p-1 text-sm outline-none"
-          value={lang}
-          onChange={(e) => setLang(e.target.value)}
-        >
-          <option value="en">English</option>
-          <option value="bn">বাংলা</option>
-          <option value="hi">हिन्दी</option>
-          <option value="sat">Ol Chiki (Santali)</option>
-        </select>
-        {role && (
-          <button onClick={handleLogout} className="p-1 hover:bg-emerald-700 rounded-full">
-            <LogOut className="w-5 h-5" />
-          </button>
-        )}
-      </div>
-    </header>
-  );
-
-  // --- VIEWS ---
-  
-  const LandingView = () => (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] p-6 space-y-8 animate-fade-in">
-      <div className="text-center space-y-4">
-        <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-lg">
-          <ShoppingCart className="w-12 h-12" />
-        </div>
-        <h1 className="text-4xl font-extrabold text-gray-800">{t('appName')}</h1>
-        <p className="text-lg text-gray-500">{t('tagline')}</p>
-      </div>
-
-      <div className="w-full max-w-sm space-y-4">
-        <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-          <h2 className="text-xl font-bold mb-4 text-center">{t('user')}</h2>
-          <div className="flex gap-2">
-            <button onClick={() => setView('login')} className="flex-1 bg-emerald-600 text-white py-2 rounded-lg font-medium hover:bg-emerald-700 transition">{t('login')}</button>
-            <button onClick={() => setView('registerUser')} className="flex-1 bg-emerald-100 text-emerald-700 py-2 rounded-lg font-medium hover:bg-emerald-200 transition">{t('register')}</button>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-          <h2 className="text-xl font-bold mb-4 text-center">{t('partner')}</h2>
-          <div className="flex gap-2">
-            <button onClick={() => setView('login')} className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">{t('login')}</button>
-            <button onClick={() => setView('registerPartner')} className="flex-1 bg-blue-100 text-blue-700 py-2 rounded-lg font-medium hover:bg-blue-200 transition">{t('register')}</button>
-          </div>
-        </div>
-
-        <button onClick={() => setView('loginAdmin')} className="w-full flex items-center justify-center gap-2 text-gray-500 py-2 hover:bg-gray-100 rounded-lg transition mt-4">
-          <Shield className="w-4 h-4" /> {t('admin')} {t('login')}
-        </button>
-      </div>
-    </div>
-  );
-
-  const LoginView = ({ forceRole }) => {
-    const loginRole = forceRole || 'user';
-    return (
-      <div className="p-6 max-w-md mx-auto min-h-[80vh] flex flex-col justify-center">
-        <button onClick={() => setView('landing')} className="text-emerald-600 mb-6 font-medium">&larr; Back</button>
-        <h2 className="text-3xl font-bold mb-6">{t('login')} {forceRole ? `(${t('admin')})` : ''}</h2>
-        <form onSubmit={(e) => handleLoginSubmit(e, loginRole)} className="space-y-4">
-          <div>
-            <label className="block text-gray-700 mb-1">{t('phone')}</label>
-            <input type="tel" required className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="+91" />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-1">OTP / Password</label>
-            <input type="password" required className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none" placeholder="****" />
-          </div>
-          <button type="submit" className="w-full bg-emerald-600 text-white p-3 rounded-lg font-bold text-lg hover:bg-emerald-700">{t('login')}</button>
-        </form>
-      </div>
-    );
-  };
-
-  const UserRegisterView = () => (
-    <div className="p-6 max-w-md mx-auto">
-      <button onClick={() => setView('landing')} className="text-emerald-600 mb-4 font-medium">&larr; Back</button>
-      <h2 className="text-2xl font-bold mb-6">{t('register')} - {t('user')}</h2>
-      <form onSubmit={(e) => handleLoginSubmit(e, 'user')} className="space-y-4">
-        <input type="text" placeholder={t('name')} required className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500" />
-        <input type="text" placeholder={t('village')} required className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500" />
-        <input type="number" placeholder={t('pincode')} required className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500" />
-        <input type="tel" placeholder={t('phone')} required className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500" />
-        <button type="submit" className="w-full bg-emerald-600 text-white p-3 rounded-lg font-bold hover:bg-emerald-700">{t('submit')}</button>
-      </form>
-    </div>
-  );
-
-  const PartnerRegisterView = () => (
-    <div className="p-6 max-w-md mx-auto pb-20">
-      <button onClick={() => setView('landing')} className="text-emerald-600 mb-4 font-medium">&larr; Back</button>
-      <h2 className="text-2xl font-bold mb-6">{t('register')} - {t('partner')}</h2>
-      
-      <form onSubmit={(e) => handleLoginSubmit(e, 'partner')} className="space-y-4">
-        <input type="text" placeholder={t('name')} required className="w-full border p-3 rounded-lg outline-none" />
-        <input type="tel" placeholder={t('phone')} required className="w-full border p-3 rounded-lg outline-none" />
-        <input type="text" placeholder={t('village')} required className="w-full border p-3 rounded-lg outline-none" />
-        <input type="number" placeholder={t('pincode')} required className="w-full border p-3 rounded-lg outline-none" />
-
-        <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 mt-4">
-          <label className="block text-gray-700 font-bold mb-2">{t('registerAs')}</label>
-          <select 
-            value={partnerType} 
-            onChange={(e) => setPartnerType(e.target.value)}
-            className="w-full border p-3 rounded-lg outline-none bg-white"
-          >
-            <option value="food">{t('foodPartner')}</option>
-            <option value="grocery">{t('groceryPartner')}</option>
-            <option value="rider">{t('riderPartner')}</option>
-          </select>
-        </div>
-
-        {/* Conditional Fields based on Partner Type */}
-        {(partnerType === 'food' || partnerType === 'grocery') && (
-          <div className="space-y-4 animate-fade-in">
-            <input type="text" placeholder={t('shopName')} required className="w-full border p-3 rounded-lg outline-none" />
-            <input type="text" placeholder="FSSAI / Trade License No." className="w-full border p-3 rounded-lg outline-none" />
-          </div>
-        )}
-
-        {partnerType === 'rider' && (
-          <div className="space-y-4 animate-fade-in">
-            <select required className="w-full border p-3 rounded-lg outline-none bg-white">
-              <option value="">{t('vehicleType')}</option>
-              <option value="toto">E-Rickshaw (TOTO)</option>
-              <option value="bike">Bike / Scooty</option>
-              <option value="car">Car / Taxi</option>
-            </select>
-            <input type="text" placeholder={t('vehicleNo')} required className="w-full border p-3 rounded-lg outline-none" />
-            <input type="text" placeholder={t('license')} required className="w-full border p-3 rounded-lg outline-none" />
-          </div>
-        )}
-
-        <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg font-bold hover:bg-blue-700 mt-6">{t('submit')}</button>
-      </form>
-    </div>
-  );
-
-  // --- DASHBOARDS & CORE SERVICES ---
-
-  const UserDashboard = () => (
-    <div className="p-4 space-y-6 max-w-lg mx-auto">
-      <div className="bg-emerald-100 rounded-2xl p-6 shadow-sm flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-emerald-800">{t('welcome')}!</h2>
-          <p className="text-emerald-600 text-sm mt-1 flex items-center gap-1"><MapPin className="w-4 h-4" /> Block / Village Location</p>
-        </div>
-        <User className="w-12 h-12 text-emerald-500 bg-white p-2 rounded-full" />
-      </div>
-
-      <div className="grid grid-cols-1 gap-4">
-        <div onClick={() => setView('food')} className="bg-orange-50 hover:bg-orange-100 cursor-pointer p-6 rounded-2xl border border-orange-200 flex items-center justify-between transition-transform transform active:scale-95">
-          <div className="flex items-center gap-4">
-            <div className="bg-orange-500 text-white p-4 rounded-full shadow-md"><Utensils className="w-8 h-8"/></div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-800">{t('food')}</h3>
-              <p className="text-sm text-gray-500">Order from local restaurants</p>
-            </div>
-          </div>
-          <ChevronRight className="text-orange-400" />
-        </div>
-
-        <div onClick={() => setView('grocery')} className="bg-purple-50 hover:bg-purple-100 cursor-pointer p-6 rounded-2xl border border-purple-200 flex items-center justify-between transition-transform transform active:scale-95">
-          <div className="flex items-center gap-4">
-            <div className="bg-purple-600 text-white p-4 rounded-full shadow-md"><Package className="w-8 h-8"/></div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-800">{t('grocery')}</h3>
-              <p className="text-sm text-gray-500">10 min delivery</p>
-            </div>
-          </div>
-          <ChevronRight className="text-purple-400" />
-        </div>
-
-        <div onClick={() => setView('rides')} className="bg-blue-50 hover:bg-blue-100 cursor-pointer p-6 rounded-2xl border border-blue-200 flex items-center justify-between transition-transform transform active:scale-95">
-          <div className="flex items-center gap-4">
-            <div className="bg-blue-600 text-white p-4 rounded-full shadow-md"><Car className="w-8 h-8"/></div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-800">{t('rides')}</h3>
-              <p className="text-sm text-gray-500">TOTO, Bike, Cab</p>
-            </div>
-          </div>
-          <ChevronRight className="text-blue-400" />
-        </div>
-      </div>
-    </div>
-  );
-
-  const ServiceHeader = ({ title, bgClass, colorClass }) => (
-    <div className={`${bgClass} p-4 flex items-center justify-between shadow-sm sticky top-[68px] z-40`}>
-      <div className="flex items-center gap-3">
-        <button onClick={() => setView('userDash')} className={`${colorClass} p-1 bg-white rounded-full`}><ChevronRight className="w-6 h-6 rotate-180" /></button>
-        <h2 className="text-xl font-bold text-white">{title}</h2>
-      </div>
-      <div className="relative bg-white p-2 rounded-full cursor-pointer">
-        <ShoppingCart className={`w-6 h-6 ${colorClass}`} />
-        {cartCount > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">{cartCount}</span>}
-      </div>
-    </div>
-  );
-
-  const FoodView = () => (
-    <div className="bg-gray-50 min-h-screen pb-20">
-      <ServiceHeader title={t('food')} bgClass="bg-orange-500" colorClass="text-orange-500" />
-      <div className="p-4 space-y-4 max-w-lg mx-auto">
-        {[1, 2, 3, 4].map(i => (
-          <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 flex flex-col">
-            <div className="h-32 bg-gray-200 w-full relative">
-              <img src={`https://source.unsplash.com/400x200/?indian,food,restaurant&sig=${i}`} alt="Food" className="w-full h-full object-cover" onError={(e)=>{e.target.style.display='none'}}/>
-              <div className="absolute bottom-2 left-2 bg-white px-2 py-1 text-xs font-bold rounded shadow">4.5 ★</div>
-            </div>
-            <div className="p-4 flex justify-between items-center">
-              <div>
-                <h3 className="font-bold text-lg">Village Dhaba {i}</h3>
-                <p className="text-sm text-gray-500">North Indian, Thali</p>
-                <p className="text-sm font-semibold mt-1">₹150 for one</p>
-              </div>
-              <button onClick={() => setCartCount(c => c+1)} className="bg-orange-100 text-orange-600 px-4 py-2 rounded-lg font-bold hover:bg-orange-200">{t('add')}</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const GroceryView = () => (
-    <div className="bg-gray-50 min-h-screen pb-20">
-      <ServiceHeader title={t('grocery')} bgClass="bg-purple-600" colorClass="text-purple-600" />
-      <div className="p-4 grid grid-cols-2 gap-4 max-w-lg mx-auto">
-        {[
-          {name: 'Rice (1kg)', price: 60}, {name: 'Dal (500g)', price: 45}, 
-          {name: 'Onions (1kg)', price: 30}, {name: 'Mustard Oil', price: 120},
-          {name: 'Milk (1L)', price: 50}, {name: 'Bread', price: 25}
-        ].map((item, i) => (
-          <div key={i} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col items-center text-center">
-            <div className="w-20 h-20 bg-purple-50 rounded-full flex items-center justify-center mb-3">
-               <Package className="w-10 h-10 text-purple-400" />
-            </div>
-            <h3 className="font-bold text-sm text-gray-800">{item.name}</h3>
-            <p className="text-purple-600 font-bold my-2">₹{item.price}</p>
-            <button onClick={() => setCartCount(c => c+1)} className="w-full bg-purple-100 text-purple-700 py-2 rounded-lg font-bold hover:bg-purple-200 text-sm">{t('add')}</button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const RidesView = () => (
-    <div className="bg-gray-50 min-h-screen pb-20 relative">
-      <div className="bg-blue-600 p-4 flex items-center gap-3 shadow-sm sticky top-[68px] z-40">
-        <button onClick={() => setView('userDash')} className="text-blue-600 p-1 bg-white rounded-full"><ChevronRight className="w-6 h-6 rotate-180" /></button>
-        <h2 className="text-xl font-bold text-white">{t('rides')}</h2>
-      </div>
-
-      <div className="h-64 bg-gray-200 w-full relative">
-         <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'radial-gradient(#4b5563 1px, transparent 1px)', backgroundSize: '20px 20px'}}></div>
-         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500 font-bold flex flex-col items-center">
-            <Navigation className="w-12 h-12 text-blue-500 mb-2" />
-            <p>Map View</p>
-         </div>
-      </div>
-
-      <div className="p-4 max-w-lg mx-auto -mt-6 relative z-10">
-        <div className="bg-white rounded-2xl shadow-lg p-5 space-y-4">
-          <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <input type="text" placeholder={t('source')} className="bg-transparent w-full outline-none" defaultValue="My Current Location" />
-          </div>
-          <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg border">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <input type="text" placeholder={t('destination')} className="bg-transparent w-full outline-none" />
-          </div>
-        </div>
-
-        <h3 className="font-bold text-lg mt-6 mb-3 text-gray-800">Available Rides</h3>
-        <div className="space-y-3">
-          {[
-            {type: 'E-Rickshaw (TOTO)', icon: <Car className="w-6 h-6 text-yellow-600"/>, price: '15', time: '2 min', color: 'bg-yellow-50'},
-            {type: 'Bike Taxi', icon: <Bike className="w-6 h-6 text-gray-800"/>, price: '25', time: '1 min', color: 'bg-gray-100'},
-            {type: 'Mini Car', icon: <Car className="w-6 h-6 text-blue-600"/>, price: '80', time: '5 min', color: 'bg-blue-50'}
-          ].map((ride, i) => (
-            <div key={i} className={`${ride.color} p-4 rounded-xl flex items-center justify-between border cursor-pointer hover:shadow-md transition`}>
-              <div className="flex items-center gap-4">
-                <div className="bg-white p-2 rounded-full shadow-sm">{ride.icon}</div>
-                <div>
-                  <h4 className="font-bold text-gray-800">{ride.type}</h4>
-                  <p className="text-xs text-gray-500 flex items-center gap-1"><Clock className="w-3 h-3"/> {ride.time} away</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="font-bold text-lg">₹{ride.price}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <button className="w-full bg-black text-white font-bold py-4 rounded-xl mt-6 shadow-lg active:scale-95 transition">{t('bookNow')}</button>
-      </div>
-    </div>
-  );
-
-  const PartnerDashboard = () => (
-    <div className="p-4 space-y-6 max-w-lg mx-auto">
-      <div className="bg-blue-600 text-white rounded-2xl p-6 shadow-sm">
-        <h2 className="text-2xl font-bold">{t('dashboard')} ({t('partner')})</h2>
-        <p className="text-blue-100 mt-1">Manage your shop and orders</p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-center cursor-pointer hover:bg-gray-50">
-          <Store className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-          <p className="font-bold">{t('addProducts')}</p>
-        </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-center cursor-pointer hover:bg-gray-50">
-          <Clock className="w-8 h-8 text-orange-500 mx-auto mb-2" />
-          <p className="font-bold">{t('myOrders')}</p>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-        <h3 className="font-bold text-lg mb-4 border-b pb-2">Recent Orders / Rides</h3>
-        <div className="space-y-4">
-          {[1,2,3].map(i => (
-            <div key={i} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border">
-              <div>
-                <p className="font-bold">Order #{8472 + i}</p>
-                <p className="text-sm text-gray-500">2 items • Pending</p>
-              </div>
-              <button className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded font-bold text-sm hover:bg-emerald-200">Accept</button>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  const AdminDashboard = () => (
-    <div className="p-4 space-y-6 max-w-lg mx-auto">
-      <div className="bg-gray-800 text-white rounded-2xl p-6 shadow-sm">
-        <h2 className="text-2xl font-bold">{t('admin')} {t('dashboard')}</h2>
-        <p className="text-gray-300 mt-1">VillageKart Central Control</p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-emerald-500">
-          <p className="text-gray-500 text-sm font-bold">{t('totalUsers')}</p>
-          <p className="text-3xl font-black text-gray-800 mt-1">1,245</p>
-        </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-blue-500">
-          <p className="text-gray-500 text-sm font-bold">{t('activePartners')}</p>
-          <p className="text-3xl font-black text-gray-800 mt-1">86</p>
-        </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-orange-500 col-span-2">
-          <p className="text-gray-500 text-sm font-bold">Orders Today</p>
-          <p className="text-3xl font-black text-gray-800 mt-1">342</p>
-        </div>
-      </div>
-      
-      <button className="w-full bg-gray-100 border text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 flex justify-center items-center gap-2">
-        View Full Analytics <ChevronRight className="w-4 h-4"/>
-      </button>
-    </div>
-  );
-
-  // --- RENDERER ---
-  if (isAuthLoading) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center font-sans">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-100 font-sans text-gray-900 selection:bg-emerald-200">
-      <Header />
-      
-      <main className="mx-auto w-full max-w-md bg-white min-h-[calc(100vh-68px)] shadow-2xl relative overflow-x-hidden">
-        {view === 'landing' && <LandingView />}
-        {view === 'login' && <LoginView />}
-        {view === 'loginAdmin' && <LoginView forceRole="admin" />}
-        {view === 'registerUser' && <UserRegisterView />}
-        {view === 'registerPartner' && <PartnerRegisterView />}
-        
-        {view === 'userDash' && <UserDashboard />}
-        {view === 'partnerDash' && <PartnerDashboard />}
-        {view === 'adminDash' && <AdminDashboard />}
-        
-        {view === 'food' && <FoodView />}
-        {view === 'grocery' && <GroceryView />}
-        {view === 'rides' && <RidesView />}
-      </main>
-    </div>
-  );
-}
