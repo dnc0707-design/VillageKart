@@ -9,7 +9,8 @@ import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged }
 import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 
 // --- FIREBASE SETUP ---
-const firebaseConfig = {
+// We define your custom config, but carefully check the environment first to prevent compiler crashes.
+const customFirebaseConfig = {
   apiKey: "AIzaSyALzu7TNODHkSnb0P-AEaqWWkY83xlKRqs",
   authDomain: "villagekart-live.firebaseapp.com",
   projectId: "villagekart-live",
@@ -18,6 +19,14 @@ const firebaseConfig = {
   appId: "1:737831986342:web:a5efd1e5d85be25d770067",
   measurementId: "G-K58E0DDYDJ"
 };
+
+// MANDATORY Canvas Pattern: safely parse environment config or fallback to custom config
+let firebaseConfig;
+try {
+  firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : customFirebaseConfig;
+} catch (e) {
+  firebaseConfig = customFirebaseConfig;
+}
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -192,28 +201,33 @@ export default function App() {
   const [authUser, setAuthUser] = useState(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
-  // View States: 'landing', 'login', 'registerUser', 'registerPartner', 'userDash', 'partnerDash', 'adminDash', 'food', 'grocery', 'rides'
+  // View States
   const [view, setView] = useState('landing');
-  const [role, setRole] = useState(null); // 'user', 'partner', 'admin'
-  const [partnerType, setPartnerType] = useState('food'); // for registration
+  const [role, setRole] = useState(null); 
+  const [partnerType, setPartnerType] = useState('food'); 
 
-  // Mock State for Interactions
   const [cartCount, setCartCount] = useState(0);
 
   // --- FIREBASE AUTH EFFECT ---
   useEffect(() => {
     const initAuth = async () => {
       try {
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-          await signInAnonymously(auth);
-        }
+        // First, attempt to sign in anonymously. This prevents the custom token error 
+        // from crashing the app when using your specific custom Firebase project credentials.
+        await signInAnonymously(auth);
       } catch (error) {
-        console.error("Auth init error:", error);
-        setIsAuthLoading(false);
+        console.warn("Anonymous auth failed, trying environment token...", error);
+        try {
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          }
+        } catch (innerError) {
+           console.error("Auth init completely failed:", innerError);
+           setIsAuthLoading(false);
+        }
       }
     };
+    
     initAuth();
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -227,7 +241,6 @@ export default function App() {
   useEffect(() => {
     if (!authUser) return;
     
-    // Automatically fetch user role if they have registered/logged in before
     const profileRef = doc(db, 'artifacts', appId, 'users', authUser.uid, 'profile', 'data');
     
     const unsubscribe = onSnapshot(profileRef, (docSnap) => {
@@ -249,9 +262,12 @@ export default function App() {
   const handleLoginSubmit = async (e, selectedRole) => {
     e.preventDefault();
     if (authUser) {
-      // Save role to Firestore so it persists across reloads
-      const profileRef = doc(db, 'artifacts', appId, 'users', authUser.uid, 'profile', 'data');
-      await setDoc(profileRef, { role: selectedRole }, { merge: true });
+      try {
+        const profileRef = doc(db, 'artifacts', appId, 'users', authUser.uid, 'profile', 'data');
+        await setDoc(profileRef, { role: selectedRole }, { merge: true });
+      } catch (err) {
+        console.error("Failed to save role to Firestore", err);
+      }
     }
     setRole(selectedRole);
     if (selectedRole === 'user') setView('userDash');
@@ -264,9 +280,12 @@ export default function App() {
     setView('landing');
     setCartCount(0);
     if (authUser) {
-       // Clear role from firestore to simulate complete logout for this demo
-       const profileRef = doc(db, 'artifacts', appId, 'users', authUser.uid, 'profile', 'data');
-       await setDoc(profileRef, { role: null }, { merge: true });
+       try {
+         const profileRef = doc(db, 'artifacts', appId, 'users', authUser.uid, 'profile', 'data');
+         await setDoc(profileRef, { role: null }, { merge: true });
+       } catch (err) {
+         console.error("Failed to clear role", err);
+       }
     }
   };
 
@@ -431,7 +450,6 @@ export default function App() {
       </div>
 
       <div className="grid grid-cols-1 gap-4">
-        {/* Zomato Clone Button */}
         <div onClick={() => setView('food')} className="bg-orange-50 hover:bg-orange-100 cursor-pointer p-6 rounded-2xl border border-orange-200 flex items-center justify-between transition-transform transform active:scale-95">
           <div className="flex items-center gap-4">
             <div className="bg-orange-500 text-white p-4 rounded-full shadow-md"><Utensils className="w-8 h-8"/></div>
@@ -443,7 +461,6 @@ export default function App() {
           <ChevronRight className="text-orange-400" />
         </div>
 
-        {/* Zepto Clone Button */}
         <div onClick={() => setView('grocery')} className="bg-purple-50 hover:bg-purple-100 cursor-pointer p-6 rounded-2xl border border-purple-200 flex items-center justify-between transition-transform transform active:scale-95">
           <div className="flex items-center gap-4">
             <div className="bg-purple-600 text-white p-4 rounded-full shadow-md"><Package className="w-8 h-8"/></div>
@@ -455,7 +472,6 @@ export default function App() {
           <ChevronRight className="text-purple-400" />
         </div>
 
-        {/* Uber/Rapido Clone Button */}
         <div onClick={() => setView('rides')} className="bg-blue-50 hover:bg-blue-100 cursor-pointer p-6 rounded-2xl border border-blue-200 flex items-center justify-between transition-transform transform active:scale-95">
           <div className="flex items-center gap-4">
             <div className="bg-blue-600 text-white p-4 rounded-full shadow-md"><Car className="w-8 h-8"/></div>
@@ -536,7 +552,6 @@ export default function App() {
         <h2 className="text-xl font-bold text-white">{t('rides')}</h2>
       </div>
 
-      {/* Fake Map Background */}
       <div className="h-64 bg-gray-200 w-full relative">
          <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'radial-gradient(#4b5563 1px, transparent 1px)', backgroundSize: '20px 20px'}}></div>
          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500 font-bold flex flex-col items-center">
